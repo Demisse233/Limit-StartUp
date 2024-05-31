@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>欢迎来到ZNF小站</title>
+    <link rel="stylesheet" href="About me.css">
+	<link rel="stylesheet" href="bg.css">
+	<style>
+		/* * {
+        margin: 0;
+        padding: 0;
+      } */
+	</style>
+</head>
+<body style="margin: 0;padding:0;color: white;text-align: center;z-index: 999;">
+	<canvas id="cvs" ></canvas>
+	<div style="width: 100%;height: 50px;font-size: 30px;">
+		<svg class="icon" style="width: 1.9em;height: 1.9em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14481"><path d="M231.849057 231.849057h96.603773v96.603773h-96.603773zM347.773585 231.849057h96.603773v96.603773h-96.603773zM463.698113 231.849057h96.603774v96.603773h-96.603774zM579.622642 231.849057h96.603773v96.603773h-96.603773zM695.54717 231.849057h96.603773v96.603773h-96.603773zM231.849057 347.773585h96.603773v96.603773h-96.603773zM0 231.849057h96.603774v96.603773H0zM115.924528 231.849057h96.603774v96.603773H115.924528zM927.396226 231.849057h96.603774v96.603773h-96.603774zM811.471698 231.849057h96.603774v96.603773h-96.603774zM115.924528 347.773585h96.603774v96.603773H115.924528zM347.773585 347.773585h96.603773v96.603773h-96.603773zM463.698113 347.773585h96.603774v96.603773h-96.603774zM579.622642 347.773585h96.603773v96.603773h-96.603773zM695.54717 347.773585h96.603773v96.603773h-96.603773zM231.849057 463.698113h96.603773v96.603774h-96.603773zM347.773585 463.698113h96.603773v96.603774h-96.603773zM463.698113 463.698113h96.603774v96.603774h-96.603774zM579.622642 463.698113h96.603773v96.603774h-96.603773zM695.54717 463.698113h96.603773v96.603774h-96.603773zM347.773585 579.622642h96.603773v96.603773h-96.603773zM463.698113 579.622642h96.603774v96.603773h-96.603774zM579.622642 579.622642h96.603773v96.603773h-96.603773zM463.698113 695.54717h96.603774v96.603773h-96.603774zM811.471698 347.773585h96.603774v96.603773h-96.603774z" fill="#ffffff" p-id="14482"></path></svg>
+		<span style="font-weight: 200;">欢迎进入张乃凡的小站&nbsp;&nbsp;&nbsp;&nbsp;Welcome To Eric Demisse's Website</span>
+		<svg class="icon" style="width: 1.9em;height: 1.9em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14481"><path d="M231.849057 231.849057h96.603773v96.603773h-96.603773zM347.773585 231.849057h96.603773v96.603773h-96.603773zM463.698113 231.849057h96.603774v96.603773h-96.603774zM579.622642 231.849057h96.603773v96.603773h-96.603773zM695.54717 231.849057h96.603773v96.603773h-96.603773zM231.849057 347.773585h96.603773v96.603773h-96.603773zM0 231.849057h96.603774v96.603773H0zM115.924528 231.849057h96.603774v96.603773H115.924528zM927.396226 231.849057h96.603774v96.603773h-96.603774zM811.471698 231.849057h96.603774v96.603773h-96.603774zM115.924528 347.773585h96.603774v96.603773H115.924528zM347.773585 347.773585h96.603773v96.603773h-96.603773zM463.698113 347.773585h96.603774v96.603773h-96.603774zM579.622642 347.773585h96.603773v96.603773h-96.603773zM695.54717 347.773585h96.603773v96.603773h-96.603773zM231.849057 463.698113h96.603773v96.603774h-96.603773zM347.773585 463.698113h96.603773v96.603774h-96.603773zM463.698113 463.698113h96.603774v96.603774h-96.603774zM579.622642 463.698113h96.603773v96.603774h-96.603773zM695.54717 463.698113h96.603773v96.603774h-96.603773zM347.773585 579.622642h96.603773v96.603773h-96.603773zM463.698113 579.622642h96.603774v96.603773h-96.603774zM579.622642 579.622642h96.603773v96.603773h-96.603773zM463.698113 695.54717h96.603774v96.603773h-96.603774zM811.471698 347.773585h96.603774v96.603773h-96.603774z" fill="#ffffff" p-id="14482"></path></svg>
+	</div>
+
+
+	<br><br><br>
+
+
+
+    <div class="about_title" style="color: #26ff8e;">
+		<svg class="icon" style="width: 1.9em;height: 1.9em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4334"><path d="M143 844.8c-43.8 0-79.5-35.8-79.5-79.9v-475c0-33.4 0.6-55 9.1-73.4 6.3-13.6 16.3-23.6 29.6-29.9 10.9-5.1 23.5-7.4 39.7-7.4h739.2c30.7 0 48.7 12 58.3 22 23 24 21.6 57.3 20.7 79.4-0.1 3.5-0.3 6.8-0.3 9.3v475c0 44-35.7 79.9-79.5 79.9H143z m-12.1-599.6c-2.4 7.2-2.4 28.7-2.4 44.7v475c0 8.2 6.5 14.9 14.5 14.9h737.3c8 0 14.5-6.7 14.5-14.9v-475c0-3.9 0.2-7.8 0.3-12 0.3-8.2 0.7-16.7-0.2-23.7-0.7-5-1.8-7.4-2.4-8 0 0-2.6-2-11.4-2H141.9c-6 0-9.3 0.6-11 1z" fill="" p-id="4335"></path><path d="M370.2 308.7c-51 2.5-92.6 44.2-96 95.1-4.2 59.5 43.3 109.6 101.9 109.6 56.9 0 101.9-45.9 101.9-101.9 0.9-58.7-48.4-106.2-107.8-102.8M376.1 545.6c-67.9 0-203.8 34-203.8 101.9v51c0 9.3 7.6 17 17 17H563c9.3 0 17-7.6 17-17v-51.8c-0.1-67.1-135.9-101.1-203.9-101.1M851.7 376.6H579.9v34h271.8v-34M851.7 308.7H579.9v34h271.8v-34M851.7 444.6H715.8v33.9h135.9v-33.9" fill="" p-id="4336"></path></svg>
+		&nbsp;&nbsp;唠唠我自己 About Myself</div>
+		<br>
+    <p style="color: white;">我，张乃凡，英文名Eric Demisse，是大学生一枚，喜欢前端开发</p>
+    <br>
+    <div class="about_title" style="color: #26ff8e;">
+		<svg class="icon" style="width: 2.2em;height: 2.2em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1136 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1672"><path d="M265.49969068 634.20671297l226.98046212 101.72058835c13.73768206 5.94270525 20.22063285 9.9559604 33.95831491 9.9559604a66.21871393 66.21871393 0 0 0 33.26371298-8.79829075 26.39487161 26.39487161 0 0 1 4.01325517-2.23816145l214.32327253-90.1438899a27.47536342 27.47536342 0 0 1 20.83805694 0l75.32571605 30.94837302c18.13682709 7.48626476 18.29118345 29.86788122 0.30871205 37.50850235L537.70645411 856.86520857a27.16665206 27.16665206 0 0 1-21.45548101-0.15435635L178.28856414 707.3714461c-17.75093722-7.94933248-17.44222517-30.02223758 0.61742408-37.4313245l86.59370245-35.73340863z m-10.26467244-175.11685432a27.01229571 27.01229571 0 0 1 20.45216636 1e-8l222.27260572 90.99284749 2.85558551 0.92613613a109.74709868 109.74709868 0 0 0 62.05110241-1.0804918L777.96153056 459.24421434a27.47536342 27.47536342 0 0 1 20.83805626-0.15435569l76.17467432 31.41144074c17.98247141 7.40908693 18.36836129 29.55916918 0.61742408 37.35414666L537.78363194 677.27203068a26.93511786 26.93511786 0 0 1-21.68701453 0L178.28856414 527.9326239c-17.75093722-7.87215465-17.44222517-29.94505907 0.61742408-37.35414599zM516.32815162 166.58528454a27.39818558 27.39818558 0 0 1 21.1467683-1e-8L876.05475294 311.06247787c17.75093722 7.5634426 17.9052929 29.40481349 0.30871204 37.19979031l-338.57983304 149.72529666a26.93511786 26.93511786 0 0 1-21.68701453 0L177.43960654 348.18508966c-17.51940301-7.71779897-17.36504733-29.6363477 0.30871204-37.19978964z" p-id="1673"></path></svg>
+		吾之拙作 My Composition</div>
+		<br>
+    <p style="color: white;">Limit Website  //链接：暂不开放</p>
+    <p style="color: white;">Limit eShop  //链接：暂不开放</p>
+    <p style="color: white;">Limit Startup  //链接：https://demisse.gitee.io/limit-startup/</p>
+    <br>
+    <div class="about_title" style="color: #26ff8e;">
+		<svg class="icon" style="width: 1.3em;height: 1.3em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3479"><path d="M24.649143 399.36L965.485714 7.314286a29.257143 29.257143 0 0 1 39.643429 34.084571l-234.349714 937.472a29.257143 29.257143 0 0 1-47.104 15.36l-203.483429-169.545143a29.257143 29.257143 0 0 0-39.424 1.828572l-104.374857 104.301714a29.257143 29.257143 0 0 1-49.883429-20.626286V689.737143a29.257143 29.257143 0 0 1 8.557715-20.699429l424.448-424.448-501.101715 375.881143a29.257143 29.257143 0 0 1-36.278857-0.950857L17.188571 448.804571a29.257143 29.257143 0 0 1 7.460572-49.444571z" p-id="3480"></path></svg>
+		来找我呀 Find Me</div>
+		<br><br>
+    <div>
+        <span style="margin-left: 15px; margin-right: 15px;"><a href="https://space.bilibili.com/389895985?spm_id_from=444.41.0.0" target="_blank"><img src="src/bilibili.png" width="200px" height="100px"></a></span>
+        <span style="margin-left: 15px; margin-right: 15px;"><a href="https://weibo.com/u/6855640818" target="_blank"><img src="src/weibo.png" width="200px" height="100px"></a></span>
+        <span style="margin-left: 15px; margin-right: 15px;"><a href="https://twitter.com/Demisse233" target="_blank"><img src="src/twitter.png" width="200px" height="100px"></a></span>
+    </div>
+	<br>
+    <div class="about_title_2">除了BiliBili、新浪微博以及Twitter，您还可以通过以下途径找到或联系我们：</div>
+    <p style="color: white;">QQ:2250829612</p>
+    <span style="color: white;">邮箱：</span>
+    <span class="tooltip">2250829612@qq.com<span class="tooltiptext">推荐中国大陆用户使用</span></span>&nbsp;&nbsp;
+    <span style="color: white;">/</span>
+    <span class="tooltip">&nbsp;&nbsp;demisse233@gmail.com<span class="tooltiptext">全球用户可用</span></span>
+
+
+	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+
+
+    <HR width=90% color= white noShade>
+
+    <span style="margin-right: 10px;color: white;">Version: Early Access 2.0</span><br>
+    <span style="margin-left: 10px;color: white;">Copyright © 2023 ZNF Inc. All Rights Reserved.</span><br><br>
+    
+    
+    
+    <script>
+		const cvs = document.getElementById('cvs')
+		cvs.width = document.documentElement.clientWidth
+		cvs.height = document.documentElement.clientHeight - 50
+		const ctx = cvs.getContext('2d')
+		const { width, height } = cvs
+		let colors = []
+		const bgData = Array.from(new Array(400)).map(v => {
+			return {
+				x: Math.random() * width,
+				y: Math.random() * height,
+				// step: Math.random() * 2.5 + 0.5
+			}
+		})
+		const sendText = (text, fontSize = ((width * 0.7) / text.length), stepV = 40) => {
+			ctx.font = `bold ${fontSize}px sans-serif`
+			ctx.fillStyle = '#000000'
+			ctx.fillRect(0, 0, width, height)
+			ctx.fillStyle = '#ffffff'
+			ctx.textAlign = 'center'
+			ctx.textBaseline = 'middle'
+			ctx.fillText(text, width / 2, height / 2)
+			const data = ctx.getImageData(0, 0, width, height).data
+			
+			let index = 0
+			let bl = 4
+			let useIndex = 0
+			for(let i=0;i<data.length;i+=4) {
+				const x = index % width
+				const y = Math.ceil(index / width)
+				if (x%bl === 0 && y%bl === 0 && data[i] === 255 && data[i+1] === 255 && data[i+2] === 255) {
+					const rx = Math.floor(Math.random() * fontSize) + width / 2 - fontSize / 2
+					const ry = Math.floor(Math.random() * fontSize) + height / 2 - fontSize / 2
+					const item = colors[useIndex]
+					if (item) {
+						colors[useIndex] = {
+							x,
+							y,
+							rx: item.x,
+							ry: item.y,
+							stepX: Math.abs(item.x - x) / stepV,
+							stepY: Math.abs(item.y - y) / stepV
+						}
+					} else {
+						colors[useIndex] = {
+							x,
+							y,
+							rx,
+							ry,
+							stepX: Math.abs(rx - x) / stepV,
+							stepY: Math.abs(ry - y) / stepV
+						}
+					}
+					useIndex++
+				}
+				index++
+			}
+			if (useIndex < colors.length) { 
+				colors.splice(useIndex, colors.length - useIndex)
+			}
+		}
+		const render = () => {
+			ctx.beginPath()
+			ctx.clearRect(0, 0, width, height)
+			colors.forEach(v => {
+				if (v.rx > v.x) {
+					v.rx-=v.stepX
+					if (v.rx < v.x) {
+						v.rx = v.x
+					}
+				} else if (v.rx < v.x) {
+					v.rx+=v.stepX
+					if (v.rx > v.x) {
+						v.rx = v.x
+					}
+				}
+				if (v.ry > v.y) {
+					v.ry-=v.stepY
+					if (v.ry < v.y) {
+						v.ry = v.y
+					}
+				} else if (v.ry < v.y) {
+					v.ry+=v.stepY
+					if (v.ry > v.y) {
+						v.ry = v.y
+					}
+				}
+				ctx.rect(v.rx, v.ry, 3, 3)
+			})
+			bgData.forEach(v => {
+				v.y = v.y > height ? 0 : (v.y + v.step)
+				ctx.rect(v.x, v.y, 2, 2)
+			})
+			ctx.fill()
+			requestAnimationFrame(render)
+		}
+		render()
+		const awaitSendText = async (txt, fontSize, stepV) => {
+			return new Promise((resolve) => {
+				sendText(txt, fontSize, stepV)
+				colors.sort(v => Math.random() - 0.5)
+				setTimeout(() => resolve(), 3000)
+			})
+		}
+		const run = async () => {
+			const text = '你好，Hello，こんにちは，Привет，Hallo，Bonjour，Hola'.split('，')
+			for(let i=0;i<text.length;i++) {
+				await awaitSendText(text[i], 150, i === 0 ? 100 : 100)
+			}
+			run()
+		}
+		run()
+	</script>
+</body>
+</html>

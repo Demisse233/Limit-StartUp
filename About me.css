@@ -1,0 +1,53 @@
+    /* 整个滚动条 */
+::-webkit-scrollbar {
+    /* 对应纵向滚动条的宽度 */
+    width: 1%;
+    /* 对应横向滚动条的宽度 */
+    height: 1px;
+}
+    
+    /* 提示文本 */
+        .tooltip {
+            color: white;
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted #26ff8e;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #26ff8e;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            top: 150%;
+            left: 50%;
+            margin-left: -60px;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent white transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        .about_title {
+            font-size: 35px;
+        }
+        .about_title_2 {
+            font-size: 22px;
+            font-weight: bold;
+        }
