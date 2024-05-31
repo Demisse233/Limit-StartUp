@@ -403,12 +403,19 @@ select{
             cursor: pointer;
             float: left;
         }
-        .bg_choice_small2 {
-            margin-left: 1.5%;
-            margin-right: 1.5%;
-            width: 30%;
+        .diy_bg_box{
+            text-align: center;
+        }
+
+        .diy_bg_but{
+            width: 70px;
+            height: 30px;
+            border: none;
+            border-radius: 30px;
+            color: #007aff;
+            background-color: #eeeeef;
             cursor: pointer;
-            float: left;
+            font-weight: 600;
         }
 
 
