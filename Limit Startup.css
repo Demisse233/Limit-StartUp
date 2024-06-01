@@ -474,7 +474,22 @@ select{
             padding-right: 5px;
         }
 
-
+        .Q_ui_box {
+            color: #007aff;
+            background-color: #cbdef3;
+            border: none;
+            border-radius: 20px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        .A_ui_box {
+            color: #ff0000;
+            background-color: #ffc7c7;
+            border: none;
+            border-radius: 20px;
+            padding-left: 6px;
+            padding-right: 6px;
+        }
 
 
 
