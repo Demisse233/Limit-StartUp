@@ -314,7 +314,6 @@ select{
         left: 50%;
         margin-left: -36vh;
         top:20vh;
-
         display: none;
         user-select: none;
         -webkit-animation: fadeleftIn .4s;
@@ -399,7 +398,7 @@ select{
             background-color: #ffffff;
             border-radius: 10px;
             width: 95%;
-            height: 70px;
+            height: 90px;
             text-align: left;
             padding-top: 5px;
             padding-left: 10px;
@@ -535,7 +534,26 @@ select{
 
 
 
-
+        .jump_out_box{
+            width: 70vh;
+            height: 60vh;
+            border-radius: 10px;
+            background-color: #f0f8ff;
+            padding: 10px 0px 20px 0px;
+            text-align: center;
+            position: fixed;
+            z-index: 1001;
+            left: 50%;
+            margin-left: -36vh;
+            top:20vh;
+            overflow-y: scroll;
+            display: none;
+            user-select: none;
+            -webkit-animation: fadeleftIn .4s;
+                animation: fadeleftIn .4s;
+                -webkit-animation-name: settings_box;
+                animation-name: settings_box;
+        }
 
 
 
@@ -669,7 +687,7 @@ select{
         transform: translateX(-50%);
         width: auto;
         float: left;
-        margin-top: -220px;
+        margin-top: -222px;
         z-index: 998;
         transition: translate 1s;
         /* overflow: hidden; */
@@ -683,8 +701,72 @@ select{
         text-align: center;
         margin-top: 150px;
     }
+    .about {
+        max-width: 1024px;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        background-color: aliceblue;
+        padding: 10px 0px 10px 0px;
+        text-align: center;
+        /* position: fixed; */
+        z-index: 1001;
+        margin: auto;
+        left: 0;
+        top:0;
+        display: none;
+        
+     
+        }
+        .settings_main_box {
+            border-radius: 10px;
+            height: 100%;
+            overflow-y: auto;
+        
+        }
+        .settings_box {
+        max-width: 1024px;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        background-color: aliceblue;
+        padding: 10px 0px 10px 0px;
+        text-align: center;
+        position: fixed;
+        z-index: 1001;
+        margin: auto;
+        left: 0;
+        top:0;
+        display: none;
+            user-select: none;
+            -webkit-animation: fadeleftIn .4s;
+            animation: fadeleftIn .4s;
+            -webkit-animation-name: settings_box;
+            animation-name: settings_box;
+            
+            }
+            .jump_out_box{
+        max-width: 1024px;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        background-color: aliceblue;
+        padding: 10px 0px 10px 0px;
+        text-align: center;
+        position: fixed;
+        z-index: 1001;
+        margin: auto;
+        left: 0;
+        top:0;
+        display: none;
+            user-select: none;
+            -webkit-animation: fadeleftIn .4s;
+            animation: fadeleftIn .4s;
+            -webkit-animation-name: settings_box;
+            animation-name: settings_box;
     }
-
+    }
+    
 
     /* ipad */
     @media screen and (max-width: 768px) {
@@ -723,7 +805,7 @@ select{
             transform: translateX(-50%);
             width: auto;
             float: left;
-            margin-top: -220px;
+            margin-top: -222px;
             z-index: 998;
             transition: translate 1s;
             /* overflow: hidden; */
@@ -776,7 +858,7 @@ select{
 
 
     /* iphone6 7 8 plus */
-    @media screen and (max-width: 414px) {
+    @media screen and (max-width: 430px) {
         body {
             background-position: center;
         }
@@ -937,27 +1019,32 @@ select{
     
         }
     .about {
-        max-width: 414px;
+        max-width: 430px;
         width: 100%;
-        height: 60vh;
+        height: 100%;
         border-radius: 10px;
         background-color: aliceblue;
         padding: 10px 0px 10px 0px;
         text-align: center;
-        position: fixed;
+        /* position: fixed; */
         z-index: 1001;
         margin: auto;
         left: 0;
-        top:20vh;
+        top:0;
         display: none;
         
      
         }
-    
+        .settings_main_box {
+            border-radius: 10px;
+            height: 100%;
+            overflow-y: auto;
+        
+        }
         .settings_box {
-        max-width: 414px;
+        max-width: 430px;
         width: 100%;
-        height: 60vh;
+        height: 100%;
         border-radius: 10px;
         background-color: aliceblue;
         padding: 10px 0px 10px 0px;
@@ -966,7 +1053,7 @@ select{
         z-index: 1001;
         margin: auto;
         left: 0;
-        top:20vh;
+        top:0;
         display: none;
             user-select: none;
             -webkit-animation: fadeleftIn .4s;
