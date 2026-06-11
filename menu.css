@@ -1,186 +1,247 @@
+/* menu.css — Apple 风格抽屉式导航
+   严格按 DESIGN-apple.md (alpha) 令牌:
+   - 字体: SF Pro Display / SF Pro Text, 非 Apple 平台回退 Inter
+   - 圆角 grammar: sm=8px, md=11px, lg=18px, pill=9999px, 不取中间值
+   - 颜色: 全部走 var(--color-*), 永不复用 hover 状态
+   - 阴影: 装饰阴影仅用于产品图, chrome 表面不使用 inset/outset shadow
+   - 排版: 标题 SF Pro Display 600 + 负字距, 正文 SF Pro Text 17/400 -0.374px
+   - "UI chrome recedes so the product can speak" — chrome 不装饰
+*/
 #navcheck {
   position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
   opacity: 0;
+  pointer-events: none;
+  margin: 0;
 }
 
-label {
-  position: absolute;
+.burger_btn {
+  position: fixed;
+  top: 12px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
   margin: 0;
   padding: 0;
   border: none;
   outline: none;
   background: none;
   cursor: pointer;
+  z-index: 130;
+  overflow: visible;
 }
 
-label::before {
+
+
+.burger_btn .burger {
   position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.25);
-  content: '';
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  top: 12px;
+  left: 16px;
+  z-index: 130;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
-label .burger {
-  position: fixed;
-  top: 1em;
-  left: 1em;
-  z-index: 3;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0;
-  padding: 10px 10px 10px 10px;
-  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  
-  /* background: rgba(255, 255, 255, 0.2);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  border-radius: 50px;
-  box-shadow:inset 0 0 6px rgba(255, 255, 255, 0.2); */
-}
-
-label .burger::before,
-label .burger .bar, label .burger::after {
+.burger_btn .burger::before,
+.burger_btn .burger .bar, .burger_btn .burger::after {
   position: absolute;
-  left: 0;
+  left: 12px;
+  right: 12px;
   display: block;
-  width: 100%;
-  height: 12%;
-  background: #313131;
+  height: 1.5px;
+  background: #1d1d1f;
   content: '';
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  
+  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1),
+              top 0.35s cubic-bezier(0.19, 1, 0.22, 1),
+              bottom 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  border-radius: 2px;
 }
 
-label .burger .bar {
-  top: 44%;
+.burger_btn .burger .bar {
+  top: 50%;
+  margin-top: -0.75px;
 }
 
-label .burger::before {
-  top: 0;
-  transform-origin: top left;
+.burger_btn .burger::before {
+  top: 14px;
 }
 
-label .burger::after {
-  bottom: 0;
-  transform-origin: bottom left;
+.burger_btn .burger::after {
+  bottom: 14px;
 }
 
-#navcheck:focus + label .burger,
-label:hover .burger {
-  opacity: .70;
+.burger_btn:hover .burger {
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 nav {
   position: fixed;
+  pointer-events: auto;
   top: 0;
   left: 0;
   bottom: 0;
-  z-index: 2;
+  z-index: 100;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 64px 0 32px;
+  width: 320px;
+  max-width: 86vw;
   transform: translate3d(0, 0, 0);
-  /* material acceleration */
   transform: translateX(-100%);
   will-change: transform;
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.28s cubic-bezier(0.19, 1, 0.22, 1);
+  background-color: rgba(245, 245, 247, 0.94);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  border-right: 1px solid var(--color-divider-soft);
+  overflow-y: auto;
+  font-family: var(--font-text, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif);
+  color: var(--color-ink);
 }
 
-nav::before {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: -1;
-  width: 25em;
-  background: #f03752;
-  content: '';
-  transform: skewX(15deg) translateX(-100%);
-  transform-origin: bottom left;
-  will-change: transform;
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+/* 头部 — 严格用 display-md 令牌 (SF Pro Text 34/600 -0.374) */
+.nav_header {
+  padding: 0 24px 18px;
+  border-bottom: 1px solid var(--color-divider-soft);
+  margin-bottom: 4px;
+}
+.nav_eyebrow {
+  font-family: var(--font-text, "SF Pro Text", "Inter", system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: -0.12px;
+  color: var(--color-ink-muted-48);
+}
+.nav_title {
+  margin-top: 4px;
+  font-family: var(--font-text, "SF Pro Text", "Inter", system-ui, sans-serif);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
+  color: var(--color-ink);
 }
 
-@media (min-width: 40em) {
-  nav::before {
-    width: 40em;
-  }
+/* section 标题 — 用 nav-link token (SF Pro Text 12/400 -0.12), 章节间用 divider-soft 软分割 */
+.nav_section {
+  padding: 14px 12px 4px;
+  border-top: 1px solid var(--color-divider-soft);
+}
+.nav_section:first-of-type {
+  border-top: 0;
+}
+.nav_section_title {
+  padding: 4px 12px 8px;
+  font-family: var(--font-text, "SF Pro Text", "Inter", system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: -0.12px;
+  color: var(--color-ink-muted-48);
 }
 
-nav a {
-  margin: .5em 0;
-  padding: .2em 2em;
-  font-size: 1.5em;
-  color: white;
+/* tile — 链接主标 body-strong (17/600), 副标 caption (14/400), 圆角 sm (8px) */
+.nav_tile {
+  pointer-events: auto;
+  margin: 2px 0;
+  padding: 8px 12px;
+  font-family: var(--font-text);
   text-decoration: none;
-  font-weight: 500;
-  transform: translateX(-100%);
-  transition: color .5s, transform .5s;
-  transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  color: var(--color-ink);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  transform: translateX(-12px);
+  opacity: 0;
+  transition:
+    color .25s ease,
+    background-color .2s ease,
+    transform .35s cubic-bezier(0.19, 1, 0.22, 1),
+    opacity .25s ease;
+}
+.nav_tile:focus { outline: none; }
+.nav_tile:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
-nav a:nth-child(1) {
-  transition-delay: 0s, 100ms;
+.nav_tile_icon {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: transparent;
+  color: var(--color-primary);
+}
+.nav_tile_icon svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  display: block;
 }
 
-nav a:nth-child(2) {
-  transition-delay: 0s, 150ms;
+.nav_tile_body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.nav_tile_title {
+  font-family: var(--font-text, "SF Pro Text", "Inter", system-ui, sans-serif);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.374px;
+  color: var(--color-ink);
+}
+.nav_tile_sub {
+  font-family: var(--font-text, "SF Pro Text", "Inter", system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: -0.224px;
+  color: var(--color-ink-muted-48);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-nav a:nth-child(3) {
-  transition-delay: 0s, 200ms;
+.nav_tile_chev {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-muted-48);
 }
+.nav_tile_chev svg { width: 12px; height: 12px; display: block; }
 
-nav a:nth-child(4) {
-  transition-delay: 0s, 250ms;
-}
-
-nav a:nth-child(5) {
-  transition-delay: 0s, 300ms;
-}
-
-nav a:nth-child(6) {
-  transition-delay: 0s, 350ms;
-}
-
-nav a:nth-child(7) {
-  transition-delay: 0s, 400ms;
-}
-
-nav a:nth-child(8) {
-  transition-delay: 0s, 450ms;
-}
-
-nav a:nth-child(9) {
-  transition-delay: 0s, 500ms;
-}
-
-nav a:nth-child(10) {
-  transition-delay: 0s, 550ms;
-}
-
-nav a:nth-child(11) {
-  transition-delay: 0s, 600ms;
-}
-
-nav a:nth-child(12) {
-  transition-delay: 0s, 650ms;
-}
-
-nav a:nth-child(13) {
-  transition-delay: 0s, 700ms;
-}
-
-nav a:hover, nav a:focus {
-  color: #313131;
+/* tile 按下态 (active) — 规范允许的 default + active 二态, 不写 hover */
+.nav_tile:active {
+  background-color: var(--color-canvas-parchment);
 }
 
 main {
@@ -189,48 +250,64 @@ main {
 
 main .content {
   transform: translate3d(0, 0, 0);
-  /* material acceleration */
   will-change: transform, filter;
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-[id="navcheck"]:checked + label::before {
+/* 抽屉关闭时遮罩隐藏，关闭时不接收事件 */
+.nav_scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 95;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  display: none;
+}
+[id="navcheck"]:checked ~ .nav_scrim {
+  display: block;
   opacity: 1;
   pointer-events: auto;
 }
 
-[id="navcheck"]:checked + label .burger::before, [id="navcheck"]:checked + label .burger::after {
-  width: 141.42%;
+[id="navcheck"]:checked + .burger_btn .burger::before {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+[id="navcheck"]:checked + .burger_btn .burger::after {
+  bottom: 50%;
+  transform: translateY(50%) rotate(-45deg);
 }
 
-[id="navcheck"]:checked + label .burger::before {
-  transform: rotate(45deg) translateY(-50%);
-}
-
-[id="navcheck"]:checked + label .burger::after {
-  transform: rotate(-45deg) translateY(50%);
-}
-
-[id="navcheck"]:checked + label .burger .bar {
-  transform: scale(0.1);
+[id="navcheck"]:checked + .burger_btn .burger .bar {
+  opacity: 0;
 }
 
 [id="navcheck"]:checked ~ nav {
   transform: translateX(0);
 }
 
-[id="navcheck"]:checked ~ nav::before {
-  transform: skewX(15deg) translateX(0);
+[id="navcheck"]:checked ~ nav .nav_tile {
+  transform: translateX(0);
+  opacity: 1;
 }
 
-[id="navcheck"]:checked ~ nav a {
-  transform: translateX(0);
-}
+/* tile 错开入场 */
+[id="navcheck"]:checked ~ nav .nav_tile:nth-child(2) { transition-delay: 0s, 0s,  50ms,  50ms; }
+[id="navcheck"]:checked ~ nav .nav_tile:nth-child(3) { transition-delay: 0s, 0s,  80ms,  80ms; }
+[id="navcheck"]:checked ~ nav .nav_tile:nth-child(4) { transition-delay: 0s, 0s, 110ms, 110ms; }
+[id="navcheck"]:checked ~ nav .nav_tile:nth-child(5) { transition-delay: 0s, 0s, 140ms, 140ms; }
+[id="navcheck"]:checked ~ nav .nav_tile:nth-child(6) { transition-delay: 0s, 0s, 170ms, 170ms; }
+[id="navcheck"]:checked ~ nav .nav_tile:nth-child(7) { transition-delay: 0s, 0s, 200ms, 200ms; }
+[id="navcheck"]:checked ~ nav .nav_tile:nth-child(8) { transition-delay: 0s, 0s, 230ms, 230ms; }
+[id="navcheck"]:checked ~ nav .nav_tile:nth-child(9) { transition-delay: 0s, 0s, 260ms, 260ms; }
 
 [id="navcheck"]:checked ~ main .content {
-  transform: translateX(3em);
-  transform-origin: left center;
-  filter: blur(2px);
+  transform: translateX(0);
+  filter: blur(0);
+  pointer-events: none;
 }
 
 /* helper */
@@ -244,3 +321,27 @@ main .content {
   position: absolute;
   width: 1px;
 }
+
+/* responsive */
+@media (max-width: 640px) {
+  nav {
+    width: 100vw;
+    max-width: 100vw;
+    padding-top: 80px;
+  }
+  .nav_header { padding: 0 24px 18px; }
+  .nav_title { font-size: 28px; line-height: 1.14; }
+  .nav_tile_title { font-size: 17px; }
+  .burger_btn .burger {
+    top: 10px;
+    left: 12px;
+  }
+}
+
+
+/* ==== 模态打开时, 让汉堡按钮 (z=130) 让位给 modal (z=120) ==== */
+body.modal-open .burger_btn,
+body.modal-open .burger {
+  z-index: 90;
+}
+body.modal-open .burger_btn { pointer-events: none; }
