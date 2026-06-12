@@ -32,90 +32,36 @@
 
 
     <nav id="menu" aria-label="App navigation">
-      <div class="nav_header">
-        <div class="nav_eyebrow">Limit Startup</div>
-        <div class="nav_title">菜单</div>
+      <div class="nav_mega">
+        <div class="nav_mega_col nav_mega_col--main">
+          <div class="nav_section_title">常用</div>
+          <ul class="nav_mega_list nav_mega_list--big">
+            <li><a class="nav_mega_item nav_mega_item--big" href="javascript:void(0)" onclick="settings_jump()">设置</a></li>
+            <li><a class="nav_mega_item nav_mega_item--big" href="javascript:void(0)" onclick="question_jump()">常见问题</a></li>
+          </ul>
+        </div>
+
+        <div class="nav_mega_col">
+          <div class="nav_section_title">项目</div>
+          <ul class="nav_mega_list">
+            <li><a class="nav_mega_item" href="https://demisse.gitee.io/my-homepage" target="_blank" rel="noopener">关于作者</a></li>
+            <li><a class="nav_mega_item" href="https://github.com/Demisse233/Limit-StartUp" target="_blank" rel="noopener">Github 仓库</a></li>
+            <li><a class="nav_mega_item" href="javascript:void(0)" onclick="about_jump()">关于 Limit Startup</a></li>
+          </ul>
+        </div>
+
+        <div class="nav_mega_col">
+          <div class="nav_section_title">法律</div>
+          <ul class="nav_mega_list">
+            <li><a class="nav_mega_item" href="javascript:void(0)" onclick="shengming_jump()">声明</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="nav_section">
-        <div class="nav_section_title">常用</div>
-        <a class="nav_tile" href="javascript:void(0)" onclick="settings_jump()">
-          <span class="nav_tile_icon" aria-hidden="true"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M586.5 300.64 530.4 509.8l149.908 150C716.318 618.914 736 566.972 736 512c0-59.832-23.3-116.084-65.61-158.392C646.308 329.526 617.708 311.614 586.5 300.64zM556.136 292.322C541.76 289.464 526.992 288 512 288c-59.832 0-116.084 23.3-158.392 65.61C311.3 395.916 288 452.168 288 512c0 14.936 1.454 29.648 4.29 43.976L500.6 500.2 556.136 292.322zM300.946 587.394c11 30.86 28.808 59.144 52.662 82.996C395.916 712.7 452.166 736 512 736c54.018 0 105.116-18.998 145.67-53.822L507.8 532.4 300.946 587.394zM896 545.508l0-64.016-66.582-17.406-5.202-26.408 55.188-41.81-24.394-59.216-68.784 9.604-14.996-21.206 35.39-59.416-45.188-45.21-60.382 34.808-21.394-14.604 10.596-70.018-58.984-24.606L588.08 202.62l-24.594-5.202L546.09 128l-63.982 0-18.394 69.818-24.196 4.8-42.988-58.016-59.184 24.608 9.598 71.418-23.394 14.404-62.584-37.41-45.188 45.212 37.59 63.016-13.396 21.004-70.98-10.002-24.394 59.216 57.786 43.412-4.798 24.406L128 481.692l0 64.014 69.38 17.806 4.8 25.006-56.788 42.614 24.594 59.016 69.982-10.004 14.198 22.606-35.792 61.214 45.19 45.21 60.384-36.408 22.392 14.604-8.996 68.622 59.184 24.404 41.19-55.616 26.792 5L482.108 896l63.982 0 16.596-66.218 27.194-5.202 41.388 54.212 59.186-24.406-9.996-67.418 20.392-14.8 57.984 33.808 45.19-45.212-33.59-57.814 15.792-22.804 67.582 9.604 24.596-59.016-54.386-41.014 5.4-27.004L896 545.508zM512 768c-141.384 0-256-114.614-256-256 0-141.384 114.616-256 256-256 141.384 0 256 114.616 256 256C768 653.386 653.384 768 512 768z"></path></svg></span>
-          <span class="nav_tile_body">
-            <span class="nav_tile_title">设置</span>
-            <span class="nav_tile_sub">个性化设置</span>
-          </span>
-          <span class="nav_tile_chev" aria-hidden="true">
-            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </a>
-        <a class="nav_tile" href="javascript:void(0)" onclick="question_jump()">
-          <span class="nav_tile_icon" aria-hidden="true"><svg class="icon" viewBox="0 0 1029 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M515.309905 0.170657a509.923671 509.923671 0 1 0 0 1019.790456 509.923671 509.923671 0 0 0 0-1019.790456z m37.54458 782.064997a59.900672 59.900672 0 0 1-42.948725 16.553747 61.834787 61.834787 0 0 1-43.062496-17.17949 60.526415 60.526415 0 0 1 0-84.759736c11.661574-10.92206 27.077607-16.838176 43.062496-16.610633 16.269318-0.568857 32.083551 5.404144 43.972669 16.610633 11.377146 11.206489 17.634576 26.679407 17.17949 42.664296a55.463585 55.463585 0 0 1-18.203434 42.721183z m112.861286-305.931449c-8.305316 9.329259-30.718293 29.978779-67.238931 61.834787-13.538803 9.955002-24.460863 23.095606-31.856008 38.22721-3.413144 8.191545-5.973001 16.78129-7.679574 25.484806a45.28104 45.28104 0 0 1-43.631353 35.724238 45.28104 45.28104 0 0 1-45.28104-51.026499c2.161658-12.059774 5.802344-23.892006 10.808288-35.041609A419.702905 419.702905 0 0 1 572.423176 452.070885l9.556802-10.808288a89.879451 89.879451 0 0 0 0-116.615744 84.759736 84.759736 0 0 0-63.712016-22.014777c-28.442864-2.844286-56.316871 9.215488-73.667018 31.856008-8.532859 12.287317-14.221432 26.338092-16.553747 41.128382a44.939726 44.939726 0 1 1-87.604022-18.487862c6.940059-31.856008 23.493806-60.753958 47.442698-82.882507a188.689962 188.689962 0 0 1 137.03772-49.092383c44.939726-2.275429 89.139937 12.51486 123.669574 41.469696 31.287151 28.841064 47.954669 70.310761 45.224154 112.8044 1.422143 34.074551-8.419088 67.694017-28.044664 95.568024v1.308371z"></path></svg></span>
-          <span class="nav_tile_body">
-            <span class="nav_tile_title">常见问题</span>
-            <span class="nav_tile_sub">常见问题解答</span>
-          </span>
-          <span class="nav_tile_chev" aria-hidden="true">
-            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </a>
-      </div>
-      <div class="nav_section">
-        <div class="nav_section_title">项目</div>
-        <a class="nav_tile" href="https://demisse.gitee.io/my-homepage" target="_blank" rel="noopener">
-          <span class="nav_tile_icon" aria-hidden="true"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M512 512m-512 0a512 512 0 1 0 1024 0 512 512 0 1 0-1024 0ZM315.790222 339.171556L381.496889 403.911111 273.863111 516.608l107.633778 112.753778L315.790222 694.044444 147.911111 516.608l167.879111-177.436444zM512.910222 329.955556l87.608889 24.007111L511.089778 694.044444l-87.608889-24.007111L512.910222 329.955556z m195.299556 9.216l167.879111 177.493333-167.879111 177.379555-65.706667-64.682666 107.633778-112.753778L642.503111 403.911111l65.706667-64.682667z"></path></svg></span>
-          <span class="nav_tile_body">
-            <span class="nav_tile_title">关于作者</span>
-            <span class="nav_tile_sub">作者主页</span>
-          </span>
-          <span class="nav_tile_chev" aria-hidden="true">
-            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </a>
-        <a class="nav_tile" href="https://github.com/Demisse233/Limit-StartUp" target="_blank" rel="noopener">
-          <span class="nav_tile_icon" aria-hidden="true"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9 23.5 23.2 38.1 55.4 38.1 91v112.5c0.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"></path></svg></span>
-          <span class="nav_tile_body">
-            <span class="nav_tile_title">Github 仓库</span>
-            <span class="nav_tile_sub">项目仓库</span>
-          </span>
-          <span class="nav_tile_chev" aria-hidden="true">
-            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </a>
-        <a class="nav_tile" href="javascript:void(0)" onclick="about_jump()">
-          <span class="nav_tile_icon" aria-hidden="true"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M512 992C246.912 992 32 777.088 32 512 32 246.912 246.912 32 512 32c265.088 0 480 214.912 480 480 0 265.088-214.912 480-480 480z m-59.072-512v236.32a54.144 54.144 0 1 0 108.288 0V480a54.144 54.144 0 1 0-108.288 0z m53.76-226.464c-14.72 0-27.232 4.544-37.568 15.136-11.04 9.856-16.192 22.72-16.192 38.656 0 15.136 5.152 28 16.192 38.624 10.336 10.592 22.848 15.904 37.6 15.904a57.6 57.6 0 0 0 39.04-15.168c10.304-10.592 15.456-23.456 15.456-39.36s-5.12-28.8-15.456-38.656c-10.304-10.56-23.584-15.136-39.04-15.136z"></path></svg></span>
-          <span class="nav_tile_body">
-            <span class="nav_tile_title">关于 Limit Startup</span>
-            <span class="nav_tile_sub">关于本项目</span>
-          </span>
-          <span class="nav_tile_chev" aria-hidden="true">
-            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </a>
-      </div>
-      <div class="nav_section">
-        <div class="nav_section_title">法律</div>
-        <a class="nav_tile" href="javascript:void(0)" onclick="shengming_jump()">
-          <span class="nav_tile_icon" aria-hidden="true"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M296 327.2v270.4c5.6 24.8 17.6 48.8 35.2 68 13.6 16 28.8 30.4 44.8 43.2 16.8 12.8 34.4 24.8 52.8 36 16 10.4 32.8 19.2 50.4 26.4 8 4.8 16.8 8 24.8 9.6l4.8 0.8 4.8-0.8c12-1.6 24-4.8 36-9.6 16.8-8 33.6-16.8 48.8-26.4 17.6-11.2 34.4-23.2 49.6-36.8 16-12.8 30.4-28 44-43.2 14.4-16.8 37.6-52 34.4-91.2V328l-220-48L296 327.2z m397.6 194.4l0.8 2.4c0 0.8 23.2 108.8-97.6 174.4-21.6 12-80 33.6-90.4 36l-4 0.8V530.4H336V353.6l176-32.8v200h181.6zM512.8 27.2C244 27.2 26.4 244.8 26.4 512.8c0 268.8 217.6 486.4 486.4 486.4 268.8 0 486.4-217.6 486.4-486.4 0-268-217.6-485.6-486.4-485.6zM772.8 592c0 19.2-4.8 38.4-13.6 56-9.6 19.2-20.8 36.8-35.2 52.8-15.2 17.6-31.2 33.6-49.6 48.8-17.6 14.4-36 28-56 40.8-17.6 11.2-36 21.6-55.2 29.6-15.2 7.2-31.2 12.8-47.2 16l-7.2 1.6-6.4-1.6c-8.8-1.6-13.6-4.8-20-8-4-2.4-8.8-4.8-16-8-20-8.8-39.2-18.4-56.8-29.6-20-12-40-26.4-57.6-40.8-18.4-14.4-35.2-31.2-51.2-48.8-14.4-16-26.4-34.4-36-53.6-8.8-16.8-13.6-36.8-14.4-56V285.6l255.2-51.2h0.8l265.6 51.2V592z"></path></svg></span>
-          <span class="nav_tile_body">
-            <span class="nav_tile_title">声明</span>
-            <span class="nav_tile_sub">版权与声明</span>
-          </span>
-          <span class="nav_tile_chev" aria-hidden="true">
-            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </a>
+
+      <!-- 底部: 滚动到底时显示的小字 + 子链接 (DESIGN dense-link) -->
+      <div class="nav_footer">
+        <p class="nav_footer_brand">Limit Startup · 菜单</p>
+        <p class="nav_footer_hint">点击外部或再次点击菜单按钮关闭</p>
       </div>
     </nav>
 <!-- ///////////////////////////// -->
@@ -162,11 +108,13 @@
         </div>
 
         <!-- 输入框 -->
-        <div class="inputBox" id="inputBox">
-            <input id="input_text" type="text" placeholder=" " required="required">
-            <span>Enter what you want to know…</span>
-            <ul id="datalist">
-            </ul>
+        <div class="inputBoxWrap" id="inputBoxWrap">
+            <div class="inputBox" id="inputBox">
+                <input id="input_text" type="text" placeholder=" " required="required">
+                <span>Enter what you want to know…</span>
+                <ul id="datalist">
+                </ul>
+            </div>
         </div>
 
         <!-- 搜索键 -->
@@ -179,153 +127,331 @@
 
 
         <div id="about" class="about">
-            <div class="close_about_btn_box">
-                <button class="close_about_btn" onclick="close_about ()">
-                    <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3649"><path d="M512 64c-247.00852 0-448 200.960516-448 448S264.960516 960 512 960c247.00852 0 448-200.960516 448-448S759.039484 64 512 64zM694.752211 649.984034c12.480043 12.54369 12.447359 32.768069-0.063647 45.248112-6.239161 6.208198-14.399785 9.34412-22.591372 9.34412-8.224271 0-16.415858-3.135923-22.65674-9.407768l-137.60043-138.016718-138.047682 136.576912c-6.239161 6.14455-14.368821 9.247789-22.496761 9.247789-8.255235 0-16.479505-3.168606-22.751351-9.504099-12.416396-12.576374-12.320065-32.800753 0.25631-45.248112l137.887703-136.384249-137.376804-137.824056c-12.480043-12.512727-12.447359-32.768069 0.063647-45.248112 12.512727-12.512727 32.735385-12.447359 45.248112 0.063647l137.567746 137.984034 138.047682-136.575192c12.54369-12.447359 32.831716-12.320065 45.248112 0.25631 12.447359 12.576374 12.320065 32.831716-0.25631 45.248112L557.344443 512.127295 694.752211 649.984034z" fill="currentColor" p-id="3650"></path></svg>
+            <div class="setting_btn_box">
+                <div class="settings_box_heading">
+                    <span class="settings_box_title">关于 Limit Startup</span>
+                    <span class="settings_box_subtitle">版本信息与更新日志</span>
+                </div>
+                <button class="close_about_btn" onclick="close_about ()" aria-label="关闭">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
                 </button>
             </div>
-            <div class="about_text">
-                <svg class="img-fluid" id="outputsvg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 13110 3980"><g id="l6KsOdAjUlewINmlyGTawiv" fill="rgb(28,28,28)"><g><path id="pCiePMqHU" d="M3375 3702 c-79 -48 -249 -148 -495 -292 -69 -40 -188 -110 -265 -155 -77 -45 -185 -108 -240 -139 -414 -238 -424 -244 -425 -278 0 -24 4 -28 27 -28 14 0 34 6 42 13 25 21 198 127 206 127 5 0 42 22 84 48 42 27 119 73 171 102 52 29 108 64 123 77 16 13 34 23 40 23 7 0 57 28 112 62 55 33 118 70 140 81 22 11 58 32 80 47 22 15 76 47 120 70 44 24 103 57 130 74 28 18 59 37 70 44 11 6 50 30 87 53 l67 41 88 -47 c48 -26 111 -62 138 -80 64 -42 513 -299 579 -332 28 -14 74 -40 101 -58 28 -17 88 -54 135 -80 176 -99 417 -245 430 -260 7 -8 28 -15 46 -15 33 0 34 1 34 39 l0 39 -156 88 c-86 49 -168 96 -183 104 -53 32 -147 85 -174 100 -42 23 -386 219 -437 250 -25 15 -88 51 -140 80 -52 29 -111 63 -130 75 -19 12 -78 46 -130 75 -52 30 -111 64 -130 77 -19 13 -41 23 -50 23 -8 0 -51 -22 -95 -48z"></path><path id="pH4YEpTsE" d="M9948 3513 c-10 -2 -18 -13 -18 -24 0 -17 7 -19 60 -19 47 0 60 -3 60 -15 0 -9 9 -15 24 -15 13 0 39 -11 58 -23 44 -30 116 -105 124 -129 3 -10 10 -18 15 -18 7 0 9 -38 7 -102 -1 -57 -2 -174 0 -260 l2 -158 35 0 35 0 0 228 c0 250 -9 325 -47 390 -23 39 -58 69 -75 64 -5 -1 -7 3 -5 9 8 39 -197 93 -275 72z"></path></g></g></svg>
-            </div>
-            <div class="version">Version 3.5.2</div>
-            <div>Developed by Eric Demisse. </br>Designed by Eric Demisse.</div>
 
-            <br>
-            <div style="font-weight: 600;" id="count_days"></div>
-            <img src="/src/happy.PNG" width="100">
+            <div class="settings_main_box">
+                <!-- 顶部 LOGO + 版本信息 -->
+                <section class="about_hero">
+                    <div class="about_hero_logo">
+                        <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
+                    </div>
+                    <div class="about_hero_version">
+                        <span class="about_version_badge">Version 4.0.0</span>
+                    </div>
+                    <div class="about_hero_meta">
+                        <p class="about_credits">Developed by Eric Demisse.</p>
+                        <p class="about_credits">Designed by Eric Demisse.</p>
+                    </div>
+                </section>
 
-            <hr style="color:var(--color-hairline);width:90%;border-color:var(--color-hairline);margin: auto;">
+                <!-- 上线纪念（保留图标/底色，去掉标题和说明） -->
+                <section class="settings_section about_milestone_card">
+                    <div class="about_milestone">
+                        <span class="settings_section_icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        </span>
+                        <div class="about_milestone_text" id="count_days"></div>
+                        <img class="about_milestone_img" src="/src/happy.PNG" alt="" loading="lazy">
+                    </div>
+                </section>
 
-            <div class="update_text" >
-                <span style="font-size: 20px;font-weight: 600;">更新日志</span><br>
-                <span>[2025.1.14] V3.5.3</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增对网站字体的声明</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>按 DESIGN-apple.md 令牌重做菜单抽屉 UI（分组 + tile + 副标题）</span><br><span class="update_ui_box">改进</span>&nbsp;<span>汉堡按钮、菜单遮罩过渡动画</span><br><span class="fix_ui_box">修复</span>&nbsp;<span>修复点击菜单项打开弹窗时层级错乱（抽屉先完全滑出再开弹窗，汉堡按钮让位）</span><br><span class="update_ui_box">改进</span>&nbsp;<span>按 Apple system-settings 风格重做设置弹窗（section card + 章节图标 + 子区块）</span><br><span class="update_ui_box">改进</span>&nbsp;<span>壁纸选择改为单色 Action Blue 选中态，上传区改为标签式</span><br><span class="update_ui_box">改进</span>&nbsp;<span>搜索引擎改为 chip 风格 radiogroup，支持点击切换</span><br><span class="update_ui_box">改进</span>&nbsp;<span>首页搜索引擎选择器替换为自定义下拉（同一胶囊向下展开：顶角圆度不变，底角从圆变方，丝滑过渡）</span><br>
-                <br>
-                <span>[2024.9.9] V3.5.2</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复部分预设壁纸显示异常的问题</span><br>
-                <br>
-                <span>[2024.9.1] V3.5.1</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复移动端关于界面显示不全的问题</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复移动端自定义问候语按钮溢出的问题</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复移动端 faq 页面、声明页面文字溢出的问题</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进移动端部分界面UI</span><br>
-                <br>
-                <span>[2024.8.31] V3.5.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增搜索引擎：秘塔AI搜索</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增修改默认搜索引擎功能</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增部分功能提示</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增菜单界面图标以及设置界面图标</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>部分二级页面新增有趣的图片和GIF</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复常见问题、声明页面无法正常弹出的问题</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>去掉了菜单页面中设置后面的beta字样</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进自定义问候语和自定义壁纸的部分逻辑</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进了设置界面的部分UI</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进了主页面部分按钮的UI</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>修改初始问候语为User</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>修改了预设壁纸，换上了更好看的捏</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>修改了部分页面的部分文本</span><br>
-                <span class="del_ui_box">移除</span>&nbsp;<span>移除菜单页面的Gitee仓库入口</span><br>
-                <br>
-                <span>[2024.8.25] V3.4.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增自定义问候语称呼功能</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复上版本问候语弹窗无法正常弹出的问题</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进声明和常见问题界面的文本内容</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>菜单页面的Gitee仓库已废弃，等什么时候重新开放Gitee Pages再说吧:)</span><br>
-                <span class="del_ui_box">移除</span>&nbsp;<span>关于作者页面重新开发中且暂无域名，暂时将其移出菜单列表</span><br>
-                <br>
-                <span>[2024.8.24] V3.3.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增自定义壁纸功能</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进部分界面文本</span><br>
-                <br>
-                <span>[2024.6.2] V3.2.6</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增常见问题界面，遇到问题时不妨去看看吧</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进部分界面UI</span><br>
-                <br>
-                <span>[2024.6.1] V3.2.5</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进部分界面UI</span><br>
-                <br>
-                <span>[2024.3.17] V3.2.4</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复更新日志在某些分辨率下超出背景的情况</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进部分界面UI</span><br>
-                <br>
-                <span>[2024.2.20] V3.2.3</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>去除搜索引擎选择的下拉箭头</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>搜索引擎选择字体居中</span><br>
-                <br>
-                <span>[2024.1.9] V3.2.2</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进搜索输入框自适应大小并限制最大长度以达成较为美观的观感</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>按照实际效果决定将移动端搜索引擎按钮也改为小样式</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复移动端部分界面UI错误问题</span><br>
-                <br>
-                <span>[2024.1.8] V3.2.1</span><br>
-                <span>说一声迟到的🎇元旦快乐，新年快乐！🎇</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增声明页面</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进部分界面UI</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进部分界面布局</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>PC端及平板端（width>414px）改进搜索引擎切换按钮大小</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进搜索按钮大小以及使用图标替代“SEARCH”</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复移动设备切换壁纸窗口溢出问题</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复因一张壁纸分辨率过大而导致的网页加载缓慢问题</span><br>
-                <span class="del_ui_box">移除</span>&nbsp;<span>移除了一张美观度较低的壁纸</span><br>
-                <br>
-                <span>[2023.10.10] V3.2.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>作者刷高数时掉的亿些头发 TvT</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>又增加了几张壁纸，二刺螈又怎么你了（</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复部分移动设备切换壁纸界面图片宽高比异常的问题</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复因一张壁纸分辨率过大而导致的网页加载缓慢问题</span><br>
-                <br>
-                <span>[2023.9.19] V3.1.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>增加了几张壁纸，二刺螈怎么你了（</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复部分移动设备弹窗偏位问题</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进部分界面UI</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>移除网页底部脚注，关于页面入口移至菜单栏</span><br>
-                <span class="del_ui_box">移除</span>&nbsp;<span>移除了一张美观度较低的壁纸</span><br>
-                <br>
-                <span>[2023.7.1] V3.0.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增菜单界面</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增设置功能 Beta 版</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>设置中增加切换壁纸功能，额外提供了4张好康的壁纸</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>新增网页动画效果</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进网页UI配色 - 更好看，更好用。</span><br>
-                <br>
-                <span>[2023.5.7] V2.2.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>关于页面新增上线纪念日</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复点击搜索框提示空白处无法跳转对应网页的问题</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进网页UI以及网页布局，使网页更加美观、人性化</span><br>
-                <br>
-                <span>[2023.5.4] V2.1.1</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进搜索按钮颜色</span><br>
-                <br>
-                <span>[2023.4.25] V2.1.0</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>改进搜索词联想 UI</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>搜索词联想支持点击直接跳转</span><br>
-                <br>
-                <span>[2023.4.24] V2.0.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>搜索按钮</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>搜索词联想</span><br>
-                <br>
-                <span>[2023.4.24] V1.3.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>适配最大宽度 768px 的移动设备 测试设备：iPad 9</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>适配最大宽度 1024px 的移动设备 测试设备：iPad Pro（浏览器模拟）</span><br>
-                <br>
-                <span>[2023.4.23] V1.2.2</span><br>
-                <span class="update_ui_box">改进</span>&nbsp;<span>专门对 iPhone 13 Pro 以及小米 10 Pro 进行了特殊适配，我想这次是真的适配好了…大概…</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复了问候弹窗在一些情况下不局中的问题</span><br>
-                <br>
-                <span>[2023.4.22] V1.2.1</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>专门对 iPhone 13 Pro 以及小米 10 Pro 进行了特殊适配</span><br>
-                <br>
-                <span>[2023.4.22] V1.2.0</span><br>
-                <span class="fix_ui_box">修复</span>&nbsp;<span>修复了一些 Bug</span><br>
-                <br>
-                <span>[2023.4.20] V1.1.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>网页 icon</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>关于页面 LOGO</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>适配最大宽度 414px 的移动设备</span><br>
-                <br>
-                <span>[2023.4.19] V1.0.0</span><br>
-                <span class="add_ui_box">新增</span>&nbsp;<span>PC 端试运行</span><br><br><br><br><br><br><br><br><br><br>
+                <!-- 更新日志 -->
+                <section class="settings_section">
+                    <header class="settings_section_head">
+                        <span class="settings_section_icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </span>
+                        <div class="settings_section_titles">
+                            <h2 class="settings_section_title">更新日志</h2>
+                            <p class="settings_section_desc">所有版本的变更记录。</p>
+                        </div>
+                    </header>
+                    <div class="changelog">
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.0.0</span>
+                                <span class="changelog_version_date">2026.6.12</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增对网站字体的声明</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">按 DESIGN-apple.md 令牌重做菜单抽屉 UI（分组 + tile + 副标题）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">汉堡按钮、菜单遮罩过渡动画</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复点击菜单项打开弹窗时层级错乱（抽屉先完全滑出再开弹窗，汉堡按钮让位）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">按 Apple system-settings 风格重做设置弹窗（section card + 章节图标 + 子区块）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">壁纸选择改为单色 Action Blue 选中态，上传区改为标签式</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索引擎改为 chip 风格 radiogroup，支持点击切换</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">首页搜索引擎选择器替换为自定义下拉（同一胶囊向下展开：顶角圆度不变，底角从圆变方，丝滑过渡）</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.5.2</span>
+                                <span class="changelog_version_date">2024.9.9</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复部分预设壁纸显示异常的问题</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.5.1</span>
+                                <span class="changelog_version_date">2024.9.1</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复移动端关于界面显示不全的问题</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复移动端自定义问候语按钮溢出的问题</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复移动端 faq 页面、声明页面文字溢出的问题</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进移动端部分界面UI</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.5.0</span>
+                                <span class="changelog_version_date">2024.8.31</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增搜索引擎：秘塔AI搜索</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增修改默认搜索引擎功能</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增部分功能提示</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增菜单界面图标以及设置界面图标</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">部分二级页面新增有趣的图片和GIF</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复常见问题、声明页面无法正常弹出的问题</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">去掉了菜单页面中设置后面的beta字样</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进自定义问候语和自定义壁纸的部分逻辑</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进了设置界面的部分UI</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进了主页面部分按钮的UI</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">修改初始问候语为User</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">修改了预设壁纸，换上了更好看的捏</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">修改了部分页面的部分文本</span></li>
+                                <li class="changelog_item changelog_item--remove"><span class="changelog_tag changelog_tag--remove">移除</span><span class="changelog_msg">移除菜单页面的Gitee仓库入口</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.4.0</span>
+                                <span class="changelog_version_date">2024.8.25</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增自定义问候语称呼功能</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复上版本问候语弹窗无法正常弹出的问题</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进声明和常见问题界面的文本内容</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">菜单页面的Gitee仓库已废弃，等什么时候重新开放Gitee Pages再说吧:)</span></li>
+                                <li class="changelog_item changelog_item--remove"><span class="changelog_tag changelog_tag--remove">移除</span><span class="changelog_msg">关于作者页面重新开发中且暂无域名，暂时将其移出菜单列表</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.3.0</span>
+                                <span class="changelog_version_date">2024.8.24</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增自定义壁纸功能</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进部分界面文本</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.2.6</span>
+                                <span class="changelog_version_date">2024.6.2</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增常见问题界面，遇到问题时不妨去看看吧</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进部分界面UI</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.2.5</span>
+                                <span class="changelog_version_date">2024.6.1</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进部分界面UI</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.2.4</span>
+                                <span class="changelog_version_date">2024.3.17</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复更新日志在某些分辨率下超出背景的情况</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进部分界面UI</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.2.3</span>
+                                <span class="changelog_version_date">2024.2.20</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">去除搜索引擎选择的下拉箭头</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索引擎选择字体居中</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.2.2</span>
+                                <span class="changelog_version_date">2024.1.9</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进搜索输入框自适应大小并限制最大长度以达成较为美观的观感</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">按照实际效果决定将移动端搜索引擎按钮也改为小样式</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复移动端部分界面UI错误问题</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.2.1</span>
+                                <span class="changelog_version_date">2024.1.8</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增声明页面</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进部分界面UI</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进部分界面布局</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">PC端及平板端（width>414px）改进搜索引擎切换按钮大小</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进搜索按钮大小以及使用图标替代“SEARCH”</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复移动设备切换壁纸窗口溢出问题</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复因一张壁纸分辨率过大而导致的网页加载缓慢问题</span></li>
+                                <li class="changelog_item changelog_item--remove"><span class="changelog_tag changelog_tag--remove">移除</span><span class="changelog_msg">移除了一张美观度较低的壁纸</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.2.0</span>
+                                <span class="changelog_version_date">2023.10.10</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">作者刷高数时掉的亿些头发 TvT</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">又增加了几张壁纸，二刺螈又怎么你了（</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复部分移动设备切换壁纸界面图片宽高比异常的问题</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复因一张壁纸分辨率过大而导致的网页加载缓慢问题</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.1.0</span>
+                                <span class="changelog_version_date">2023.9.19</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">增加了几张壁纸，二刺螈怎么你了（</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复部分移动设备弹窗偏位问题</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进部分界面UI</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">移除网页底部脚注，关于页面入口移至菜单栏</span></li>
+                                <li class="changelog_item changelog_item--remove"><span class="changelog_tag changelog_tag--remove">移除</span><span class="changelog_msg">移除了一张美观度较低的壁纸</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V3.0.0</span>
+                                <span class="changelog_version_date">2023.7.1</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增菜单界面</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增设置功能 Beta 版</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">设置中增加切换壁纸功能，额外提供了4张好康的壁纸</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增网页动画效果</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进网页UI配色 - 更好看，更好用。</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V2.2.0</span>
+                                <span class="changelog_version_date">2023.5.7</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">关于页面新增上线纪念日</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复点击搜索框提示空白处无法跳转对应网页的问题</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进网页UI以及网页布局，使网页更加美观、人性化</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V2.1.1</span>
+                                <span class="changelog_version_date">2023.5.4</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进搜索按钮颜色</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V2.1.0</span>
+                                <span class="changelog_version_date">2023.4.25</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">改进搜索词联想 UI</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索词联想支持点击直接跳转</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V2.0.0</span>
+                                <span class="changelog_version_date">2023.4.24</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">搜索按钮</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">搜索词联想</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V1.3.0</span>
+                                <span class="changelog_version_date">2023.4.24</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">适配最大宽度 768px 的移动设备 测试设备：iPad 9</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">适配最大宽度 1024px 的移动设备 测试设备：iPad Pro（浏览器模拟）</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V1.2.2</span>
+                                <span class="changelog_version_date">2023.4.23</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">专门对 iPhone 13 Pro 以及小米 10 Pro 进行了特殊适配，我想这次是真的适配好了…大概…</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复了问候弹窗在一些情况下不局中的问题</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V1.2.1</span>
+                                <span class="changelog_version_date">2023.4.22</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">专门对 iPhone 13 Pro 以及小米 10 Pro 进行了特殊适配</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V1.2.0</span>
+                                <span class="changelog_version_date">2023.4.22</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复了一些 Bug</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V1.1.0</span>
+                                <span class="changelog_version_date">2023.4.20</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">网页 icon</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">关于页面 LOGO</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">适配最大宽度 414px 的移动设备</span></li>
+                            </ul>
+                        </article>
+                    </div>
+                </section>
             </div>
         </div>
 
@@ -335,7 +461,10 @@
         <div id="settings_box" class="settings_box">
 
             <div class="setting_btn_box">
-                <span class="settings_box_title">设置</span>
+                <div class="settings_box_heading">
+                    <span class="settings_box_title">设置</span>
+                    <span class="settings_box_subtitle">个性化与外观偏好</span>
+                </div>
                 <button class="close_about_btn" onclick="close_settings_box ()" aria-label="关闭">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
                 </button>
@@ -477,49 +606,83 @@
                 <!-- 设置end -->
             </div>
 
-            <!-- 声明页面 -->
+            <!-- 声明页面 (按 DESIGN-apple.md dense-link + section card 重构) -->
             <div id="shengming_box" class="jump_out_box">
                 <div class="setting_btn_box">
-                    <span class="settings_box_title">声明</span>
-                    <button class="close_about_btn" onclick="close_shengming ()"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3649"><path d="M512 64c-247.00852 0-448 200.960516-448 448S264.960516 960 512 960c247.00852 0 448-200.960516 448-448S759.039484 64 512 64zM694.752211 649.984034c12.480043 12.54369 12.447359 32.768069-0.063647 45.248112-6.239161 6.208198-14.399785 9.34412-22.591372 9.34412-8.224271 0-16.415858-3.135923-22.65674-9.407768l-137.60043-138.016718-138.047682 136.576912c-6.239161 6.14455-14.368821 9.247789-22.496761 9.247789-8.255235 0-16.479505-3.168606-22.751351-9.504099-12.416396-12.576374-12.320065-32.800753 0.25631-45.248112l137.887703-136.384249-137.376804-137.824056c-12.480043-12.512727-12.447359-32.768069 0.063647-45.248112 12.512727-12.512727 32.735385-12.447359 45.248112 0.063647l137.567746 137.984034 138.047682-136.575192c12.54369-12.447359 32.831716-12.320065 45.248112 0.25631 12.447359 12.576374 12.320065 32.831716-0.25631 45.248112L557.344443 512.127295 694.752211 649.984034z" fill="currentColor" p-id="3650"></path></svg>
+                    <div class="settings_box_heading">
+                        <span class="settings_box_title">声明</span>
+                        <span class="settings_box_subtitle">版权与使用许可</span>
+                    </div>
+                    <button class="close_about_btn" onclick="close_shengming ()" aria-label="关闭">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
                     </button>
                 </div>
-                <div style="text-align: left;font-size: 17px;margin: 0;">
-                    <br>
-                    1.本网页由 Eric Demisse 制作，仅供个人学习使用，禁止用于商业用途！<br><br>
-                    2.设置中壁纸来源于第三方，包括但不限于 BiliBili、蔚蓝档案、pixiv 等等，若有侵权将及时删除。<br><br>
-                    3.网页中部分素材来源于第三方，若有侵权将及时删除。<br><br>
-                    4.网页中的可自定义内容为用户自行修改，修改的内容不代表开发者立场，开发者不对其负责。<br><br>
-                    5.本网页字体采用 MiSans。相关链接：<a href="https://hyperos.mi.com/font" target="_blank" rel="noopener">https://hyperos.mi.com/font</a>
+                <div class="settings_main_box">
+                    <section class="settings_section">
+                        <header class="settings_section_head">
+                            <span class="settings_section_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                            </span>
+                            <div class="settings_section_titles">
+                                <h2 class="settings_section_title">使用与版权声明</h2>
+                                <p class="settings_section_desc">请仔细阅读以下条款, 使用本网页即表示您同意这些声明。</p>
+                            </div>
+                        </header>
+                        <ol class="legal_list">
+                            <li>本网页由 Eric Demisse 制作, 仅供个人学习使用, 禁止用于商业用途。</li>
+                            <li>设置中壁纸来源于第三方, 包括但不限于 BiliBili、蔚蓝档案、pixiv 等等, 若有侵权将及时删除。</li>
+                            <li>网页中部分素材来源于第三方, 若有侵权将及时删除。</li>
+                            <li>网页中的可自定义内容为用户自行修改, 修改的内容不代表开发者立场, 开发者不对其负责。</li>
+                            <li>本网页字体采用 MiSans。相关链接: <a class="text_link" href="https://hyperos.mi.com/font" target="_blank" rel="noopener noreferrer">hyperos.mi.com/font</a></li>
+                        </ol>
+                    </section>
                 </div>
-                <img src="/src/IMG_0478.GIF" width="200" style="margin-top: 16px;border-radius: 8px;">
-
             </div>
 
-            <!-- 常见问题页面 -->
+            <!-- 常见问题页面 (按 DESIGN-apple.md section card + chip 重构) -->
             <div id="question_box" class="jump_out_box">
                 <div class="setting_btn_box">
-                    <span class="settings_box_title">FAQ</span>
-                    <button class="close_about_btn" onclick="close_question_box ()"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3649"><path d="M512 64c-247.00852 0-448 200.960516-448 448S264.960516 960 512 960c247.00852 0 448-200.960516 448-448S759.039484 64 512 64zM694.752211 649.984034c12.480043 12.54369 12.447359 32.768069-0.063647 45.248112-6.239161 6.208198-14.399785 9.34412-22.591372 9.34412-8.224271 0-16.415858-3.135923-22.65674-9.407768l-137.60043-138.016718-138.047682 136.576912c-6.239161 6.14455-14.368821 9.247789-22.496761 9.247789-8.255235 0-16.479505-3.168606-22.751351-9.504099-12.416396-12.576374-12.320065-32.800753 0.25631-45.248112l137.887703-136.384249-137.376804-137.824056c-12.480043-12.512727-12.447359-32.768069 0.063647-45.248112 12.512727-12.512727 32.735385-12.447359 45.248112 0.063647l137.567746 137.984034 138.047682-136.575192c12.54369-12.447359 32.831716-12.320065 45.248112 0.25631 12.447359 12.576374 12.320065 32.831716-0.25631 45.248112L557.344443 512.127295 694.752211 649.984034z" fill="currentColor" p-id="3650"></path></svg>
+                    <div class="settings_box_heading">
+                        <span class="settings_box_title">FAQ</span>
+                        <span class="settings_box_subtitle">常见问题解答</span>
+                    </div>
+                    <button class="close_about_btn" onclick="close_question_box ()" aria-label="关闭">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
                     </button>
                 </div>
-                <div style="text-align: left;font-size: 17px;margin: 0;">
-                    <br>
-                    <span class="Q_ui_box">Q</span>&nbsp;为什么自定义壁纸再刷新后未保存？<br>
-                    <span class="A_ui_box">A</span>&nbsp;自定义壁纸功能使用了浏览器本地存储 localStorage，请不要上传大小超过 4MB 大小的图片，否则将会无法保存。<br><br>
-                    <br>
-                    <span class="Q_ui_box">Q</span>&nbsp;更换浏览器后更改的设置还在吗？<br>
-                    <span class="A_ui_box">A</span>&nbsp;设置功能使用了浏览器本地存储 localStorage，仅存储在当前浏览器中，更换浏览器后需要重新设置。<br><br>
+                <div class="settings_main_box">
+                    <section class="settings_section">
+                        <header class="settings_section_head">
+                            <span class="settings_section_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </span>
+                            <div class="settings_section_titles">
+                                <h2 class="settings_section_title">使用与设置</h2>
+                                <p class="settings_section_desc">关于自定义壁纸、设置存储等常见疑问。</p>
+                            </div>
+                        </header>
+                        <div class="qa_list">
+                            <article class="qa_item">
+                                <h3 class="qa_q"><span class="qa_chip qa_chip_q" aria-hidden="true">Q</span>为什么自定义壁纸再刷新后未保存？</h3>
+                                <p class="qa_a"><span class="qa_chip qa_chip_a" aria-hidden="true">A</span>自定义壁纸功能使用了浏览器本地存储 localStorage, 请不要上传大小超过 4MB 大小的图片, 否则将会无法保存。</p>
+                            </article>
+                            <article class="qa_item">
+                                <h3 class="qa_q"><span class="qa_chip qa_chip_q" aria-hidden="true">Q</span>更换浏览器后更改的设置还在吗？</h3>
+                                <p class="qa_a"><span class="qa_chip qa_chip_a" aria-hidden="true">A</span>设置功能使用了浏览器本地存储 localStorage, 仅存储在当前浏览器中, 更换浏览器后需要重新设置。</p>
+                            </article>
+                        </div>
+                    </section>
+                    <div class="modal_footer_illustration">
+                        <img src="/src/end.png" alt="" loading="lazy">
+                    </div>
                 </div>
-                <img src="/src/end.png" width="100%" style="margin-top: 16px;border-radius: 8px;">
             </div>
 
 
 
-</div>
 
-
-    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" crossorigin="anonymous"
+        onerror="var s=document.createElement('script');s.src='https://unpkg.com/jquery@3.7.1/dist/jquery.min.js';s.crossOrigin='anonymous';document.head.appendChild(s);"></script>
 		<script type="text/javascript">
 
 
@@ -782,7 +945,7 @@ function uploadImage() {
 
 
 // 预设壁纸
-        if(localStorage.bg) $('head').append("<style class='font-style'>" + localStorage.bg + "</style>");
+        if(localStorage.bg && typeof $==='function') $('head').append("<style class='font-style'>" + localStorage.bg + "</style>");
 
         // 高亮当前选中的预设壁纸
         (function highlightSelectedBg() {
@@ -946,7 +1109,10 @@ document.onkeyup = function(e) {
             return false;
                  }
             	oUl.innerHTML = "";
+                // 立即收起: 避免清空后 ul 还占着 is-open 状态, 留一条线
+                closeSuggest();
                 var val = txt.value;
+                if (!val) return;
                 var oScript = document.createElement("script");
                 oScript.src = "https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd="+val+"&cb=callback";
                 document.body.appendChild(oScript);
@@ -974,27 +1140,22 @@ document.onkeyup = function(e) {
                 }
                  oUl.appendChild(oLi);
                 })
+                // 没有联想词结果: 直接收起, 不留底边线
+                if (!data.s || data.s.length === 0) {
+                    closeSuggest();
+                    return;
+                }
                 // 让 inputBox 知道下拉展开了 -> input 圆角变 22 22 0 0
                 var inputBox = document.getElementById('inputBox');
+                var inputBoxWrap = document.getElementById('inputBoxWrap');
+                if (inputBoxWrap) inputBoxWrap.classList.add('is-suggesting');
                 if (inputBox) inputBox.classList.add('is-suggesting');
-                // 跟 engine_popover 一致: 先临时显示, 测量内容高度, 再设 height 像素值后加 .is-open
-                oUl.style.height = 'auto';
-                oUl.style.maxHeight = 'none';
-                oUl.style.opacity = '0';
+                // #datalist 是 absolute top: 44 + bottom: 0 -> 高度自动
+                // 需要先让它显示出来测量内容高度, 再设 .inputBox 高度
                 oUl.classList.add('is-open');
-                // 测量 datalist 内容高度
-                var dh = oUl.scrollHeight;
-                // 重置 datalist 高度为 0
-                oUl.style.height = '0px';
-                oUl.style.maxHeight = '';
-                oUl.style.opacity = '';
-                // 给 inputBox 加 is-suggesting 触发聚焦样式
-                var inputBox = document.getElementById('inputBox');
-                if (inputBox) inputBox.classList.add('is-suggesting');
-                // 下一帧同时设置 .inputBox 高度 (44+dh) 和 #datalist 高度 (dh)
-                // 整个 .inputBox 高度从 44 拉到 44+dh, 圆角 22 固定 -> "水球拉高"
+                // 下一帧测量 (DOM 已更新)
                 requestAnimationFrame(function() {
-                    oUl.style.height = dh + 'px';
+                    var dh = oUl.scrollHeight;
                     if (inputBox) inputBox.style.height = (44 + dh) + 'px';
                 });
             }
@@ -1007,21 +1168,18 @@ document.onkeyup = function(e) {
                 if (!txt.value) closeSuggest();
             });
 
-            // 收起: 高度回到 44, 跟 engine_popover 的 transition 一致
+            // 收起: 高度回到 44
             function closeSuggest() {
                 if (!oUl.classList.contains('is-open')) return;
                 var inputBox = document.getElementById('inputBox');
-                // 先把当前高度"锁定"
-                var dh = oUl.scrollHeight;
-                oUl.style.height = dh + 'px';
-                if (inputBox) inputBox.style.height = (44 + dh) + 'px';
-                // 下一帧同时设 0 触发过渡
+                var inputBoxWrap = document.getElementById('inputBoxWrap');
+                // 下一帧设 44 触发过渡
                 requestAnimationFrame(function() {
-                    oUl.style.height = '0px';
                     if (inputBox) {
                         inputBox.style.height = '44px';
                         inputBox.classList.remove('is-suggesting');
                     }
+                    if (inputBoxWrap) inputBoxWrap.classList.remove('is-suggesting');
                     oUl.classList.remove('is-open');
                 });
             }
@@ -1033,51 +1191,51 @@ document.onkeyup = function(e) {
                             console.log(this.src);
                             document.body.style.background = 'url(' + this.src + ');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;';
                         }
-                            $("#bg1").click(function(){
+                            (function(){var el=document.getElementById('bg1');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/1.png');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
-                            $("#bg2").click(function(){
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
+                            (function(){var el=document.getElementById('bg2');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/2.jpg');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
-                            $("#bg3").click(function(){
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
+                            (function(){var el=document.getElementById('bg3');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/3.JPG');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
-                            $("#bg4").click(function(){
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
+                            (function(){var el=document.getElementById('bg4');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/4.JPG');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
-                            $("#bg5").click(function(){
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
+                            (function(){var el=document.getElementById('bg5');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/5.JPG');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
-                            $("#bg6").click(function(){
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
+                            (function(){var el=document.getElementById('bg6');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/6.JPG');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
-                            $("#bg7").click(function(){
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
+                            (function(){var el=document.getElementById('bg7');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/7.jpg');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
-                            $("#bg8").click(function(){
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
+                            (function(){var el=document.getElementById('bg8');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/8.jpg');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
-                            $("#bg9").click(function(){
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
+                            (function(){var el=document.getElementById('bg9');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/9.jpg');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    $('.bg').remove();
-                                    if(localStorage.bg) $('head').append("<style class='bg'>" + localStorage.bg + "</style>");
-                            });
+                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
+                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
+                            });})();
 
                     }
 
