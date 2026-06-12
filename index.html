@@ -130,7 +130,6 @@
             <div class="setting_btn_box">
                 <div class="settings_box_heading">
                     <span class="settings_box_title">关于 Limit Startup</span>
-                    <span class="settings_box_subtitle">版本信息与更新日志</span>
                 </div>
                 <button class="close_about_btn" onclick="close_about ()" aria-label="关闭">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
@@ -144,7 +143,7 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge">Version 4.0.0</span>
+                        <span class="about_version_badge">Version 4.0.1</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
@@ -152,12 +151,9 @@
                     </div>
                 </section>
 
-                <!-- 上线纪念（保留图标/底色，去掉标题和说明） -->
+                <!-- 上线纪念（无标题/副标题，仅卡片容器） -->
                 <section class="settings_section about_milestone_card">
                     <div class="about_milestone">
-                        <span class="settings_section_icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                        </span>
                         <div class="about_milestone_text" id="count_days"></div>
                         <img class="about_milestone_img" src="/src/happy.PNG" alt="" loading="lazy">
                     </div>
@@ -171,10 +167,21 @@
                         </span>
                         <div class="settings_section_titles">
                             <h2 class="settings_section_title">更新日志</h2>
-                            <p class="settings_section_desc">所有版本的变更记录。</p>
                         </div>
                     </header>
                     <div class="changelog">
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.0.1</span>
+                                <span class="changelog_version_date">2026.6.12</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">关于弹窗：上线纪念改为米色 section card，精简为无标题/副标题，文字样式与 section 内文统一</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">4 个弹窗：去掉主标题与各 section 下的副标题（更紧凑、视觉更整齐）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">4 个弹窗：标题 header 固定不动，body 内容独立滚动（macOS 系统设置风格）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">section 卡片：图标与标题改为水平居中对齐（原 align-items: flex-start 导致图标偏下）</span></li>
+                            </ul>
+                        </article>
                         <article class="changelog_version">
                             <header class="changelog_version_head">
                                 <span class="changelog_version_tag">V4.0.0</span>
@@ -463,7 +470,6 @@
             <div class="setting_btn_box">
                 <div class="settings_box_heading">
                     <span class="settings_box_title">设置</span>
-                    <span class="settings_box_subtitle">个性化与外观偏好</span>
                 </div>
                 <button class="close_about_btn" onclick="close_settings_box ()" aria-label="关闭">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
@@ -480,7 +486,7 @@
                             </span>
                             <div class="settings_section_titles">
                                 <div class="settings_section_title">问候语</div>
-                                <div class="settings_section_desc">自定义网页问候中的称呼，关闭浏览器后保留</div>
+                                
                             </div>
                         </header>
                         <div class="settings_section_body">
@@ -502,7 +508,7 @@
                             </span>
                             <div class="settings_section_titles">
                                 <div class="settings_section_title">壁纸</div>
-                                <div class="settings_section_desc">点击下方缩略图立即切换，或上传自己的图片</div>
+                                
                             </div>
                         </header>
                         <div class="settings_section_body">
@@ -583,7 +589,7 @@
                             </span>
                             <div class="settings_section_titles">
                                 <div class="settings_section_title">搜索引擎</div>
-                                <div class="settings_section_desc">点击引擎即可设为默认，选择会同步到首页</div>
+                                
                             </div>
                         </header>
                         <div class="settings_section_body">
@@ -611,7 +617,6 @@
                 <div class="setting_btn_box">
                     <div class="settings_box_heading">
                         <span class="settings_box_title">声明</span>
-                        <span class="settings_box_subtitle">版权与使用许可</span>
                     </div>
                     <button class="close_about_btn" onclick="close_shengming ()" aria-label="关闭">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
@@ -625,7 +630,6 @@
                             </span>
                             <div class="settings_section_titles">
                                 <h2 class="settings_section_title">使用与版权声明</h2>
-                                <p class="settings_section_desc">请仔细阅读以下条款, 使用本网页即表示您同意这些声明。</p>
                             </div>
                         </header>
                         <ol class="legal_list">
@@ -644,7 +648,6 @@
                 <div class="setting_btn_box">
                     <div class="settings_box_heading">
                         <span class="settings_box_title">FAQ</span>
-                        <span class="settings_box_subtitle">常见问题解答</span>
                     </div>
                     <button class="close_about_btn" onclick="close_question_box ()" aria-label="关闭">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
@@ -658,7 +661,6 @@
                             </span>
                             <div class="settings_section_titles">
                                 <h2 class="settings_section_title">使用与设置</h2>
-                                <p class="settings_section_desc">关于自定义壁纸、设置存储等常见疑问。</p>
                             </div>
                         </header>
                         <div class="qa_list">

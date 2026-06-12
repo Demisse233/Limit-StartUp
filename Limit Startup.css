@@ -601,7 +601,9 @@ img { max-width: 100%; display: block; }
   z-index: 120;
   width: min(640px, 92vw);
   max-height: 86vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;  /* 自身不再滚动, 滚动交给 .settings_main_box */
   background: var(--color-canvas);
   border-radius: 18px;  /* DESIGN rounded.lg */
   border: 1px solid var(--color-hairline);
@@ -722,7 +724,9 @@ img { max-width: 100%; display: block; }
   z-index: 120;
   width: min(720px, 94vw);
   max-height: 88vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;  /* 自身不再滚动, 滚动交给 .settings_main_box */
   background: var(--color-canvas);
   border-radius: 18px;  /* DESIGN rounded.lg */
   border: 1px solid var(--color-hairline);
@@ -939,20 +943,18 @@ img { max-width: 100%; display: block; }
 
 .about_milestone {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 12px;
-  padding: 0;
 }
 .about_milestone_text {
   flex: 1 1 auto;
   font-family: var(--font-text);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: -0.224px;
   line-height: 1.4;
-  color: var(--color-ink);
+  color: var(--color-ink-muted-80);
   text-align: left;
   min-width: 0;
   word-wrap: break-word;
@@ -1056,6 +1058,7 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex: 0 0 auto;  /* 固定 header, 不参与滚动 */
   padding-bottom: 14px;
   border-bottom: 1px solid var(--color-hairline);
   margin-bottom: 20px;
@@ -1073,7 +1076,11 @@ img { max-width: 100%; display: block; }
   display: flex;
   flex-direction: column;
   gap: 18px;
+  flex: 1 1 auto;  /* 占据 header 之外全部高度 */
+  min-height: 0;   /* 关键: 允许 flex 子项收缩到容器高度内, overflow-y 才能生效 */
+  overflow-y: auto;  /* 内容超出时独立滚动, header 保持固定 */
   text-align: left;  /* 显式左对齐, 跟 DESIGN 一致 */
+  padding-right: 4px;  /* 给滚动条留一点视觉空间, 避免内容贴边 */
 }
 
 /* ========== Section card (Apple system-settings row group) ========== */
@@ -1083,11 +1090,11 @@ img { max-width: 100%; display: block; }
   padding: 18px 20px 20px;
 }
 .about_milestone_card {
-  padding: 14px 20px;
+  padding: 16px 20px;
 }
 .settings_section_head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;  /* 图标与文字水平基线对齐, 避免图标偏下 */
   gap: 12px;
   margin-bottom: 12px;
 }
@@ -1101,7 +1108,6 @@ img { max-width: 100%; display: block; }
   border-radius: 8px;
   background-color: var(--color-canvas);
   color: var(--color-primary);
-  margin-top: 2px;
 }
 .settings_section_icon svg {
   width: 18px;
