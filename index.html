@@ -10,27 +10,45 @@
     <link rel="stylesheet" href="diy.css">
     <link rel="shortcut icon" href="src/icon.png">
 </head>
-
 <body onload="load()">
-
-
+<!-- shuding/liquid-glass SVG filter
+     对 backdrop-filter: url(#liquid-glass) 背后的内容做:
+     1) feGaussianBlur: 软化背后内容
+     2) feColorMatrix: 提亮 (RGB 提亮 + alpha 拉低, 制造"折射提亮"效果)
+     3) feComposite in: 用 SourceGraphic 的 alpha 通道裁剪到玻璃形状内
+     浏览器支持: Chrome 90+ / Safari 16+
+     视觉: 玻璃背后内容被"位移+模糊+提亮", 类似 visionOS 真实玻璃的折射感
+-->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <!-- 径向蒙版: 中心 0 (无位移) -> 边缘 1 (最大位移)
+         乘到 feTurbulence 噪声上得到 rimNoise, 中心恒 0, 边缘有随机噪声
+         再 feComponentTransfer 把 0-1 映射到 0.5-1 (中性 0.5 = 无位移, 1 = 最大位移)
+         feDisplacementMap 边缘产生 0.5-1 范围的位移 (相对中性点 +scale/2 偏移, 方向由 R/G 通道决定)
+         视觉: 中心 0 位移, 边缘有水波纹扭曲, 整体有苹果 visionOS 边缘折射感 -->
+    <!-- 通用 fallback: 无 feImage, 等价于纯透传 (用于还没被 JS 接管或非重要元素)
+         实际视觉由 JS 动态注入的 per-element filter (id=liquid-glass-N) 接管,
+         走 shuding/liquid-glass 方案: canvas 绘位移图 + feDisplacementMap -->
+    <filter id="liquid-glass" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/>
+    </filter>
+    <filter id="liquid-glass-strong" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5"/>
+    </filter>
+  </defs>
+</svg>
 <div class="main">
     <div class="success" id="success_box">Welcome Back, <span id="display-text">User</span>!</div>
     <div class="setsuccess" id="setsuccess_box"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1889"><path d="M512 85.333333c235.648 0 426.666667 191.018667 426.666667 426.666667s-191.018667 426.666667-426.666667 426.666667S85.333333 747.648 85.333333 512 276.352 85.333333 512 85.333333z m-74.965333 550.4L346.453333 545.152a42.666667 42.666667 0 1 0-60.330666 60.330667l120.704 120.704a42.666667 42.666667 0 0 0 60.330666 0l301.653334-301.696a42.666667 42.666667 0 1 0-60.288-60.330667l-271.530667 271.488z" fill="#00A74A" p-id="1890"></path></svg> 设置成功</div>
-
-
 <!-- //////////////////// -->
     <input type="checkbox" id="navcheck" role="button" title="menu">
     <label class="burger_btn" for="navcheck" aria-label="Open menu" title="">
-        <span class="burger">
+        <span class="burger glass">
             <span class="bar"></span>
             <span class="visuallyhidden">Menu</span>
         </span>
     </label>
     <label class="nav_scrim" for="navcheck" aria-label="Close menu"></label>
-
-
-
     <nav id="menu" aria-label="App navigation">
       <div class="nav_mega">
         <div class="nav_mega_col nav_mega_col--main">
@@ -40,7 +58,6 @@
             <li><a class="nav_mega_item nav_mega_item--big" href="javascript:void(0)" onclick="question_jump()">常见问题</a></li>
           </ul>
         </div>
-
         <div class="nav_mega_col">
           <div class="nav_section_title">项目</div>
           <ul class="nav_mega_list">
@@ -49,7 +66,6 @@
             <li><a class="nav_mega_item" href="javascript:void(0)" onclick="about_jump()">关于 Limit Startup</a></li>
           </ul>
         </div>
-
         <div class="nav_mega_col">
           <div class="nav_section_title">法律</div>
           <ul class="nav_mega_list">
@@ -57,7 +73,6 @@
           </ul>
         </div>
       </div>
-
       <!-- 底部: 滚动到底时显示的小字 + 子链接 (DESIGN dense-link) -->
       <div class="nav_footer">
         <p class="nav_footer_brand">Limit Startup · 菜单</p>
@@ -65,9 +80,6 @@
       </div>
     </nav>
 <!-- ///////////////////////////// -->
-
-
-
     <div class="opacity_bg"></div>
     <div class="showTime"></div>
     <div class="box">
@@ -81,7 +93,7 @@
                 <option value="https://metaso.cn/?s=alolk&referrer_s=alolk&">秘塔 AI</option>
             </select>
             <!-- 同一个矩形: 关闭态只显 trigger 文字 + chevron, 展开态 trigger 隐藏 / 选项按序淡入 -->
-            <div class="engine_popover" id="enginePopover" role="combobox" aria-haspopup="listbox" aria-expanded="false" tabindex="0" aria-label="选择搜索引擎">
+            <div class="engine_popover glass-strong" id="enginePopover" role="combobox" aria-haspopup="listbox" aria-expanded="false" tabindex="0" aria-label="选择搜索引擎">
                 <button type="button" class="engine_face" id="engineTrigger" aria-label="切换搜索引擎">
                     <span class="engine_face_label" id="engineTriggerLabel">Bing</span>
                     <svg class="engine_face_chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
@@ -106,36 +118,31 @@
                 </ul>
             </div>
         </div>
-
         <!-- 输入框 -->
         <div class="inputBoxWrap" id="inputBoxWrap">
-            <div class="inputBox" id="inputBox">
+            <div class="inputBox glass-strong" id="inputBox">
                 <input id="input_text" type="text" placeholder=" " required="required">
                 <span>Enter what you want to know…</span>
                 <ul id="datalist">
                 </ul>
             </div>
         </div>
-
         <!-- 搜索键 -->
         <div class="buttonBox">
-            <button class="search_btn" id="search_btn" aria-label="Search">
+            <button class="search_btn glass-strong glass-blue" id="search_btn" aria-label="Search">
                 <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3340"><path d="M469.333333 768c-166.4 0-298.666667-132.266667-298.666666-298.666667s132.266667-298.666667 298.666666-298.666666 298.666667 132.266667 298.666667 298.666666-132.266667 298.666667-298.666667 298.666667z m0-85.333333c119.466667 0 213.333333-93.866667 213.333334-213.333334s-93.866667-213.333333-213.333334-213.333333-213.333333 93.866667-213.333333 213.333333 93.866667 213.333333 213.333333 213.333334z m251.733334 0l119.466666 119.466666-59.733333 59.733334-119.466667-119.466667 59.733334-59.733333z" fill="currentColor" p-id="3341"></path></svg>
             </button>
         </div>
     </div>
-
-
-        <div id="about" class="about">
+        <div id="about" class="about glass-strong">
             <div class="setting_btn_box">
                 <div class="settings_box_heading">
                     <span class="settings_box_title">关于 Limit Startup</span>
                 </div>
-                <button class="close_about_btn" onclick="close_about ()" aria-label="关闭">
+                <button class="close_about_btn glass" onclick="close_about ()" aria-label="关闭">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
                 </button>
             </div>
-
             <div class="settings_main_box">
                 <!-- 顶部 LOGO + 版本信息 -->
                 <section class="about_hero">
@@ -143,14 +150,13 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge">Version 4.0.1</span>
+                        <span class="about_version_badge glass-strong">Version 4.0.2</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
                         <p class="about_credits">Designed by Eric Demisse.</p>
                     </div>
                 </section>
-
                 <!-- 上线纪念（无标题/副标题，仅卡片容器） -->
                 <section class="settings_section about_milestone_card">
                     <div class="about_milestone">
@@ -158,7 +164,6 @@
                         <img class="about_milestone_img" src="/src/happy.PNG" alt="" loading="lazy">
                     </div>
                 </section>
-
                 <!-- 更新日志 -->
                 <section class="settings_section">
                     <header class="settings_section_head">
@@ -170,6 +175,32 @@
                         </div>
                     </header>
                     <div class="changelog">
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.0.2</span>
+                                <span class="changelog_version_date">2026.6.13</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">全页升级为液态玻璃视觉风格</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">4 个弹窗的关闭按钮加大并改为红色液态玻璃</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">主要按钮颜色饱和度提升</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗重构为分页架构（个性化 / 搜索 / 账号），底部 iOS 时钟风格 tab 栏，圆角拉满、切换丝滑滑动</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">4 个弹窗高度统一固定，切换不同 tab / 弹窗时大小不再变化</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">7 项设置弹窗 bug 修复：菜单抽屉文字看不清 / 不贴左边缘 / 玻璃过曝发白 / 引擎下拉 hover 白底 / 联想词下拉白底 / 预设壁纸无反应 / tab 栏位置错乱 / 点遮罩后菜单按钮点不动 / 内容被 tab 栏遮挡</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">精简更新日志措辞（去掉实现细节）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">关于弹窗：上线纪念文字改为黑色</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索联想词：上限 10 条，hover 配色与搜索引擎选项统一</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">搜索联想词下拉底部留白、最后一条被截断</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">顶部欢迎 / 设置成功提示升级为液态玻璃风格</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">液态玻璃面更平整：去除中间水波纹扭曲，边缘高光加重（多次微调到最终温和版）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">液态玻璃凸透镜仅用于菜单抽屉 / 引擎下拉 / 搜索框 / 顶部 toast / 汉堡按钮；4 个弹窗（关于/设置/声明/FAQ）改为普通高斯模糊</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索按钮恢复为蓝色玻璃（液态玻璃接管时不再覆盖原蓝色背景）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">"请注意"提示框改为黄色玻璃风格（暖黄半透明 + 琥珀色左边框），加重饱和度更明显是黄玻璃</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">设置 → 个性化 "时间"升级为"时间与日期"：原 5 项保留 + 新增 4 项（显示年份 / 年月日格式 / 显示星期几 / 星期语言）+ 新增"初始化"1 项（起始页自动聚焦搜索栏）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗视觉升级：灰色文字全部改黑、子分组标题加左竖条、选项之间加 1px 白色分隔线（iOS 列表风格）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">"星期显示"选项：仅在"显示星期几"开启时显示，关闭后自动隐藏并禁用
+                            </ul>
+                        </article>
                         <article class="changelog_version">
                             <header class="changelog_version_head">
                                 <span class="changelog_version_tag">V4.0.1</span>
@@ -461,24 +492,22 @@
                 </section>
             </div>
         </div>
-
-
 <!-- 设置界面 -->
-
-        <div id="settings_box" class="settings_box">
-
+        <div id="settings_box" class="settings_box glass-strong">
             <div class="setting_btn_box">
                 <div class="settings_box_heading">
                     <span class="settings_box_title">设置</span>
                 </div>
-                <button class="close_about_btn" onclick="close_settings_box ()" aria-label="关闭">
+                <button class="close_about_btn glass" onclick="close_settings_box ()" aria-label="关闭">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
                 </button>
             </div>
-
-                <div class="settings_main_box">
-
-                    <!-- ============ Section: 问候语 ============ -->
+            <div class="settings_body">
+                <!-- 左侧导航 (桌面) / 顶部 tab (移动) -->
+                <!-- 内容区: 4 个 page, 只显示当前选中的 -->
+                <div class="settings_pages">
+                    <!-- Page: 个性化 -->
+                    <div class="settings_page is-active" data-page="personalize" id="settingsPagePersonalize">
                     <section class="settings_section">
                         <header class="settings_section_head">
                             <span class="settings_section_icon" aria-hidden="true">
@@ -486,21 +515,18 @@
                             </span>
                             <div class="settings_section_titles">
                                 <div class="settings_section_title">问候语</div>
-                                
                             </div>
                         </header>
                         <div class="settings_section_body">
                             <label class="settings_field">
                                 <span class="settings_field_label">您希望被称呼为</span>
                                 <div class="settings_field_row">
-                                    <input type="text" class="special-input" id="input-text" value="User" placeholder="输入称呼">
-                                    <button class="diy_bg_but" id="change-btn">保存</button>
+                                    <input type="text" class="special-input glass-strong" id="input-text" value="User" placeholder="输入称呼">
+                                    <button class="diy_bg_but glass-strong" id="change-btn">保存</button>
                                 </div>
                             </label>
                         </div>
                     </section>
-
-                    <!-- ============ Section: 壁纸 ============ -->
                     <section class="settings_section">
                         <header class="settings_section_head">
                             <span class="settings_section_icon" aria-hidden="true">
@@ -508,7 +534,6 @@
                             </span>
                             <div class="settings_section_titles">
                                 <div class="settings_section_title">壁纸</div>
-                                
                             </div>
                         </header>
                         <div class="settings_section_body">
@@ -551,20 +576,18 @@
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                 </div>
                             </div>
-
                             <div class="settings_subsection_title settings_subsection_title--spaced">自定义上传</div>
-                            <div class="settings_upload">
-                                <label class="settings_upload_field" for="imageFile">
+                            <div class="settings_upload glass">
+                                <label class="settings_upload_field glass-strong" for="imageFile">
                                     <span class="settings_upload_field_label">选择本地图片</span>
                                     <span class="settings_upload_filename" id="upload-filename">未选择文件</span>
                                 </label>
                                 <input type="file" id="imageFile" accept="image/*" class="settings_upload_input">
                                 <div class="settings_upload_actions">
-                                    <button class="diy_bg_but2" onclick="resetBackground()">重置网页壁纸</button>
-                                    <button class="diy_bg_but" onclick="uploadImage()">设为壁纸</button>
+                                    <button class="diy_bg_but2 glass" onclick="resetBackground()">重置网页壁纸</button>
+                                    <button class="diy_bg_but glass-strong" onclick="uploadImage()">设为壁纸</button>
                                 </div>
                             </div>
-
                             <div class="set_notice" role="note">
                                 <span class="set_notice_icon" aria-hidden="true">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
@@ -580,8 +603,137 @@
                             </div>
                         </div>
                     </section>
-
-                    <!-- ============ Section: 搜索引擎 ============ -->
+                    <section class="settings_section">
+                        <header class="settings_section_head">
+                            <span class="settings_section_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+                            </span>
+                            <div class="settings_section_titles">
+                                <div class="settings_section_title">时间与日期</div>
+                            </div>
+                        </header>
+                        <div class="settings_section_body">
+                            <div class="settings_subsection_title">时间格式</div>
+                            <label class="settings_field">
+                                <span class="settings_field_label">24 小时制</span>
+                                <span class="settings_field_control">
+                                    <input type="checkbox" class="settings_toggle" id="time24h" checked>
+                                    <span class="settings_toggle_track" aria-hidden="true"></span>
+                                </span>
+                            </label>
+                            <label class="settings_field">
+                                <span class="settings_field_label">显示秒钟</span>
+                                <span class="settings_field_control">
+                                    <input type="checkbox" class="settings_toggle" id="timeShowSeconds">
+                                    <span class="settings_toggle_track" aria-hidden="true"></span>
+                                </span>
+                            </label>
+                            <label class="settings_field">
+                                <span class="settings_field_label">闪烁时间分隔符</span>
+                                <span class="settings_field_control">
+                                    <input type="checkbox" class="settings_toggle" id="timeBlinkColon">
+                                    <span class="settings_toggle_track" aria-hidden="true"></span>
+                                </span>
+                            </label>
+                            <div class="settings_subsection_title">时间外观</div>
+                            <label class="settings_field">
+                                <span class="settings_field_label">时间字体大小</span>
+                                <span class="settings_field_control">
+                                    <select class="settings_select" id="timeFontSize">
+                                        <option value="sm">小</option>
+                                        <option value="md" selected>中</option>
+                                        <option value="lg">大</option>
+                                    </select>
+                                </span>
+                            </label>
+                            <label class="settings_field">
+                                <span class="settings_field_label">时间字体粗细</span>
+                                <span class="settings_field_control">
+                                    <select class="settings_select" id="timeFontWeight">
+                                        <option value="300">细体</option>
+                                        <option value="500" selected>常规</option>
+                                        <option value="700">粗体</option>
+                                    </select>
+                                </span>
+                            </label>
+                            <div class="settings_subsection_title">日期显示</div>
+                            <label class="settings_field">
+                                <span class="settings_field_label">显示年份</span>
+                                <span class="settings_field_control">
+                                    <input type="checkbox" class="settings_toggle" id="dateShowYear" checked>
+                                    <span class="settings_toggle_track" aria-hidden="true"></span>
+                                </span>
+                            </label>
+                            <label class="settings_field">
+                                <span class="settings_field_label">年月日显示格式</span>
+                                <span class="settings_field_control">
+                                    <select class="settings_select" id="dateFormat">
+                                        <option value="cn" selected>2026年6月14日</option>
+                                        <option value="slash">2026/6/14</option>
+                                        <option value="iso">2026-06-14</option>
+                                    </select>
+                                </span>
+                            </label>
+                            <label class="settings_field">
+                                <span class="settings_field_label">显示星期几</span>
+                                <span class="settings_field_control">
+                                    <input type="checkbox" class="settings_toggle" id="dateShowWeekday">
+                                    <span class="settings_toggle_track" aria-hidden="true"></span>
+                                </span>
+                            </label>
+                            <label class="settings_field" data-depends-on="dateShowWeekday">
+                                <span class="settings_field_label">星期显示</span>
+                                <span class="settings_field_control">
+                                    <select class="settings_select" id="dateWeekdayLang">
+                                        <option value="cn" selected>中文（周一）</option>
+                                        <option value="en_short">英文缩写（Mon）</option>
+                                        <option value="en_long">英文全称（Monday）</option>
+                                    </select>
+                                </span>
+                            </label>
+                        </div>
+                    </section>
+                    <section class="settings_section">
+                        <header class="settings_section_head">
+                            <span class="settings_section_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 12l5 5L20 7"/></svg>
+                            </span>
+                            <div class="settings_section_titles">
+                                <div class="settings_section_title">初始化</div>
+                            </div>
+                        </header>
+                        <div class="settings_section_body">
+                            <label class="settings_field">
+                                <span class="settings_field_label">起始页加载时自动聚焦到搜索栏</span>
+                                <span class="settings_field_control">
+                                    <input type="checkbox" class="settings_toggle" id="autofocusSearch" checked>
+                                    <span class="settings_toggle_track" aria-hidden="true"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </section>
+                        </div>
+                    <!-- Page: 账号 (占位, 后续接入) -->
+                    <div class="settings_page" data-page="account" id="settingsPageAccount">
+                        <section class="settings_section">
+                            <header class="settings_section_head">
+                                <span class="settings_section_icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
+                                </span>
+                                <div class="settings_section_titles">
+                                    <div class="settings_section_title">账号</div>
+                                </div>
+                            </header>
+                            <div class="settings_section_body">
+                                <div class="settings_account_placeholder">
+                                    <p class="settings_account_lead">账号系统正在开发中, 后续可在此登录同步你的称呼、壁纸、搜索引擎等偏好设置。</p>
+                                    <button type="button" class="diy_bg_but2 glass" disabled aria-disabled="true">登录 (即将推出)</button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                        <!-- Page: 搜索 -->
+                        <div class="settings_page" data-page="search" id="settingsPageSearch">
                     <section class="settings_section">
                         <header class="settings_section_head">
                             <span class="settings_section_icon" aria-hidden="true">
@@ -589,15 +741,14 @@
                             </span>
                             <div class="settings_section_titles">
                                 <div class="settings_section_title">搜索引擎</div>
-                                
                             </div>
                         </header>
                         <div class="settings_section_body">
                             <div class="engine-chip-group" id="engineChips" role="radiogroup" aria-label="默认搜索引擎">
-                                <button type="button" class="engine-chip is-active" role="radio" aria-checked="true" data-value="https://www.bing.com/search"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">Bing</span></button>
-                                <button type="button" class="engine-chip" role="radio" aria-checked="false" data-value="https://www.baidu.com/s"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">百度</span></button>
-                                <button type="button" class="engine-chip" role="radio" aria-checked="false" data-value="https://search.bilibili.com/all"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">BiliBili</span></button>
-                                <button type="button" class="engine-chip" role="radio" aria-checked="false" data-value="https://metaso.cn/?s=alolk&referrer_s=alolk&"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">秘塔 AI</span></button>
+                                <button type="button" class="engine-chip glass-strong is-active" role="radio" aria-checked="true" data-value="https://www.bing.com/search"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">Bing</span></button>
+                                <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://www.baidu.com/s"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">百度</span></button>
+                                <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://search.bilibili.com/all"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">BiliBili</span></button>
+                                <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://metaso.cn/?s=alolk&referrer_s=alolk&"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">秘塔 AI</span></button>
                             </div>
                             <select class="select_box2" id="searchEngineSelector1" hidden>
                                 <option value="https://www.bing.com/search" selected>Bing</option>
@@ -607,18 +758,43 @@
                             </select>
                         </div>
                     </section>
-
+                        </div>
+                    </div>
+                <div class="settings_tabbar_wrap">
+                    <nav class="settings_sidebar settings_tabbar glass-strong" id="settingsSidebar" aria-label="设置分类">
+                    <span class="tabbar_pill" aria-hidden="true"></span>
+                    <button type="button" class="settings_nav_item is-active" data-page="personalize">
+                        <span class="settings_nav_icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        </span>
+                        <span class="settings_nav_label">个性化</span>
+                    </button>
+                    <button type="button" class="settings_nav_item" data-page="search">
+                        <span class="settings_nav_icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                        </span>
+                        <span class="settings_nav_label">搜索</span>
+                    </button>
+                    <button type="button" class="settings_nav_item" data-page="account">
+                        <span class="settings_nav_icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
+                        </span>
+                        <span class="settings_nav_label">账号</span>
+                        <span class="settings_nav_badge" aria-label="即将推出">即将</span>
+                    </button>
+                    </nav>
                 </div>
-                <!-- 设置end -->
+            
+                </div><!-- 设置end -->
             </div>
-
+            
             <!-- 声明页面 (按 DESIGN-apple.md dense-link + section card 重构) -->
-            <div id="shengming_box" class="jump_out_box">
+            <div id="shengming_box" class="jump_out_box glass-strong">
                 <div class="setting_btn_box">
                     <div class="settings_box_heading">
                         <span class="settings_box_title">声明</span>
                     </div>
-                    <button class="close_about_btn" onclick="close_shengming ()" aria-label="关闭">
+                    <button class="close_about_btn glass" onclick="close_shengming ()" aria-label="关闭">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
                     </button>
                 </div>
@@ -642,14 +818,13 @@
                     </section>
                 </div>
             </div>
-
             <!-- 常见问题页面 (按 DESIGN-apple.md section card + chip 重构) -->
-            <div id="question_box" class="jump_out_box">
+            <div id="question_box" class="jump_out_box glass-strong">
                 <div class="setting_btn_box">
                     <div class="settings_box_heading">
                         <span class="settings_box_title">FAQ</span>
                     </div>
-                    <button class="close_about_btn" onclick="close_question_box ()" aria-label="关闭">
+                    <button class="close_about_btn glass" onclick="close_question_box ()" aria-label="关闭">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18"/></svg>
                     </button>
                 </div>
@@ -679,29 +854,21 @@
                     </div>
                 </div>
             </div>
-
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" crossorigin="anonymous"
         onerror="var s=document.createElement('script');s.src='https://unpkg.com/jquery@3.7.1/dist/jquery.min.js';s.crossOrigin='anonymous';document.head.appendChild(s);"></script>
 		<script type="text/javascript">
-
-
 // 自定义问候语
 let savedText = localStorage.getItem('welcomeText');
         if (savedText) {
             document.getElementById('input-text').value = savedText;
             document.getElementById('display-text').innerText = savedText;
         }
-
         document.getElementById('change-btn').addEventListener('click', function() {
             var inputText = document.getElementById('input-text').value;
             document.getElementById('display-text').innerText = inputText;
             localStorage.setItem('welcomeText', inputText);
             location.reload();
         });
-
 // 自定义壁纸
 function uploadImage() {
             const fileInput = document.getElementById('imageFile');
@@ -715,7 +882,6 @@ function uploadImage() {
             }
             location.reload();
         }
-
         function resetBackground() {
             document.body.style.backgroundImage = '';
             localStorage.removeItem('backgroundImage');
@@ -738,23 +904,19 @@ function uploadImage() {
             const selector1 = document.getElementById('searchEngineSelector1');
             const selector2 = document.getElementById('searchEngineSelector2');
             const selectedValue = selector1.options[selector1.selectedIndex].value;
-
             for (let i = 0; i < selector2.options.length; i++) {
                 if (selector2.options[i].value === selectedValue) {
                     selector2.selectedIndex = i;
                     break;
                 }
             }
-
             syncEngineChips(selectedValue);
             if (typeof window.syncHomeEnginePicker === 'function') {
                 window.syncHomeEnginePicker(selectedValue);
             }
             localStorage.setItem('defaultSearchEngine', selectedValue);
         }
-
         // ====== 首页自定义搜索引擎下拉 ======
-
         // 把隐藏 select 同步到首页自定义下拉
         function syncHomeEnginePicker(value) {
             const label = document.getElementById('engineTriggerLabel');
@@ -771,16 +933,13 @@ function uploadImage() {
             });
             label.textContent = displayText;
         }
-
         (function bindHomeEnginePicker() {
             const popover = document.getElementById('enginePopover');
             const face = document.getElementById('engineTrigger');
             const list = document.getElementById('engineMenu');
             const selector2 = document.getElementById('searchEngineSelector2');
             if (!popover || !face || !list || !selector2) return;
-
             const picker = popover.closest('.engine_picker');
-
             function open() {
                 popover.setAttribute('aria-expanded', 'true');
                 list.hidden = false;
@@ -793,7 +952,6 @@ function uploadImage() {
                 if (returnFocus) popover.focus();
             }
             function isOpen() { return popover.getAttribute('aria-expanded') === 'true'; }
-
             // 点击 popover 容器或 face 都打开/关闭
             function onToggle(e) {
                 // 选项行自己处理, 阻止冒泡
@@ -802,7 +960,6 @@ function uploadImage() {
                 if (isOpen()) close(); else open();
             }
             popover.addEventListener('click', onToggle);
-
             // 选项点击: 同步隐藏 select, 同步首页 label & is-active, 关闭
             list.addEventListener('click', function (e) {
                 const li = e.target.closest('.engine_row');
@@ -818,7 +975,6 @@ function uploadImage() {
                 }
                 close();
             });
-
             // 键盘: ArrowUp/Down 移动, Enter 选择, Esc 关闭
             list.addEventListener('keydown', function (e) {
                 const items = Array.from(list.querySelectorAll('.engine_row'));
@@ -842,7 +998,6 @@ function uploadImage() {
                     close(true);
                 }
             });
-
             // popover 上 ArrowDown 也打开并聚焦第一项
             popover.addEventListener('keydown', function (e) {
                 if (isOpen()) return;
@@ -856,7 +1011,6 @@ function uploadImage() {
                     }
                 }
             });
-
             // 点外面关闭
             document.addEventListener('click', function (e) {
                 if (!isOpen()) return;
@@ -867,11 +1021,9 @@ function uploadImage() {
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' && isOpen()) close();
             });
-
             // 暴露 syncHomeEnginePicker 给 setDefault / onload
             window.syncHomeEnginePicker = syncHomeEnginePicker;
         })();
-
         // 同步 chip 选中态
         function syncEngineChips(value) {
             const chips = document.querySelectorAll('#engineChips .engine-chip');
@@ -882,7 +1034,6 @@ function uploadImage() {
                 chip.setAttribute('aria-checked', on ? 'true' : 'false');
             });
         }
-
         // 引擎 chip 点击: 切换到对应引擎, 同步 select 与首页
         (function bindEngineChips() {
             const chips = document.querySelectorAll('#engineChips .engine-chip');
@@ -899,7 +1050,6 @@ function uploadImage() {
                 });
             });
         })();
-
         // 上传文件名显示
         (function bindUploadFilename() {
             const input = document.getElementById('imageFile');
@@ -916,15 +1066,11 @@ function uploadImage() {
             const selector1 = document.getElementById('searchEngineSelector1');
             const selector2 = document.getElementById('searchEngineSelector2');
             const defaultSearchEngine = localStorage.getItem('defaultSearchEngine');
-
-
-
             if (backgroundImageUrl) {
                 document.body.style.backgroundImage = `url(${backgroundImageUrl})`;
             }
             Movein();
             setTimeout("Moveout()",5000 );
-
             if (defaultSearchEngine) {
                 for (let i = 0; i < selector1.options.length; i++) {
                     if (selector1.options[i].value === defaultSearchEngine) {
@@ -943,12 +1089,18 @@ function uploadImage() {
                     window.syncHomeEnginePicker(defaultSearchEngine);
                 }
             }
+            // 应用时间字体设置
+            if (typeof applyTimeFont === 'function') applyTimeFont();
+            // 自动聚焦搜索栏 (可在设置 → 通用 → 初始化中关闭)
+            if (localStorage.getItem('cfg_autofocusSearch') !== '0') {
+                setTimeout(function () {
+                    var ipt = document.getElementById('input_text');
+                    if (ipt) ipt.focus();
+                }, 200);
+            }
         };
-
-
 // 预设壁纸
         if(localStorage.bg && typeof $==='function') $('head').append("<style class='font-style'>" + localStorage.bg + "</style>");
-
         // 高亮当前选中的预设壁纸
         (function highlightSelectedBg() {
           try {
@@ -962,37 +1114,106 @@ function uploadImage() {
             }
           } catch (e) {}
         })();
-
-
-// 时间
+// 时间与日期设置 (localStorage 持久化)
+    var DEFAULT_TIME_CFG = { hour24: true, showSeconds: false, blinkColon: false, fontSize: 'md', fontWeight: '500', showYear: true, dateFormat: 'cn', showWeekday: false, weekdayLang: 'cn' };
+    function getTimeCfg() {
+      try {
+        return {
+          hour24: localStorage.getItem('cfg_time24h') !== '0',
+          showSeconds: localStorage.getItem('cfg_timeShowSeconds') === '1',
+          blinkColon: localStorage.getItem('cfg_timeBlinkColon') === '1',
+          fontSize: localStorage.getItem('cfg_timeFontSize') || DEFAULT_TIME_CFG.fontSize,
+          fontWeight: localStorage.getItem('cfg_timeFontWeight') || DEFAULT_TIME_CFG.fontWeight,
+          showYear: localStorage.getItem('cfg_dateShowYear') !== '0',
+          dateFormat: localStorage.getItem('cfg_dateFormat') || DEFAULT_TIME_CFG.dateFormat,
+          showWeekday: localStorage.getItem('cfg_dateShowWeekday') === '1',
+          weekdayLang: localStorage.getItem('cfg_dateWeekdayLang') || DEFAULT_TIME_CFG.weekdayLang
+        };
+      } catch (e) { return Object.assign({}, DEFAULT_TIME_CFG); }
+    }
+    // 应用时间字体大小/粗细到 .showTime
+    function applyTimeFont() {
+      var cfg = getTimeCfg();
+      var el = document.querySelector('.showTime');
+      if (!el) return;
+      var sizeMap = { sm: '32px', md: '40px', lg: '52px' };
+      el.style.fontSize = sizeMap[cfg.fontSize] || '40px';
+      el.style.fontWeight = cfg.fontWeight;
+    }
+    // 星期文本生成
+    var WEEKDAY_CN = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    var WEEKDAY_EN_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var WEEKDAY_EN_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    function getWeekdayText(dow, lang) {
+      if (lang === 'en_short') return WEEKDAY_EN_SHORT[dow];
+      if (lang === 'en_long') return WEEKDAY_EN_LONG[dow];
+      return WEEKDAY_CN[dow];
+    }
+    // 日期文本生成 (返回字符串, 年份为 0 时不带年份)
+    function getDateText(y, m, d, fmt, showYear) {
+      var mm = (m < 10) ? ('0' + m) : ('' + m);
+      var dd = (d < 10) ? ('0' + d) : ('' + d);
+      switch (fmt) {
+        case 'slash': return showYear ? (y + '/' + m + '/' + d) : (m + '/' + d);
+        case 'iso':   return showYear ? (y + '-' + mm + '-' + dd) : (mm + '-' + dd);
+        case 'cn':
+        default:      return showYear ? (y + '年' + m + '月' + d + '日') : (m + '月' + d + '日');
+      }
+    }
+    // 时间显示
      var t = null;
     t = setTimeout(time, 10);
     function time() {
         clearTimeout(t);
-        dt = new Date();
-        var y = dt.getFullYear();
-        var mt = dt.getMonth() + 1;
-        var day = dt.getDate();
-        var h = (dt.getHours() < 10) ? ("0" + dt.getHours()) : dt.getHours();
-		var m = (dt.getMinutes() < 10) ? ("0" + dt.getMinutes()) : dt.getMinutes();
-        document.querySelector(".showTime").innerHTML = y + "年" + mt + "月" + day + "日"+" " + h + ":" + m;
+        var cfg = getTimeCfg();
+        var el = document.querySelector(".showTime");
+        if (el) {
+          var dt = new Date();
+          var y = dt.getFullYear();
+          var mt = dt.getMonth() + 1;
+          var day = dt.getDate();
+          var dow = dt.getDay();
+          var rawH = dt.getHours();
+          var h, suffix = '';
+          if (cfg.hour24) {
+            h = rawH;
+          } else {
+            // 12 小时制: 用时段词 (晚上/上午/下午/凌晨) 避免 AM/PM 在中文界面违和
+            if (rawH === 0) { h = 12; suffix = ' 凌晨'; }
+            else if (rawH < 6) { h = rawH; suffix = ' 凌晨'; }
+            else if (rawH < 12) { h = rawH; suffix = ' 上午'; }
+            else if (rawH === 12) { h = 12; suffix = ' 中午'; }
+            else if (rawH < 18) { h = rawH - 12; suffix = ' 下午'; }
+            else { h = rawH - 12; suffix = ' 晚上'; }
+          }
+          h = (h < 10) ? ("0" + h) : h;
+          var m = dt.getMinutes();
+          m = (m < 10) ? ("0" + m) : m;
+          var s = dt.getSeconds();
+          s = (s < 10) ? ("0" + s) : s;
+          var colon = cfg.blinkColon ? '<span class="time-colon">:</span>' : ':';
+          var timePart = h + colon + m + (cfg.showSeconds ? (colon + s) : '');
+          var dateText = getDateText(y, mt, day, cfg.dateFormat, cfg.showYear);
+          var weekdayText = cfg.showWeekday ? (' ' + getWeekdayText(dow, cfg.weekdayLang)) : '';
+          el.innerHTML = dateText + weekdayText + ' ' + timePart + suffix;
+          // 闪烁: 隐藏冒号
+          if (cfg.blinkColon) {
+            var visible = (dt.getSeconds() % 2 === 0);
+            var cs = el.querySelectorAll('.time-colon');
+            for (var i = 0; i < cs.length; i++) cs[i].style.opacity = visible ? '1' : '0.15';
+          }
+          // 每次都重设字体 (可能被其他代码改过)
+          el.style.fontSize = ({ sm: '32px', md: '40px', lg: '52px' })[cfg.fontSize] || '40px';
+          el.style.fontWeight = cfg.fontWeight;
+        }
         t = setTimeout(time, 1000);
     }
-
-
-
-
-
     var h = document.getElementById(count_days);
 			timeDifference(`2023/4/18 00:00:00`, ``, count_days);
 			function a() {
 				timeDifference(`2023/4/18 00:00:00`, ``, count_days);
 			}
 			setInterval(a, 1000);
-
-
-
-
 			function timeDifference(endT, endName = `2022/10/26`, obj) {
 				var startTime = new Date().getTime();
 				var endTime = new Date(endT).getTime();
@@ -1010,52 +1231,32 @@ function uploadImage() {
 					obj.innerHTML = `${endName}<br><span>${day < 10 ? '0' + day : day} 天 </span>`
 					return true;
 				}
-
 			}
-
-
-
-
-
-
-
-
-
-
-
 // 搜索框
 const btn = document.querySelector('.search_btn');
 const point = document.querySelector('select');
 const texts = document.querySelector('#input_text');
-
 const arr = ['wd', 'q', 'keyword','q'];
-
 let _searching = false;
 btn.onclick = function() {
     if (_searching) return;
     _searching = true;
     setTimeout(() => { _searching = false; }, 600);
-
     const p = point.value;
     const text = texts.value;
     let str = '';
-
     if (p.includes('baidu')) {
     str = '?' + arr[0] + '=' + encodeURIComponent(text);
     }
-
     if (p.includes('bing')) {
     str = '?' + arr[1] + '=' + encodeURIComponent(text) + '&form=QBLH';
     }
-
     if (p.includes('bilibili')) {
     str = '?' + arr[2] + '=' + encodeURIComponent(text);
     }
-
     if (p.includes('metaso')) {
     str =  arr[3] + '=' + encodeURIComponent(text);
     }
-
     console.log('[search]', p + str);
     // 用 a[target=_blank] + 模拟点击的方式, 避免 window.open 触发的双标签问题
     const a = document.createElement('a');
@@ -1065,47 +1266,73 @@ btn.onclick = function() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-
-
 }
 document.onkeyup = function(e) {
     if (e.keyCode == 13) {
         btn.click();
     }
 }
-
 // 关于界面
-
     function about_jump(){ openModal("about"); }
     function close_about (){ closeModal("about"); }
+    // 设置弹窗分页路由: 个性化 / 搜索 / 账号
+function showSettingsPage(page) {
+  if (!page) return;
+  var valid = ['personalize', 'search', 'account'];
+  if (valid.indexOf(page) < 0) page = 'personalize';
+  // 切 nav 高亮
+  var navItems = document.querySelectorAll('#settingsSidebar .settings_nav_item');
+  navItems.forEach(function (n) {
+    if (n.getAttribute('data-page') === page) n.classList.add('is-active');
+    else n.classList.remove('is-active');
+  });
+  // 切 page 显示
+  var pages = document.querySelectorAll('#settings_box .settings_page');
+  pages.forEach(function (pg) {
+    if (pg.getAttribute('data-page') === page) pg.classList.add('is-active');
+    else pg.classList.remove('is-active');
+  });
+  // 内容区滚回顶部
+  var pagesContainer = document.querySelector('#settings_box .settings_pages');
+  if (pagesContainer) pagesContainer.scrollTop = 0;
+  // 滑动 tab 栏高亮滑块
+  moveTabbarPill(page);
+}
+// 滑动 tab 栏高亮滑块到目标 page
+function moveTabbarPill(page) {
+  var sidebar = document.getElementById('settingsSidebar');
+  if (!sidebar) return;
+  var pill = sidebar.querySelector('.tabbar_pill');
+  var target = sidebar.querySelector('.settings_nav_item[data-page="' + page + '"]');
+  if (!pill || !target) return;
+  // nav 内 padding: 5px, item 实际渲染位置 = offsetLeft - sidebar.scrollLeft
+  // 这里 sidebar 不滚动, 直接用 offsetLeft 即可
+  var x = target.offsetLeft;
+  var w = target.offsetWidth;
+  pill.style.transform = 'translateX(' + x + 'px)';
+  pill.style.width = w + 'px';
+  // 首帧后才显示 (避免初始 transform 0 0 时露一下)
+  if (!pill.classList.contains('is-ready')) {
+    // 强制 reflow 再加 is-ready
+    void pill.offsetWidth;
+    pill.classList.add('is-ready');
+  }
+}
 
-
-
-
-    function settings_jump(){ openModal("settings_box"); }
+function settings_jump(){
+      // 每次打开时回到默认页 (个性化), 避免关闭再打开时停留在账号占位
+      if (typeof showSettingsPage === 'function') showSettingsPage('personalize');
+      openModal("settings_box");
+    }
     function close_settings_box (){ closeModal("settings_box"); }
-
-
-
     function question_jump(){ openModal("question_box"); }
     function close_question_box (){ closeModal("question_box"); }
-
-
-
     function shengming_jump(){ openModal("shengming_box"); }
     function close_shengming (){ closeModal("shengming_box"); }
-
-
-
-
-
-
-
 // 搜索框提示
             var txt = document.getElementById("input_text");
             var oUl = document.getElementById("datalist");
             var oBtn = document.getElementById("search_btn");
-
             txt.onkeyup = function(){
                 if(event.keyCode == 38 || event.keyCode == 40){
             return false;
@@ -1120,17 +1347,14 @@ document.onkeyup = function(e) {
                 document.body.appendChild(oScript);
                 document.body.removeChild(oScript);
             }
-
-
             function callback(data){
-                data.s.forEach(function(value){
+                data.s.slice(0, 10).forEach(function(value){
                  var oLi = document.createElement("li");
                  const point = document.querySelector('select');
                  const p = point.value;
                  if (p.includes('baidu')) {
                     oLi.innerHTML = "<a href=\"https://www.baidu.com/s?wd="+ value + "\" target=\"_blank\" rel=\"noopener noreferrer\">"+ value + "</a>";
                 }
-
                 if (p.includes('bing')) {
                     oLi.innerHTML = "<a href=\"https://www.bing.com/search?q="+ value + "&form=QBLH\" target=\"_blank\" rel=\"noopener noreferrer\">"+ value + "</a>";
                 }
@@ -1157,11 +1381,12 @@ document.onkeyup = function(e) {
                 oUl.classList.add('is-open');
                 // 下一帧测量 (DOM 已更新)
                 requestAnimationFrame(function() {
-                    var dh = oUl.scrollHeight;
+                    // datalist max-height 320, scrollHeight 算的是全部内容(可能 >320)
+                    // 用 min(scrollHeight, 320) 防止 inputBox 被撑出大块空白
+                    var dh = Math.min(oUl.scrollHeight, 320);
                     if (inputBox) inputBox.style.height = (44 + dh) + 'px';
                 });
             }
-
             // 联想词: 焦点离开或输入清空时收起
             txt.addEventListener('blur', function() {
                 setTimeout(function() { closeSuggest(); }, 150);
@@ -1169,7 +1394,6 @@ document.onkeyup = function(e) {
             txt.addEventListener('input', function() {
                 if (!txt.value) closeSuggest();
             });
-
             // 收起: 高度回到 44
             function closeSuggest() {
                 if (!oUl.classList.contains('is-open')) return;
@@ -1185,14 +1409,16 @@ document.onkeyup = function(e) {
                     oUl.classList.remove('is-open');
                 });
             }
-
             // 切换壁纸
+            // 注意: 旧版的 for 循环 IIFE 块 (9 个 addEventListener) 是写在 for 循环体内的
+            // 但 onload 时 .bg_choice_main 容器在弹窗内, 弹窗默认 is-open=false (不可见),
+            // 不影响 addEventListener 绑定, 它们仍能拿到 bg1..bg9 节点
             var images = document.querySelector('.bg_choice_main').querySelectorAll('img');
                     for (var i = 0; i < images.length; i++) {
                         images[i].onclick = function() {
                             console.log(this.src);
                             document.body.style.background = 'url(' + this.src + ');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;';
-                        }
+                        };  // 注意: 必须分号结尾, 否则 ASI 会把下一行 (function(){})() 当作 onclick 函数立即调用
                             (function(){var el=document.getElementById('bg1');if(!el)return;el.addEventListener('click',function(){
                                     localStorage.setItem("bg","body{background:url('src/1.png');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
                                     var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
@@ -1238,12 +1464,7 @@ document.onkeyup = function(e) {
                                     var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
                                     if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
                             });})();
-
                     }
-
-
-
-
         function Movein2() {
             var el = document.getElementById("setsuccess_box");
             el.style.opacity = "1";
@@ -1258,20 +1479,14 @@ document.onkeyup = function(e) {
 				Movein2();
 				setTimeout("Moveout2()",2000 );
 			}
-
-
-
-
 // 抽屉过渡时长, 与 menu.css 里 nav 的 transform 过渡保持一致
 var DRAWER_TRANSITION_MS = 280;
 var drawerCloseTimer = null;
-
 // 关闭抽屉（取消 navcheck 勾选）
 function closeMenuDrawer() {
   var cb = document.getElementById('navcheck');
   if (cb && cb.checked) cb.checked = false;
 }
-
 // 打开弹窗的通用逻辑：
 // 1) 立刻收起抽屉并暂停 modal 打开, 等抽屉滑出动画结束再开 modal 与遮罩
 // 2) 同步给 body 加 .modal-open, 让汉堡按钮 (z=130) 让位给 modal (z=120)
@@ -1292,11 +1507,10 @@ function openModal(id) {
     el.classList.add('is-open');
   }, DRAWER_TRANSITION_MS);
 }
-
 function closeModal(id) {
   var el = document.getElementById(id);
   if (el) el.classList.remove('is-open');
-  var bg = document.querySelector('.opacity_bg');
+var bg = document.querySelector('.opacity_bg');
   if (bg) {
     bg.classList.remove('is-open');
     setTimeout(function () { bg.style.display = 'none'; }, 320);
@@ -1308,22 +1522,260 @@ function closeModal(id) {
 }
 // 兼容 body onload 调用的 load() — 原项目存在此调用，保留为 no-op
 function load() {}
-
 // 点击遮罩关闭所有弹窗（Apple 风格 modal 行为）
 document.addEventListener('DOMContentLoaded', function () {
   var bg = document.querySelector('.opacity_bg');
   if (!bg) return;
   bg.addEventListener('click', function () {
+    // 走 closeModal 统一逻辑, 保证 body.modal-open 在所有 modal 关闭后被移除
+    // (之前直接 el.classList.remove('is-open') 漏了 modal-open 移除, 导致汉堡按钮在弹窗关闭后仍 pointer-events: none 点不动)
     var ids = ['about', 'settings_box', 'shengming_box', 'question_box'];
     ids.forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.classList.remove('is-open');
+      if (typeof closeModal === 'function') closeModal(id);
     });
-    bg.classList.remove('is-open');
-    setTimeout(function () { bg.style.display = 'none'; }, 320);
   });
+  // settings 弹窗侧栏导航: 点击切换 page
+  var navItems = document.querySelectorAll('#settingsSidebar .settings_nav_item');
+  navItems.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var page = btn.getAttribute('data-page');
+      if (typeof showSettingsPage === 'function') showSettingsPage(page);
+    });
+  });
+  // 初始定位 pill 到当前激活的 nav item
+  // 注: 弹窗重新打开时元素未被销毁, 只需首帧定位一次
+  var initialActive = document.querySelector('#settingsSidebar .settings_nav_item.is-active');
+  if (initialActive && typeof moveTabbarPill === 'function') {
+    moveTabbarPill(initialActive.getAttribute('data-page'));
+  }
 });
 
+  // ============================================================
+  // 液态玻璃 (shuding/liquid-glass 方案) - per-element SVG filter + canvas
+  // 思路: 每个 .glass / .glass-strong 元素生成自己的 SVG filter, feImage 引用一张
+  // 隐藏 canvas 画好的位移图 (中心 0.5 灰 = 无位移, 边缘 0 = 向心位移), feDisplacementMap 应用
+  // -> 视觉: 玻璃边缘把背景"吸进来" (visionOS 风格), 中心干净
+  // ============================================================
+  // ============================================================
+  // 液态玻璃 (shuding/liquid-glass 方案, 完整照搬)
+  // 每个 .glass / .glass-strong 元素自动生成 per-element SVG filter + canvas
+  // canvas 用 SDF 计算位移图 (中心 0.5 灰 = 无位移, 边缘 0 = 向心位移)
+  // feDisplacementMap 用此图 -> 玻璃边缘把背景"吸进来" (visionOS 风格)
+  // ============================================================
+  // 通用设置 UI 绑定 (时间 5 项 + 初始化 1 项)
+  (function bindGeneralSettings(){
+    function bindToggle(elId, storageKey, onChange) {
+      var el = document.getElementById(elId);
+      if (!el) return;
+      // 初值: checkbox checked 状态由 HTML 写死 (默认), 读 localStorage 覆盖
+      var stored = localStorage.getItem(storageKey);
+      if (stored !== null) el.checked = stored === '1';
+      el.addEventListener('change', function () {
+        localStorage.setItem(storageKey, el.checked ? '1' : '0');
+        if (typeof onChange === 'function') onChange(el.checked);
+      });
+    }
+    function bindSelect(elId, storageKey, onChange) {
+      var el = document.getElementById(elId);
+      if (!el) return;
+      var stored = localStorage.getItem(storageKey);
+      if (stored !== null) {
+        for (var i = 0; i < el.options.length; i++) {
+          if (el.options[i].value === stored) { el.selectedIndex = i; break; }
+        }
+      }
+      el.addEventListener('change', function () {
+        localStorage.setItem(storageKey, el.value);
+        if (typeof onChange === 'function') onChange(el.value);
+      });
+    }
+    bindToggle('time24h', 'cfg_time24h');
+    bindToggle('timeShowSeconds', 'cfg_timeShowSeconds');
+    bindToggle('timeBlinkColon', 'cfg_timeBlinkColon');
+    bindSelect('timeFontSize', 'cfg_timeFontSize');
+    bindSelect('timeFontWeight', 'cfg_timeFontWeight');
+    bindToggle('dateShowYear', 'cfg_dateShowYear');
+    bindSelect('dateFormat', 'cfg_dateFormat');
+    bindToggle('dateShowWeekday', 'cfg_dateShowWeekday');
+    bindSelect('dateWeekdayLang', 'cfg_dateWeekdayLang');
+    bindToggle('autofocusSearch', 'cfg_autofocusSearch');
+
+    // 联动隐藏: data-depends-on="ctrlId" 的字段根据 ctrl 开关状态显示/隐藏
+    function applyDeps() {
+      document.querySelectorAll('[data-depends-on]').forEach(function (el) {
+        var ctrlId = el.getAttribute('data-depends-on');
+        var ctrl = document.getElementById(ctrlId);
+        if (!ctrl) return;
+        var on = ctrl.checked;
+        el.classList.toggle('is-dep-hidden', !on);
+        // 内部控件禁用
+        var inner = el.querySelectorAll('input, select, button');
+        inner.forEach(function (i) { i.disabled = !on; });
+      });
+    }
+    document.querySelectorAll('[data-depends-on]').forEach(function (el) {
+      var ctrlId = el.getAttribute('data-depends-on');
+      var ctrl = document.getElementById(ctrlId);
+      if (ctrl) ctrl.addEventListener('change', applyDeps);
+    });
+    applyDeps();
+  })();
+  (function setupLiquidGlass(){
+    function length(x, y) { return Math.sqrt(x * x + y * y); }
+    function smoothStep(a, b, t) {
+      t = Math.max(0, Math.min(1, (t - a) / (b - a)));
+      return t * t * (3 - 2 * t);
+    }
+    // shuding 原始 SDF: 中心 (0,0), 矩形半宽 0.3 / 0.2, 圆角 0.6
+    // (矩形是归一化坐标系, 比 [0,1] 区域小)
+    function roundedRectSDF(x, y, halfW, halfH, radius) {
+      var qx = Math.abs(x) - halfW + radius;
+      var qy = Math.abs(y) - halfH + radius;
+      return Math.min(Math.max(qx, qy), 0) + length(Math.max(qx, 0), Math.max(qy, 0)) - radius;
+    }
+    function texture(x, y) { return { x: x, y: y }; }
+    function uid() { return 'lg-' + Math.random().toString(36).slice(2, 9); }
+
+    function makeShader(el) {
+      var rect = el.getBoundingClientRect();
+      var width = Math.max(50, Math.round(rect.width));
+      var height = Math.max(30, Math.round(rect.height));
+      var id = uid();
+
+      // 容器 (容器就是元素本身, 我们改它的 inline style)
+      // 跟 shuding 一样, 加上 box-shadow 外阴影 + 内顶部暗反射
+      el.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.18)';  // 去掉顶部 inset 暗反射, 避免'深色压一截'
+      // 蓝色玻璃元素保留其原蓝色背景 (e.g. 搜索按钮), 不强制淡白
+      if (!el.classList.contains('glass-blue')) {
+        el.style.backgroundColor = 'rgba(255, 255, 255, 0.04)';  // shuding 方案: 极淡白底, 避免灰蒙蒙, 让'凸透镜'显形
+      }
+
+      // SVG
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      svg.setAttribute('width', '0');
+      svg.setAttribute('height', '0');
+      svg.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:9998;';
+
+      var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      var filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+      filter.setAttribute('id', id + '_filter');
+      filter.setAttribute('filterUnits', 'userSpaceOnUse');
+      filter.setAttribute('colorInterpolationFilters', 'sRGB');
+      filter.setAttribute('x', '0');
+      filter.setAttribute('y', '0');
+      filter.setAttribute('width', String(width));
+      filter.setAttribute('height', String(height));
+
+      var feImage = document.createElementNS('http://www.w3.org/2000/svg', 'feImage');
+      feImage.setAttribute('id', id + '_map');
+      feImage.setAttribute('width', String(width));
+      feImage.setAttribute('height', String(height));
+
+      var feDisp = document.createElementNS('http://www.w3.org/2000/svg', 'feDisplacementMap');
+      feDisp.setAttribute('in', 'SourceGraphic');
+      feDisp.setAttribute('in2', id + '_map');
+      feDisp.setAttribute('xChannelSelector', 'R');
+      feDisp.setAttribute('yChannelSelector', 'G');
+
+      filter.appendChild(feImage);
+      filter.appendChild(feDisp);
+      defs.appendChild(filter);
+      svg.appendChild(defs);
+      document.body.appendChild(svg);
+
+      // canvas 画位移图
+      var canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;';
+      var ctx = canvas.getContext('2d');
+
+      function updateShader() {
+        var w = width, h = height;
+        var data = new Uint8ClampedArray(w * h * 4);
+        var maxScale = 0;
+        var rawX = new Float32Array(w * h);
+        var rawY = new Float32Array(w * h);
+
+        // shuding 原始 fragment: 中心 0, 半宽 0.3, 0.2, radius 0.6
+        // 对每个像素 (u, v) -> (ix, iy) = (u-0.5, v-0.5) -> SDF -> displacement
+        for (var i = 0; i < w * h; i++) {
+          var x = i % w, y = Math.floor(i / w);
+          var u = x / w, v = y / h;
+          var ix = u - 0.5;
+          var iy = v - 0.5;
+          var distanceToEdge = roundedRectSDF(ix, iy, 0.3, 0.2, 0.6);
+          var displacement = smoothStep(0.8, 0, distanceToEdge - 0.15);
+          var scaled = smoothStep(0, 1, displacement);
+          // texture(ix * scaled + 0.5, iy * scaled + 0.5)
+          var sx = ix * scaled + 0.5;
+          var sy = iy * scaled + 0.5;
+          var dx = sx * w - x;
+          var dy = sy * h - y;
+          if (Math.abs(dx) > maxScale) maxScale = Math.abs(dx);
+          if (Math.abs(dy) > maxScale) maxScale = Math.abs(dy);
+          rawX[i] = dx; rawY[i] = dy;
+        }
+        maxScale = maxScale * 0.35;  // 调小吸力, 边缘不那么'凸'
+        if (maxScale < 1) maxScale = 1;
+
+        for (var j = 0; j < w * h; j++) {
+          var r = rawX[j] / maxScale + 0.5;
+          var g = rawY[j] / maxScale + 0.5;
+          var p = j * 4;
+          data[p]     = Math.max(0, Math.min(255, r * 255));
+          data[p + 1] = Math.max(0, Math.min(255, g * 255));
+          data[p + 2] = 0;
+          data[p + 3] = 255;
+        }
+        ctx.putImageData(new ImageData(data, w, h), 0, 0);
+        feImage.setAttribute('href', canvas.toDataURL());
+        feDisp.setAttribute('scale', String(maxScale));
+      }
+      updateShader();
+
+      // 应用 backdrop-filter: 跟 shuding 完全一样
+      var bgVal = 'url(#' + id + '_filter) blur(0.5px)';
+      el.style.setProperty('backdrop-filter', bgVal, 'important');
+      el.style.setProperty('-webkit-backdrop-filter', bgVal, 'important');
+
+      // resize 重算
+      var ro = new ResizeObserver(function() {
+        var r2 = el.getBoundingClientRect();
+        var nw = Math.max(50, Math.round(r2.width));
+        var nh = Math.max(30, Math.round(r2.height));
+        if (nw === width && nh === height) return;
+        width = nw; height = nh;
+        canvas.width = nw; canvas.height = nh;
+        filter.setAttribute('width', String(nw));
+        filter.setAttribute('height', String(nh));
+        feImage.setAttribute('width', String(nw));
+        feImage.setAttribute('height', String(nh));
+        updateShader();
+      });
+      ro.observe(el);
+
+      console.log('[liquid-glass] ok', id, el.tagName, el.className.slice(0, 40));
+    }
+
+    function init() {
+      // 液态玻璃 (shuding 凸透镜): 只用在菜单抽屉 + 引擎下拉 + 搜索框 + toast
+      // 4 个弹窗 (关于/设置/声明/FAQ) 走普通高斯模糊 (CSS 端 url(#liquid-glass) + feGaussianBlur)
+      var targets = document.querySelectorAll('nav#menu, #enginePopover, #inputBox, .search_btn.glass-strong, .burger.glass, #success_box, #setsuccess_box');
+      console.log('[liquid-glass] found', targets.length, 'targets');
+      targets.forEach(function (el) {
+        if (el.dataset.liquidGlassInit) return;
+        el.dataset.liquidGlassInit = '1';
+        try { makeShader(el); } catch (e) { console.error('[liquid-glass]', e); }
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
 </script>
 </body>
 </html>

@@ -47,9 +47,11 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter: saturate(180%) blur(20px);
+  /* shuding/liquid-glass 真实实现: 浅色玻璃 (始终启用) */
+  background-color: rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.04),
     0 1px 2px rgba(0, 0, 0, 0.08),
@@ -86,7 +88,11 @@
 }
 
 .burger_btn:hover .burger {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 nav {
@@ -107,12 +113,13 @@ nav {
   transform: translateX(-100%);
   will-change: transform;
   transition: transform 0.36s cubic-bezier(0.32, 0.72, 0, 1);
-  /* Apple Big Sur 风格毛玻璃: 95% 不透明 + saturate 180% + 强 blur */
-  background-color: rgba(245, 245, 247, 0.78);
-  -webkit-backdrop-filter: saturate(180%) blur(30px);
-  backdrop-filter: saturate(180%) blur(30px);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 24px 60px rgba(0, 0, 0, 0.18);
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  /* shuding/liquid-glass 真实实现: 几乎透明 + SVG filter */
+  background-color: var(--glass-bg-soft);
+  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  box-shadow: var(--glass-shadow), 0 24px 60px rgba(0, 0, 0, 0.18);
+  border-right: 1px solid var(--glass-border);
+  /* 不要写 position: relative, 会覆盖上面的 position: fixed */
   overflow-y: auto;
   overflow-x: hidden;
   font-family: var(--font-text, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif);
@@ -207,7 +214,8 @@ main .content {
   line-height: 1.0;
   letter-spacing: 0.36px;
   text-transform: uppercase;
-  color: var(--color-ink-muted-48);
+  /* 在浅色玻璃底上加深到 80%, 保证可读 */
+  color: var(--color-ink-muted-80, #333);
   padding: 0 4px;
 }
 
@@ -236,6 +244,7 @@ main .content {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* 默认隐藏, 抽屉打开时 :checked 触发显示 */
   opacity: 0;
   transform: translateX(-12px);
   transition:
