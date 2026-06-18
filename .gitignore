@@ -2,3 +2,7 @@
 # 测试残留
 tmp-pup/
 tmp-edge-data/
+
+.dev.vars
+node_modules/
+.wrangler/

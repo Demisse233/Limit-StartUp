@@ -1,0 +1,14 @@
+# Cloudflare Pages 配置
+# Pages Functions 模式: functions/api/* 自动成为 /api/* 路由
+name = "limit-startup"
+
+# Pages 静态资源构建输出 (根目录 = 当前)
+pages_build_output_dir = "."
+
+# D1 数据库绑定
+[[d1_databases]]
+binding = "DB"
+database_name = "limit-startup-db"
+database_id = "de871d75-01ee-4fbc-a7af-62fddb23e6ff"
+
+# 头像走 D1 base64 (方案 C, 不需要 R2)

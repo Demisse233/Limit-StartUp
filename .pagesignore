@@ -1,0 +1,32 @@
+# 部署到 Pages 时排除
+.dev.vars
+.dev.vars.example
+.git
+.gitattributes
+.github
+.gitignore
+.vscode
+.pagesignore
+.wrangler/
+
+# 备份 / 测试残留
+index.html.bak
+beifen.txt
+.tmp-pup
+tmp-pup
+tmp-edge-data
+备份
+AGENTS.md
+README.md
+DESIGN-apple.md
+
+# 旧 / 暂用资源
+About me.html
+About me.css
+bg.css
+diy.css
+menu.min.css
+menu.scss
+node_modules
+schema.sql
+wrangler.toml

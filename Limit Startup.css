@@ -16,8 +16,8 @@
   --color-body: #1d1d1f;
   --color-body-on-dark: #ffffff;
   --color-body-muted: #cccccc;
-  --color-ink-muted-80: #333333;
-  --color-ink-muted-48: #7a7a7a;
+  --color-ink-muted-80: #1d1d1f;
+  --color-ink-muted-48: #1d1d1f;
   --color-divider-soft: #f0f0f0;
   --color-hairline: #e0e0e0;
   --color-canvas: #ffffff;
@@ -192,7 +192,7 @@ img { max-width: 100%; display: block; }
   position: fixed;
   top: 18px;
   left: 50%;
-  z-index: 70;
+  z-index: 200;  /* 高于所有 modal (120), 保证 toast 不被弹窗遮挡 */
   /* shuding/liquid-glass 真实实现 (与 .search_btn / .engine_popover 同款) */
   background-color: var(--glass-bg-strong);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
@@ -1876,7 +1876,7 @@ img { max-width: 100%; display: block; }
   align-items: flex-start;
   gap: 10px;
   margin-top: 4px;
-  padding: 12px 14px;
+  padding: 12px 14px 16px;
   /* 黄色玻璃: 高饱和暖黄半透明 + 琥珀左边框 (与液态玻璃风格一致) */
   background-color: rgba(255, 200, 60, 0.42);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
@@ -1992,4 +1992,691 @@ img { max-width: 100%; display: block; }
   .bg_choice_main { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .settings_box_title { font-size: 20px; }
   .close_about_btn svg { width: 24px; height: 24px; }
+}
+
+/* ============================================================
+   账号系统 (V4.0.3) - 弹窗 + 顶栏入口 + 账号 tab
+   ============================================================ */
+
+/* 3 个 auth modal 复用 .about 的样式; 内部用 .auth_modal 重排为
+   "hero 图标 + 标题 + 表单"的现代化布局, 切换时 hero icon + 标题同步动画 */
+
+/* 弹窗整体: 取消 .about 默认 padding, 用 auth 自有布局 */
+.auth_modal {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+/* 关闭按钮: 浮在右上角 (脱离原 setting_btn_box 的 row 布局) */
+.auth_close_btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+}
+
+/* hero 区: 顶部圆形渐变图标, 加大 + 更多上下留白 (Apple 风格) */
+.auth_hero {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 56px 0 24px;
+  overflow: hidden;
+}
+/* 取消顶部柔光, 走 Apple 风格: 干净背景 + 圆形图标自身光晕 */
+.auth_hero_icon {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0071e3 0%, #4f9bff 100%);
+  color: #fff;
+  /* 自身彩色光晕: 多层 box-shadow 形成柔光圈, 模仿 Apple ID 登录页 logo 光晕 */
+  box-shadow:
+    0 8px 32px rgba(0, 113, 227, 0.35),
+    0 0 0 1px rgba(0, 113, 227, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10);
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+              background 0.5s ease,
+              box-shadow 0.5s ease;
+}
+.auth_modal[data-mode="register"] .auth_hero_icon {
+  background: linear-gradient(135deg, #af52de 0%, #d384ff 100%);
+  box-shadow:
+    0 8px 32px rgba(175, 82, 222, 0.35),
+    0 0 0 1px rgba(175, 82, 222, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10);
+}
+.auth_modal[data-mode="reset"] .auth_hero_icon {
+  background: linear-gradient(135deg, #ff9f0a 0%, #ffc46b 100%);
+  box-shadow:
+    0 8px 32px rgba(255, 159, 10, 0.35),
+    0 0 0 1px rgba(255, 159, 10, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10);
+}
+/* icon 在 hero 中略微呼吸, 增强质感 */
+.auth_hero_icon { animation: authIconFloat 6s ease-in-out infinite; }
+@keyframes authIconFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+.auth_hero_svg {
+  width: 56%;
+  height: 56%;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+              opacity 0.4s ease;
+}
+/* 切换时 icon 旋转+淡出 (用 .is-switching-out 钩子) */
+.auth_modal.is-switching-out .auth_hero_svg {
+  transform: rotate(-90deg) scale(0.6);
+  opacity: 0;
+}
+.auth_modal.is-switching-in .auth_hero_svg {
+  transform: rotate(90deg) scale(0.6);
+  opacity: 0;
+}
+
+/* 动画舞台: 标题 + 引导 + 表单, Apple 风格宽松左右内边距 */
+.auth_anim_stage {
+  padding: 4px 40px 36px;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+              opacity 0.32s ease;
+}
+.auth_modal.is-switching-out .auth_anim_stage {
+  transform: translateX(-32px);
+  opacity: 0;
+}
+.auth_modal.is-switching-in .auth_anim_stage {
+  transform: translateX(32px);
+  opacity: 0;
+}
+
+/* 标题: Apple 风格大标题 */
+.auth_title {
+  margin: 0 0 8px 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+  text-align: center;
+}
+
+/* 引导文字: Apple 风格居中 */
+.auth_lead {
+  margin: 0 auto 24px;
+  max-width: 360px;
+  font-family: var(--font-text);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  line-height: 1.5;
+  color: var(--color-ink-muted-48);
+  text-align: center;
+}
+
+/* 表单 */
+.auth_form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* 浮动 label 字段 */
+.auth_field {
+  position: relative;
+}
+.auth_input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  border: 1px solid var(--glass-border);
+  background-color: var(--glass-bg-strong);
+  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  border-radius: 12px;
+  outline: none;
+  font-family: var(--font-text);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-ink);
+  letter-spacing: -0.2px;
+  box-shadow: var(--glass-shadow);
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.auth_input:hover {
+  border-color: rgba(0, 0, 0, 0.22);
+}
+.auth_input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.18), var(--glass-shadow);
+}
+/* autofill 不被浏览器加黄底 */
+.auth_input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.5) inset;
+  -webkit-text-fill-color: var(--color-ink);
+}
+
+/* 浮动 label: 跟首页 .inputBox span 一样, label 浮起到 input 外顶部
+   - 初始: top 0 + height 50 + line-height 50 (input 中央)
+   - 上浮: top -16 + height 16 + line-height 16 + font-size 12px
+   - 上浮后 label 底部 = 0, 正好贴着 input 上边沿外侧 */
+.auth_label {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  height: 50px;
+  line-height: 50px;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  font-family: var(--font-text);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-ink-muted-48);
+  letter-spacing: -0.2px;
+  background-color: transparent;
+  white-space: nowrap;
+  transition: top 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+              height 0.2s ease,
+              line-height 0.2s ease,
+              font-size 0.2s ease,
+              color 0.2s ease;
+}
+.auth_input:focus + .auth_label,
+.auth_input:not(:placeholder-shown) + .auth_label {
+  top: -16px;
+  height: 16px;
+  line-height: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--color-primary, #007AFF);
+}
+/* 失焦但有值: label 仍在上浮, 颜色变深变中性 */
+.auth_input:not(:focus):not(:placeholder-shown) + .auth_label {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+/* input 底部 focus 高亮条 (替代 bar) - 略, 改为用 box-shadow 强调 */
+
+/* 密码强度条 (注册/改密时显示) */
+.auth_strength {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.auth_strength_bar {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+.auth_strength_fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #ff3b30 0%, #ff9500 50%, #34c759 100%);
+  transition: width 0.3s cubic-bezier(0.32, 0.72, 0, 1), background-position 0.3s;
+}
+.auth_strength_text {
+  font-family: var(--font-text);
+  font-size: 11px;
+  color: var(--color-ink-muted-48);
+  letter-spacing: -0.1px;
+}
+
+.auth_error {
+  margin: 4px 0 0;
+  padding: 8px 12px;
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 500;
+  color: #C42F2F;
+  background: rgba(255, 90, 90, 0.10);
+  border: 1px solid rgba(255, 90, 90, 0.30);
+  border-radius: 8px;
+  letter-spacing: -0.2px;
+  animation: authShake 0.36s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes authShake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+
+.auth_actions {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 12px;
+}
+.auth_actions .diy_bg_but,
+.auth_actions .diy_bg_but2 { width: 100%; }
+
+/* 提交按钮: 集成 loading 状态 */
+.auth_submit {
+  position: relative;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+.auth_submit_text {
+  display: inline-block;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.auth_submit_spinner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: authSpin 0.7s linear infinite;
+}
+@keyframes authSpin {
+  to { transform: rotate(360deg); }
+}
+.auth_submit.is-loading .auth_submit_text { opacity: 0; }
+.auth_submit.is-loading .auth_submit_spinner { opacity: 1; }
+.auth_submit.is-success {
+  background: linear-gradient(135deg, #34c759 0%, #5dd87f 100%) !important;
+  pointer-events: none;
+}
+
+.auth_switch {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+}
+.auth_link {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary, #007AFF);
+  cursor: pointer;
+  letter-spacing: -0.2px;
+  transition: opacity 0.15s, transform 0.2s;
+}
+.auth_link:hover { opacity: 0.7; }
+.auth_link:active { opacity: 0.5; transform: scale(0.98); }
+
+/* 入场: 弹窗打开时 hero + title 弹性进入 */
+.auth_modal.is-open .auth_hero_icon { animation: authHeroIn 0.6s cubic-bezier(0.32, 0.72, 0, 1) 0.05s backwards, authIconFloat 6s ease-in-out 0.65s infinite; }
+.auth_modal.is-open .auth_title     { animation: authTitleIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) 0.10s backwards; }
+.auth_modal.is-open .auth_lead      { animation: authTitleIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) 0.15s backwards; }
+.auth_modal.is-open .auth_field     { animation: authFieldIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) backwards; }
+.auth_modal.is-open .auth_field:nth-of-type(1) { animation-delay: 0.20s; }
+.auth_modal.is-open .auth_field:nth-of-type(2) { animation-delay: 0.27s; }
+.auth_modal.is-open .auth_actions   { animation: authTitleIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) 0.34s backwards; }
+@keyframes authHeroIn {
+  0%   { transform: scale(0.5) rotate(-30deg); opacity: 0; }
+  60%  { transform: scale(1.08) rotate(4deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+@keyframes authTitleIn {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes authFieldIn {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* 兼容: 旧 .settings_field_* / .auth_hint 不用了, 但保留以防 JS 引用 */
+.auth_hint { display: none; }
+
+/* 顶栏账号入口 (浮在右上, 与汉堡按钮并列) */
+.account_entry {
+  position: fixed;
+  top: 14px;             /* 跟汉堡按钮 top: 12 + 居中补偿一致 */
+  right: 16px;           /* 跟汉堡 left: 16 对称 */
+  width: 40px;           /* 跟汉堡按钮 40x40 一致 */
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow: var(--glass-shadow);
+  cursor: pointer;
+  z-index: 100;
+  padding: 0;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  color: var(--color-ink);
+}
+.account_entry:hover { transform: scale(1.04); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.account_entry:active { transform: scale(0.96); }
+.account_entry .icon { width: 20px; height: 20px; color: var(--color-ink); }
+
+.account_entry--avatar { padding: 0; overflow: hidden; }
+.account_entry_avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--glass-bg-strong);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 账号菜单 (下拉) — iCloud 风格: 顶部用户块 + 列表项 */
+.account_menu {
+  position: fixed;
+  min-width: 260px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background-color: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  backdrop-filter: blur(30px) saturate(1.5);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+  z-index: 140;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-text);
+}
+.account_menu_header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  margin-bottom: 4px;
+}
+.account_menu_avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.06);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-muted-48);
+  overflow: hidden;
+}
+.account_menu_avatar svg { width: 20px; height: 20px; opacity: 0.6; }
+.account_menu_avatar.has-avatar { background-color: transparent; }
+.account_menu_avatar.has-avatar svg { display: none; }
+.account_menu_meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.account_menu_email {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-ink);
+  letter-spacing: -0.2px;
+  word-break: break-all;
+  line-height: 1.3;
+}
+.account_menu_sync {
+  font-size: 12px;
+  color: var(--color-ink-muted-48);
+  line-height: 1.3;
+}
+.account_menu_list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.account_menu_item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-ink);
+  text-align: left;
+  width: 100%;
+  transition: background-color 0.12s ease;
+}
+.account_menu_item:hover { background-color: rgba(0,0,0,0.06); }
+.account_menu_item:active { background-color: rgba(0,0,0,0.1); }
+.account_menu_item_icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-ink);
+}
+.account_menu_item_icon svg { width: 18px; height: 18px; }
+.account_menu_item_label {
+  flex: 1;
+  font-weight: 400;
+  letter-spacing: -0.1px;
+}
+.account_menu_item--danger { color: #d70015; }
+.account_menu_item--danger .account_menu_item_icon { color: #d70015; }
+.account_menu_item--danger:hover { background-color: rgba(215, 0, 21, 0.08); }
+.account_menu_item--danger:active { background-color: rgba(215, 0, 21, 0.14); }
+
+/* 账号 tab 内的用户卡片 */
+.account_user_card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+.account_avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.06);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-muted-48);
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.account_avatar svg { width: 28px; height: 28px; opacity: 0.6; }
+/* 有头像时: 完全圆形裁剪, 隐藏 svg */
+.account_avatar.has-avatar { background-color: transparent; }
+.account_avatar.has-avatar svg { display: none; }
+.account_user_meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+/* user card 右侧操作区: 修改密码 + 登出 按钮 (横向排列) */
+.account_user_actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: center;
+}
+.account_user_actions .diy_bg_but2 {
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+/* 登出按钮: 红色字 + 红色边框 (危险操作强调) */
+.account_logout_btn {
+  color: #d70015 !important;
+  border-color: rgba(215, 0, 21, 0.5) !important;
+  background-color: rgba(215, 0, 21, 0.06) !important;
+}
+.account_logout_btn:hover {
+  background-color: rgba(215, 0, 21, 0.12) !important;
+  border-color: rgba(215, 0, 21, 0.7) !important;
+}
+.account_logout_btn:active { transform: scale(0.96); }
+.account_email {
+  font-family: var(--font-text);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+  letter-spacing: -0.2px;
+  word-break: break-all;
+}
+.account_sync_state {
+  font-family: var(--font-text);
+  font-size: 12px;
+  color: var(--color-ink-muted-48);
+  letter-spacing: -0.1px;
+}
+
+/* 隐藏老占位元素 (保险) */
+.settings_account_placeholder { display: none !important; }
+
+/* 移动端: 顶栏入口贴右上 (汉堡可能隐藏) */
+@media (max-width: 480px) {
+  .account_entry { top: 10px; right: 12px; width: 36px; height: 36px; }
+  .account_entry .icon { width: 18px; height: 18px; }
+  .account_menu { right: 8px !important; min-width: 220px; }
+}
+
+/* hidden 属性: 强制隐藏 (防止 display: flex !important 之类的覆盖) */
+[hidden] { display: none !important; }
+
+/* 菜单抽屉 footer: ICP 备案号 + 公网安备 (V4.0.5) */
+.nav_footer {
+  margin-top: auto;
+  padding: 14px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.nav_footer_icp {
+  margin: 0;
+  font-family: var(--font-text);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: -0.1px;
+}
+.nav_footer_icp a {
+  color: var(--color-ink);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav_footer_icp a:hover {
+  color: var(--color-primary, #007AFF);
+  text-decoration: underline;
+}
+.nav_footer_icp_link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav_footer_icp_mps {
+  height: 14px;
+  width: auto;
+  display: inline-block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+
+/* 页面底部 ICP 备案号 (V4.0.4) - 固定小按钮, 不抢眼 */
+.page_footer_icp {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  font-family: var(--font-text);
+  flex-wrap: wrap;
+  padding: 0 12px;
+}
+.page_footer_icp a {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1px;
+  color: var(--color-ink-muted-48);
+  background-color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  text-decoration: none;
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  backdrop-filter: blur(8px) saturate(1.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: color 0.15s, background-color 0.2s, transform 0.15s;
+  opacity: 0.85;
+}
+.page_footer_icp a:hover {
+  color: var(--color-primary, #007AFF);
+  background-color: rgba(255, 255, 255, 0.85);
+  opacity: 1;
+  transform: translateY(-1px);
+}
+.page_footer_icp a:active { transform: translateY(0); }
+.page_footer_icp_shield {
+  display: inline-flex;
+  color: inherit;
+  opacity: 0.7;
+}
+.page_footer_icp_mps {
+  height: 14px;
+  width: auto;
+  display: inline-block;
+  flex-shrink: 0;
+  object-fit: contain;
 }
