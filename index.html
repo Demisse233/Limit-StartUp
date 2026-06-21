@@ -5,14 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demisse 知识库</title>
-    <link rel="stylesheet" href="Limit Startup.css">
+    <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="menu.css">
     <link rel="stylesheet" href="diy.css">
+    <link rel="stylesheet" href="Limit Startup.css">
     <link rel="shortcut icon" href="src/icon.png">
 </head>
-<body onload="load()">
+<body>
 <!-- 登录弹窗 -->
-<div id="auth_login_box" class="about glass-strong auth_modal" data-mode="login" hidden>
+<div id="auth_login_box" class="about glass-strong auth_modal" data-mode="login">
   <button class="close_about_btn glass auth_close_btn" onclick="closeAuthModal('auth_login_box')" aria-label="关闭">
     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
   </button>
@@ -42,6 +45,9 @@
         <span class="auth_field_bar"></span>
       </div>
       <div class="auth_error" id="auth_login_error" hidden></div>
+      <div class="auth_turnstile">
+        <div id="cf-turnstile-login" class="cf-turnstile" data-sitekey="0x4AAAAAADnCSF3mvj9vqAEf" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError"></div>
+      </div>
       <div class="auth_actions">
         <button type="button" class="diy_bg_but glass-strong auth_submit" id="auth_login_submit" data-loading-text="登录中...">
           <span class="auth_submit_text">登录</span>
@@ -56,7 +62,7 @@
 </div>
 
 <!-- 注册弹窗 -->
-<div id="auth_register_box" class="about glass-strong auth_modal" data-mode="register" hidden>
+<div id="auth_register_box" class="about glass-strong auth_modal" data-mode="register">
   <button class="close_about_btn glass auth_close_btn" onclick="closeAuthModal('auth_register_box')" aria-label="关闭">
     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
   </button>
@@ -81,6 +87,11 @@
         <span class="auth_field_bar"></span>
       </div>
       <div class="auth_field">
+        <input type="text" class="auth_input glass-strong" id="auth_register_nickname" placeholder=" " autocomplete="nickname" maxlength="24">
+        <label for="auth_register_nickname" class="auth_label">昵称 (1-24 位)</label>
+        <span class="auth_field_bar"></span>
+      </div>
+      <div class="auth_field">
         <input type="password" class="auth_input glass-strong" id="auth_register_password" placeholder=" " autocomplete="new-password">
         <label for="auth_register_password" class="auth_label">密码</label>
         <span class="auth_field_bar"></span>
@@ -90,6 +101,9 @@
         </div>
       </div>
       <div class="auth_error" id="auth_register_error" hidden></div>
+      <div class="auth_turnstile">
+        <div id="cf-turnstile-register" class="cf-turnstile" data-sitekey="0x4AAAAAADnCSF3mvj9vqAEf" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError"></div>
+      </div>
       <div class="auth_actions">
         <button type="button" class="diy_bg_but glass-strong auth_submit" id="auth_register_submit" data-loading-text="注册中...">
           <span class="auth_submit_text">注册</span>
@@ -103,8 +117,8 @@
   </div>
 </div>
 
-<!-- 改密码弹窗 (已登录用户, 需旧密码) -->
-<div id="auth_reset_box" class="about glass-strong auth_modal" data-mode="reset" hidden>
+<!-- 改密码弹窗 -->
+<div id="auth_reset_box" class="about glass-strong auth_modal" data-mode="reset">
   <button class="close_about_btn glass auth_close_btn" onclick="closeAuthModal('auth_reset_box')" aria-label="关闭">
     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
   </button>
@@ -138,6 +152,9 @@
         </div>
       </div>
       <div class="auth_error" id="auth_reset_error" hidden></div>
+      <div class="auth_turnstile">
+        <div id="cf-turnstile-reset" class="cf-turnstile" data-sitekey="0x4AAAAAADnCSF3mvj9vqAEf" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError"></div>
+      </div>
       <div class="auth_actions">
         <button type="button" class="diy_bg_but glass-strong auth_submit" id="auth_reset_submit" data-loading-text="提交中...">
           <span class="auth_submit_text">修改密码</span>
@@ -236,7 +253,6 @@
         <div class="nav_mega_col">
           <div class="nav_section_title">项目</div>
           <ul class="nav_mega_list">
-            <li><a class="nav_mega_item" href="https://demisse.gitee.io/my-homepage" target="_blank" rel="noopener">关于作者</a></li>
             <li><a class="nav_mega_item" href="https://github.com/Demisse233/Limit-StartUp" target="_blank" rel="noopener">Github 仓库</a></li>
             <li><a class="nav_mega_item" href="javascript:void(0)" onclick="about_jump()">关于 Limit Startup</a></li>
           </ul>
@@ -252,7 +268,7 @@
       <div class="nav_footer">
         <p class="nav_footer_icp">
           <a class="nav_footer_icp_link" href="https://beian.mps.gov.cn/#/query/webSearch?code=32010402002535" target="_blank" rel="noreferrer">
-            <img class="nav_footer_icp_mps" src="/src/备案图标.png" alt="" aria-hidden="true">
+            <img class="nav_footer_icp_mps" src="/src/备案图标.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <span>苏公网安备32010402002535号</span>
           </a>
         </p>
@@ -332,7 +348,7 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge glass-strong">Version 4.0.5</span>
+                        <span class="about_version_badge glass-strong">Version 4.0.8</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
@@ -348,15 +364,64 @@
                 </section>
                 <!-- 更新日志 -->
                 <section class="settings_section">
-                    <header class="settings_section_head">
+                    <div class="settings_section_head">
                         <span class="settings_section_icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                         </span>
                         <div class="settings_section_titles">
                             <h2 class="settings_section_title">更新日志</h2>
                         </div>
-                    </header>
+                    </div>
                     <div class="changelog">
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.0.8</span>
+                                <span class="changelog_version_date">2026.6.20</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">注册弹窗加昵称字段（1-24 位），后端校验后写入 DB</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">账号设置加修改昵称（PUT /api/auth/nickname），保存后立即刷新问候语</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">问候语改读云端 user.nickname，未登录保持 User；移除设置里的 "问候语" section 和 localStorage welcomeText（已统一走云端昵称）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索联想词改回前端 JSONP 直连百度，响应 ~100ms（之前走后端代理因 CF Workers 冷启动要 1-2s）</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">CSP 加白 sp0.baidu.com（前端 JSONP 必需）和 static.cloudflareinsights.com（CF Web Analytics 兼容）</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">点遮罩关弹窗：补全 auth_login/register/reset 三个 id 到 ids 数组，关闭后正确同步移除 body.modal-open</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">Turnstile 300010 综合修复：改显式 render + auth 弹窗去掉 hidden 父级（避免 display:none 触发）+ 8s 超时看门狗（网络到 CF challenges 不稳定时给用户明确提示）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗整体重构：section 改 row 紧贴 panel（首/尾圆角 + 中间 1px 分隔线），section 标题 15px 粗体、icon 缩到 24px；同类型子分组（时间格式 / 时间外观 / 日期显示、预设壁纸 / 自定义上传）保留在同一个 section 内用 group label 区分，账号 tab 账号卡改 grid 三列布局（64px 头像 + 邮箱/状态 + 操作按钮），"请注意"提示框从金黄色改为浅灰 info</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">设置弹窗底部 tab 栏定位根因：menu.css line 98 全局 <code>nav</code> 规则把 <code>.settings_sidebar / .settings_tabbar</code> 强制设成 <code>position: fixed; top/left/bottom: 0; width: 360px; transform: translateX(-100%)</code> 抽屉菜单样式（之前只覆盖了 transform, 其他属性没碰, 导致 tab 跑出弹窗到首页）。改为一次性全部重置回 static/auto, 配合 .settings_body 用 grid 1fr auto 让 tab 在文档流内贴底</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">设置弹窗底部 tab 栏定位<b>真正</b>根因：#settings_box 内部少一个 <code>&lt;/div&gt;</code> 关闭 settings_box 自身（line 1117 之后缺缩进 8 的关闭标签），浏览器解析时把 .settings_tabbar_wrap 重新挂到了 .main 下面（实际位置：首页中央水平居中）。补一个 <code>&lt;/div&gt;</code> 关闭 settings_box 后，DOM 树恢复正常（puppeteer 验证：.settings_tabbar_wrap.parent === #settings_box，rect 在弹窗内底部 742px）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗底部 tab 栏改回 absolute 浮起 (iOS 时钟 App 效果)：修好 DOM 嵌套后 containing block 正确，.settings_tabbar_wrap 重新用 position:absolute + bottom:16px + left:50% + transform:translateX(-50%) 浮在弹窗底部；.settings_pages padding-bottom 加到 100px (tab 高度 + margin + 余量)，内容能滚到 tab 视觉区域之下，tab 用 glass-strong 半透明液态玻璃"透"出下方内容</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗 tab hover 反馈从变色改为透明背景 + icon/label 微缩放 1.06: 之前 hover 用 divider-soft 背景但 z-index:2 > pill z-index:1 会把激活态 pill 盖住，看起来像另一个激活态 (视觉冲突)。改为透明背景 + icon/label scale 1.06 + 文字加深 (iOS 时钟 App 风格, 轻量反馈, 跟激活态完全区分开)</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗导航彻底重做 (iOS 系统设置风格)：删除底部 tab 栏 (3 个图标+标签的胶囊), 改为一级菜单 + push 进二级页的导航模式。一级菜单: 3 个分类卡片 (个性化/搜索/账号), 玻璃风格, 左 icon (蓝/紫/绿渐变) + 标题 + 描述 + > chevron, 跟 iOS 设置列表视觉一致。二级页: 顶部 < 返回按钮 + 22px 大标题 (sticky 在页头, 液态玻璃 backdrop-filter blur 透出下方内容), 下面 3-4 个 section card。push 动画: 新 page 从右 (translateX(60px) + opacity 0) 滑入到中心 (cubic-bezier(0.32, 0.72, 0, 1) 360ms), 旧 menu 同步向左淡出 (-20px + opacity 0); pop 动画对称反向。每次打开弹窗默认回到一级菜单, 避免上次停在账号的尴尬</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">删 .settings_tabbar_wrap 段时多删了 2 个 settings_box 关闭 <code>&lt;/div&gt;</code>, 导致 #shengming_box 被吞进 settings_box 内部, 声明弹窗的 DOM 跑出位置。补回 2 个 <code>&lt;/div&gt;</code> + 恢复 <code>&lt;div id="shengming_box"&gt;</code> 开标签 + <code>&lt;div class="setting_btn_box"&gt;</code> 包裹, puppeteer 验证 #shengming_box.parent === body, 正常独立 modal 渲染</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">设置弹窗 page 内容错位综合根因：HTML 解析器对不闭合标签的修复路径叠加造成 (1) 9 处 <code>&lt;div class=&quot;settings_section_head&quot;&gt;</code> 错配 <code>&lt;/header&gt;</code> 关闭 (应配 <code>&lt;/div&gt;</code>) → 浏览器把 <code>&lt;section&gt;</code> 解析成 settings_page 兄弟级 (2) 个性化 page 内 <code>bg_choice_main</code> 关闭后多出一个 <code>&lt;/div&gt;</code> 让 settings_section_body 提前关闭 → <code>#settingsPagePersonalize</code> 整个 div 被提早关闭, 后面的 3 个 section 全部跑到 .settings_pages 直接子级。全部 10 处 <code>&lt;/header&gt;</code> → <code>&lt;/div&gt;</code> + 删 1 处多余 <code>&lt;/div&gt;</code> 后 puppeteer 验证: personalize 4 section (壁纸/时间/初始化/页脚) / account 2 section (未登录/已登录) / search 1 section (搜索引擎) 父级全部正确, 切 tab 不再错位</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">设置弹窗"点不开"根因：重构 iOS 风格两级导航时又漏关 <code>#about</code> 的 2 个 <code>&lt;/div&gt;</code>（line 765 之后 <code>&lt;div class="settings_main_box"&gt;</code> 和 <code>&lt;div id="about"&gt;</code> 没闭合），浏览器把 <code>#settings_box</code> 自动 reparent 到 <code>#about > .settings_main_box</code> 里，position:fixed 仍然生效但 stacking context 被外层吞了 → 弹窗打开后内容空白（puppeteer 验证：modal opacity 1 visibility visible，但 children rect 全是 0、background-color 透出灰色）。补 2 个 <code>&lt;/div&gt;</code> 后 <code>#settings_box</code> 回到 <code>.main</code> 直接子级，settings 标题/分类卡片/二级 page 全部正常显示，个性化/搜索/账号 3 个 page push 切页都通</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">代码整体优化（删冗余 + 提速）：① 移除 jQuery 3.7.1（31KB CDN 依赖，全文件仅 1 处用，已替换为原生 JS）② 删除 9 个重复的壁纸 IIFE 监听器合并为 1 个事件委托（之前 for 循环里嵌 9 个 IIFE 跑 81 次 addEventListener）③ 顺便修复原版 wallpaper 设置实际不生效的 bug（旧 shorthand 语法 `url(...);background-...` 浏览器不解析）④ 删除 dead CSS：settings_tabbar_wrap/nav_item/menu、update_text、add/update/fix/del_ui_box、version、about_text、settings_box_subtitle、set_choice 等 14 个未用 class（-1.2KB）⑤ 删 DOMContentLoaded 里 dead 的 #settingsSidebar / moveTabbarPill 引用 ⑥ 9 张预设壁纸 + 2 张备案图标 img 加 loading="lazy" decoding="async"（首屏不下载这 5.4MB，按需加载）⑦ head 加 challenges.cloudflare.com preconnect + fonts dns-prefetch。结果：loadMs 8.6s → 6.5s（-24%），DCL 6.6s → 4.4s（-33%），script 数 3 → 2</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.0.9</span>
+                                <span class="changelog_version_date">2026.6.21</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">页脚"苏公网安备"前的 <code>备案图标.png</code> 被全局 <code>img{display:block}</code> 规则顶走，<code>.page_footer_icp_mps</code> 加 <code>!important</code> + <code>vertical-align:middle</code> 恢复 14px 高度内联对齐</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗 Edge 色带断层根因修复 (玻璃风保留)：弹窗 <code>.is-open</code> 打开动画结束后，<code>transform</code> 从 <code>translate(-50%, -50%) scale(1)</code> 收回到 <code>translate(-50%, -50%)</code>（去掉 scale）+ 清掉 <code>will-change</code>，让 backdrop-filter 跑在 identity transform 的合成层上，不再触发 Edge/Chromium 著名的 <code>position:fixed + transform:scale + 大 radius backdrop-filter</code> 合成 bug (puppeteer 复现：底图用彩色渐变时弹窗下半部出现明显水平色带)。关闭动画仍从 identity 状态 scale(0.96) 弹回去。同期：① 一级分类卡片 hover/active 去掉 <code>transform: scale()</code> 缩放 (puppeteer 实测 hover 态 transform: none) ② <code>.settings_menu</code> 加 <code>display:flex; gap:10px</code>，3 个分类卡片间距从 ~30px 收到 10px</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.0.6</span>
+                                <span class="changelog_version_date">2026.6.18</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">JWT 加 exp (7天) + token_version 字段，改密 / 登出后旧 token 立即失效 (双保险: jti 黑名单 + tv 校验)</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">头像加载改为 fetch + Authorization header + blob URL，token 不再出现在 URL (防止日志 / Referer / 浏览器历史泄漏)</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">注册 / 登录 / 改密弹窗接 Cloudflare Turnstile 人机验证</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">KV 限流：注册 5次/小时、登录 10次/小时、改密 5次/小时（同 IP）</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">public/_headers 加 HSTS / X-Frame-Options / CSP / Permissions-Policy；/api/* 加 Cache-Control: no-store</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">/.well-known/security.txt 安全披露入口</span></li>
+                            </ul>
+                        </article>
                         <article class="changelog_version">
                             <header class="changelog_version_head">
                                 <span class="changelog_version_tag">V4.0.5</span>
@@ -712,8 +777,8 @@
                         </article>
                     </div>
                 </section>
+                </div>
             </div>
-        </div>
 <!-- 设置界面 -->
         <div id="settings_box" class="settings_box glass-strong">
             <div class="setting_btn_box">
@@ -728,244 +793,276 @@
                 <!-- 左侧导航 (桌面) / 顶部 tab (移动) -->
                 <!-- 内容区: 4 个 page, 只显示当前选中的 -->
                 <div class="settings_pages">
-                    <!-- Page: 个性化 -->
-                    <div class="settings_page is-active" data-page="personalize" id="settingsPagePersonalize">
-                    <section class="settings_section">
-                        <header class="settings_section_head">
-                            <span class="settings_section_icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
+<!-- 一级菜单 (iOS 系统设置风格: 3 个分类卡片) -->
+                    <div class="settings_menu" id="settingsMenu" data-state="active">
+                        <a href="javascript:void(0)" class="settings_menu_item glass" data-page="personalize" onclick="enterSettingsPage('personalize')">
+                            <span class="settings_menu_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="m21 16-5-5-9 9"/></svg>
                             </span>
-                            <div class="settings_section_titles">
-                                <div class="settings_section_title">问候语</div>
-                            </div>
-                        </header>
-                        <div class="settings_section_body">
-                            <label class="settings_field">
-                                <span class="settings_field_label">您希望被称呼为</span>
-                                <div class="settings_field_row">
-                                    <input type="text" class="special-input glass-strong" id="input-text" value="User" placeholder="输入称呼">
-                                    <button class="diy_bg_but glass-strong" id="change-btn">保存</button>
-                                </div>
-                            </label>
+                            <span class="settings_menu_text">
+                                <span class="settings_menu_title">个性化</span>
+                                <span class="settings_menu_sub">壁纸、时间、显示与基础偏好</span>
+                            </span>
+                            <span class="settings_menu_chev" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                            </span>
+                        </a>
+                        <a href="javascript:void(0)" class="settings_menu_item glass" data-page="search" onclick="enterSettingsPage('search')">
+                            <span class="settings_menu_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                            </span>
+                            <span class="settings_menu_text">
+                                <span class="settings_menu_title">搜索</span>
+                                <span class="settings_menu_sub">默认搜索引擎与联想源</span>
+                            </span>
+                            <span class="settings_menu_chev" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                            </span>
+                        </a>
+                        <a href="javascript:void(0)" class="settings_menu_item glass" data-page="account" onclick="enterSettingsPage('account')">
+                            <span class="settings_menu_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
+                            </span>
+                            <span class="settings_menu_text">
+                                <span class="settings_menu_title">账号</span>
+                                <span class="settings_menu_sub">登录、昵称与头像</span>
+                            </span>
+                            <span class="settings_menu_chev" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                            </span>
+                        </a>
+                    </div>
+                    <!-- Page: 个性化 (push 进入) -->
+                                        <div class="settings_page" data-page="personalize" id="settingsPagePersonalize">
+                        <div class="settings_page_head">
+                            <button type="button" class="settings_back_btn glass" onclick="backToSettingsMenu()" aria-label="返回设置分类">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+                            </button>
+                            <div class="settings_page_title">个性化</div>
                         </div>
-                    </section>
-                    <section class="settings_section">
-                        <header class="settings_section_head">
-                            <span class="settings_section_icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="m21 16-5-5-9 9"/></svg>
-                            </span>
-                            <div class="settings_section_titles">
-                                <div class="settings_section_title">壁纸</div>
-                            </div>
-                        </header>
-                        <div class="settings_section_body">
-                            <div class="settings_subsection_title">预设壁纸</div>
-                            <div class="bg_choice_main" id="bg_choice">
-                                <div class="bg_choice_small" id="bg1" onclick="set_effect ()" aria-label="壁纸 1">
-                                    <img class="bg_pic" src="./src/1.png" alt="壁纸 1">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
-                                </div>
-                                <div class="bg_choice_small" id="bg2" onclick="set_effect ()" aria-label="壁纸 2">
-                                    <img class="bg_pic" src="./src/2.jpg" alt="壁纸 2">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
-                                </div>
-                                <div class="bg_choice_small" id="bg3" onclick="set_effect ()" aria-label="壁纸 3">
-                                    <img class="bg_pic" src="./src/3.JPG" alt="壁纸 3">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
-                                </div>
-                                <div class="bg_choice_small" id="bg4" onclick="set_effect ()" aria-label="壁纸 4">
-                                    <img class="bg_pic" src="./src/4.JPG" alt="壁纸 4">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
-                                </div>
-                                <div class="bg_choice_small" id="bg5" onclick="set_effect ()" aria-label="壁纸 5">
-                                    <img class="bg_pic" src="./src/5.JPG" alt="壁纸 5">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
-                                </div>
-                                <div class="bg_choice_small" id="bg6" onclick="set_effect ()" aria-label="壁纸 6">
-                                    <img class="bg_pic" src="./src/6.JPG" alt="壁纸 6">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
-                                </div>
-                                <div class="bg_choice_small" id="bg7" onclick="set_effect ()" aria-label="壁纸 7">
-                                    <img class="bg_pic" src="./src/7.jpg" alt="壁纸 7">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
-                                </div>
-                                <div class="bg_choice_small" id="bg8" onclick="set_effect ()" aria-label="壁纸 8">
-                                    <img class="bg_pic" src="./src/8.jpg" alt="壁纸 8">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
-                                </div>
-                                <div class="bg_choice_small" id="bg9" onclick="set_effect ()" aria-label="壁纸 9">
-                                    <img class="bg_pic" src="./src/9.jpg" alt="壁纸 9">
-                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                        <section class="settings_section">
+                            <div class="settings_section_head">
+                                <span class="settings_section_icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="m21 16-5-5-9 9"/></svg>
+                                </span>
+                                <div class="settings_section_titles">
+                                    <div class="settings_section_title">壁纸</div>
                                 </div>
                             </div>
-                            <div class="settings_subsection_title settings_subsection_title--spaced">自定义上传</div>
-                            <div class="settings_upload glass">
-                                <label class="settings_upload_field glass-strong" for="imageFile">
+                            <div class="settings_section_body">
+                                <div class="settings_subsection_title">预设壁纸</div>
+                                <div class="bg_choice_main" id="bg_choice">
+                                    <div class="bg_choice_small" id="bg1" onclick="set_effect ()" aria-label="壁纸 1">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/1.png" alt="壁纸 1">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                    <div class="bg_choice_small" id="bg2" onclick="set_effect ()" aria-label="壁纸 2">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/2.jpg" alt="壁纸 2">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                    <div class="bg_choice_small" id="bg3" onclick="set_effect ()" aria-label="壁纸 3">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/3.JPG" alt="壁纸 3">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                    <div class="bg_choice_small" id="bg4" onclick="set_effect ()" aria-label="壁纸 4">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/4.JPG" alt="壁纸 4">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                    <div class="bg_choice_small" id="bg5" onclick="set_effect ()" aria-label="壁纸 5">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/5.JPG" alt="壁纸 5">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                    <div class="bg_choice_small" id="bg6" onclick="set_effect ()" aria-label="壁纸 6">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/6.JPG" alt="壁纸 6">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                    <div class="bg_choice_small" id="bg7" onclick="set_effect ()" aria-label="壁纸 7">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/7.jpg" alt="壁纸 7">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                    <div class="bg_choice_small" id="bg8" onclick="set_effect ()" aria-label="壁纸 8">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/8.jpg" alt="壁纸 8">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                    <div class="bg_choice_small" id="bg9" onclick="set_effect ()" aria-label="壁纸 9">
+                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/9.jpg" alt="壁纸 9">
+                                    <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
+                                    </div>
+                                </div>
+                                <div class="settings_subsection_title">自定义上传</div>
+                                <div class="settings_upload glass">
+                                    <label class="settings_upload_field glass-strong" for="imageFile">
                                     <span class="settings_upload_field_label">选择本地图片</span>
                                     <span class="settings_upload_filename" id="upload-filename">未选择文件</span>
-                                </label>
-                                <input type="file" id="imageFile" accept="image/*" class="settings_upload_input">
-                                <div class="settings_upload_actions">
+                                    </label>
+                                    <input type="file" id="imageFile" accept="image/*" class="settings_upload_input">
+                                    <div class="settings_upload_actions">
                                     <button class="diy_bg_but2 glass" onclick="resetBackground()">重置网页壁纸</button>
                                     <button class="diy_bg_but glass-strong" onclick="uploadImage()">设为壁纸</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="set_notice" role="note">
-                                <span class="set_notice_icon" aria-hidden="true">
+                                <div class="set_notice" role="note">
+                                    <span class="set_notice_icon" aria-hidden="true">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
-                                </span>
-                                <div class="set_notice_body">
+                                    </span>
+                                    <div class="set_notice_body">
                                     <div class="set_notice_title">请注意</div>
                                     <ol class="set_notice_list">
                                         <li>请不要上传超过 4MB 的图片，否则将无法保存。</li>
                                         <li>自定义壁纸前请先点击"重置网页壁纸"按钮。</li>
                                         <li>此功能在移动设备上可能无法使用。</li>
                                     </ol>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
-                    <section class="settings_section">
-                        <header class="settings_section_head">
-                            <span class="settings_section_icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
-                            </span>
-                            <div class="settings_section_titles">
-                                <div class="settings_section_title">时间与日期</div>
+                            </section>
+                            <section class="settings_section">
+                            <div class="settings_section_head">
+                                <span class="settings_section_icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+                                </span>
+                                <div class="settings_section_titles">
+                                    <div class="settings_section_title">时间与日期</div>
+                                </div>
                             </div>
-                        </header>
-                        <div class="settings_section_body">
-                            <div class="settings_subsection_title">时间格式</div>
-                            <label class="settings_field">
-                                <span class="settings_field_label">24 小时制</span>
-                                <span class="settings_field_control">
+                            <div class="settings_section_body">
+                                <div class="settings_subsection_title">时间格式</div>
+                                <label class="settings_field">
+                                    <span class="settings_field_label">24 小时制</span>
+                                    <span class="settings_field_control">
                                     <input type="checkbox" class="settings_toggle" id="time24h" checked>
                                     <span class="settings_toggle_track" aria-hidden="true"></span>
-                                </span>
-                            </label>
-                            <label class="settings_field">
-                                <span class="settings_field_label">显示秒钟</span>
-                                <span class="settings_field_control">
+                                    </span>
+                                </label>
+                                <label class="settings_field">
+                                    <span class="settings_field_label">显示秒钟</span>
+                                    <span class="settings_field_control">
                                     <input type="checkbox" class="settings_toggle" id="timeShowSeconds">
                                     <span class="settings_toggle_track" aria-hidden="true"></span>
-                                </span>
-                            </label>
-                            <label class="settings_field">
-                                <span class="settings_field_label">闪烁时间分隔符</span>
-                                <span class="settings_field_control">
+                                    </span>
+                                </label>
+                                <label class="settings_field">
+                                    <span class="settings_field_label">闪烁时间分隔符</span>
+                                    <span class="settings_field_control">
                                     <input type="checkbox" class="settings_toggle" id="timeBlinkColon">
                                     <span class="settings_toggle_track" aria-hidden="true"></span>
-                                </span>
-                            </label>
-                            <div class="settings_subsection_title">时间外观</div>
-                            <label class="settings_field">
-                                <span class="settings_field_label">时间字体大小</span>
-                                <span class="settings_field_control">
+                                    </span>
+                                </label>
+                                <div class="settings_subsection_title">时间外观</div>
+                                <label class="settings_field">
+                                    <span class="settings_field_label">时间字体大小</span>
+                                    <span class="settings_field_control">
                                     <select class="settings_select" id="timeFontSize">
                                         <option value="sm">小</option>
                                         <option value="md" selected>中</option>
                                         <option value="lg">大</option>
                                     </select>
-                                </span>
-                            </label>
-                            <label class="settings_field">
-                                <span class="settings_field_label">时间字体粗细</span>
-                                <span class="settings_field_control">
+                                    </span>
+                                </label>
+                                <label class="settings_field">
+                                    <span class="settings_field_label">时间字体粗细</span>
+                                    <span class="settings_field_control">
                                     <select class="settings_select" id="timeFontWeight">
                                         <option value="300">细体</option>
                                         <option value="500" selected>常规</option>
                                         <option value="700">粗体</option>
                                     </select>
-                                </span>
-                            </label>
-                            <div class="settings_subsection_title">日期显示</div>
-                            <label class="settings_field">
-                                <span class="settings_field_label">显示年份</span>
-                                <span class="settings_field_control">
+                                    </span>
+                                </label>
+                                <div class="settings_subsection_title">日期显示</div>
+                                <label class="settings_field">
+                                    <span class="settings_field_label">显示年份</span>
+                                    <span class="settings_field_control">
                                     <input type="checkbox" class="settings_toggle" id="dateShowYear" checked>
                                     <span class="settings_toggle_track" aria-hidden="true"></span>
-                                </span>
-                            </label>
-                            <label class="settings_field">
-                                <span class="settings_field_label">年月日显示格式</span>
-                                <span class="settings_field_control">
+                                    </span>
+                                </label>
+                                <label class="settings_field">
+                                    <span class="settings_field_label">年月日显示格式</span>
+                                    <span class="settings_field_control">
                                     <select class="settings_select" id="dateFormat">
                                         <option value="cn" selected>2026年6月14日</option>
                                         <option value="slash">2026/6/14</option>
                                         <option value="iso">2026-06-14</option>
                                     </select>
-                                </span>
-                            </label>
-                            <label class="settings_field">
-                                <span class="settings_field_label">显示星期几</span>
-                                <span class="settings_field_control">
+                                    </span>
+                                </label>
+                                <label class="settings_field">
+                                    <span class="settings_field_label">显示星期几</span>
+                                    <span class="settings_field_control">
                                     <input type="checkbox" class="settings_toggle" id="dateShowWeekday">
                                     <span class="settings_toggle_track" aria-hidden="true"></span>
-                                </span>
-                            </label>
-                            <label class="settings_field" data-depends-on="dateShowWeekday">
-                                <span class="settings_field_label">星期显示</span>
-                                <span class="settings_field_control">
+                                    </span>
+                                </label>
+                                <label class="settings_field" data-depends-on="dateShowWeekday">
+                                    <span class="settings_field_label">星期显示</span>
+                                    <span class="settings_field_control">
                                     <select class="settings_select" id="dateWeekdayLang">
                                         <option value="cn" selected>中文（周一）</option>
                                         <option value="en_short">英文缩写（Mon）</option>
                                         <option value="en_long">英文全称（Monday）</option>
                                     </select>
-                                </span>
-                            </label>
-                        </div>
-                    </section>
-                    <section class="settings_section">
-                        <header class="settings_section_head">
-                            <span class="settings_section_icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 12l5 5L20 7"/></svg>
-                            </span>
-                            <div class="settings_section_titles">
-                                <div class="settings_section_title">初始化</div>
+                                    </span>
+                                </label>
                             </div>
-                        </header>
-                        <div class="settings_section_body">
-                            <label class="settings_field">
-                                <span class="settings_field_label">起始页加载时自动聚焦到搜索栏</span>
-                                <span class="settings_field_control">
+                            </section>
+                            <section class="settings_section">
+                            <div class="settings_section_head">
+                                <span class="settings_section_icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 12l5 5L20 7"/></svg>
+                                </span>
+                                <div class="settings_section_titles">
+                                    <div class="settings_section_title">初始化</div>
+                                </div>
+                            </div>
+                            <div class="settings_section_body">
+                                <label class="settings_field">
+                                    <span class="settings_field_label">起始页加载时自动聚焦到搜索栏</span>
+                                    <span class="settings_field_control">
                                     <input type="checkbox" class="settings_toggle" id="autofocusSearch" checked>
                                     <span class="settings_toggle_track" aria-hidden="true"></span>
-                                </span>
-                            </label>
-                        </div>
-                    </section><section class="settings_section">
-                        <header class="settings_section_head">
-                            <span class="settings_section_icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
-                            </span>
-                            <div class="settings_section_titles">
-                                <div class="settings_section_title">页脚</div>
+                                    </span>
+                                </label>
                             </div>
-                        </header>
-                        <div class="settings_section_body">
-                            <label class="settings_field">
-                                <span class="settings_field_label">网站页脚显示备案号</span>
-                                <span class="settings_field_control">
+                            </section><section class="settings_section">
+                            <div class="settings_section_head">
+                                <span class="settings_section_icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+                                </span>
+                                <div class="settings_section_titles">
+                                    <div class="settings_section_title">页脚</div>
+                                </div>
+                            </div>
+                            <div class="settings_section_body">
+                                <label class="settings_field">
+                                    <span class="settings_field_label">网站页脚显示备案号</span>
+                                    <span class="settings_field_control">
                                     <input type="checkbox" class="settings_toggle" id="footerIcpShow" checked>
                                     <span class="settings_toggle_track" aria-hidden="true"></span>
-                                </span>
-                            </label>
-                        </div>
-                    </section>
+                                    </span>
+                                </label>
+                            </div>
+                            </section>
                     
-                                            </div>
+                    </div>
                     <!-- Page: 账号 -->
-                    <div class="settings_page" data-page="account" id="settingsPageAccount">
+                                        <div class="settings_page" data-page="account" id="settingsPageAccount">
+                        <div class="settings_page_head">
+                            <button type="button" class="settings_back_btn glass" onclick="backToSettingsMenu()" aria-label="返回设置分类">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+                            </button>
+                            <div class="settings_page_title">账号</div>
+                        </div>
                         <!-- 未登录态 -->
                         <section class="settings_section" id="accountSignedOut" hidden>
-                            <header class="settings_section_head">
+                            <div class="settings_section_head">
                                 <span class="settings_section_icon" aria-hidden="true">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
                                 </span>
                                 <div class="settings_section_titles">
                                     <div class="settings_section_title">账号</div>
                                 </div>
-                            </header>
+                            </div>
                             <div class="settings_section_body">
                                 <p class="settings_account_lead">登录后你的称呼、引擎、时间格式等偏好会自动同步到云端, 换设备也能用。壁纸仅在本设备保存。</p>
                                 <div class="auth_actions">
@@ -976,14 +1073,14 @@
                         </section>
                         <!-- 已登录态 -->
                         <section class="settings_section" id="accountSignedIn" hidden>
-                            <header class="settings_section_head">
+                            <div class="settings_section_head">
                                 <span class="settings_section_icon" aria-hidden="true">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
                                 </span>
                                 <div class="settings_section_titles">
                                     <div class="settings_section_title">账号</div>
                                 </div>
-                            </header>
+                            </div>
                             <div class="settings_section_body">
                                 <div class="account_user_card glass-strong">
                                     <div class="account_avatar" id="accountAvatar" aria-hidden="true">
@@ -998,6 +1095,14 @@
                                         <button type="button" class="diy_bg_but2 glass account_logout_btn" onclick="handleLogout()">登出</button>
                                     </div>
                                 </div>
+                                <div class="settings_subsection_title">昵称</div>
+                                <label class="settings_field settings_field--panel">
+                                    <span class="settings_field_label">你在问候语里的称呼</span>
+                                    <div class="settings_field_row">
+                                        <input type="text" class="special-input glass-strong" id="accountNickname" placeholder="昵称" maxlength="24">
+                                        <button type="button" class="diy_bg_but glass-strong" id="accountNicknameSave" onclick="saveAccountNickname()">保存</button>
+                                    </div>
+                                </label>
                                 <div class="settings_subsection_title">头像</div>
                                 <div class="settings_upload glass">
                                     <label class="settings_upload_field glass-strong" for="accountAvatarFile">
@@ -1027,16 +1132,22 @@
                         </section>
                     </div>
                         <!-- Page: 搜索 -->
-                        <div class="settings_page" data-page="search" id="settingsPageSearch">
+                                            <div class="settings_page" data-page="search" id="settingsPageSearch">
+                        <div class="settings_page_head">
+                            <button type="button" class="settings_back_btn glass" onclick="backToSettingsMenu()" aria-label="返回设置分类">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+                            </button>
+                            <div class="settings_page_title">搜索</div>
+                        </div>
                     <section class="settings_section">
-                        <header class="settings_section_head">
+                        <div class="settings_section_head">
                             <span class="settings_section_icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
                             </span>
                             <div class="settings_section_titles">
                                 <div class="settings_section_title">搜索引擎</div>
                             </div>
-                        </header>
+                        </div>
                         <div class="settings_section_body">
                             <div class="engine-chip-group" id="engineChips" role="radiogroup" aria-label="默认搜索引擎">
                                 <button type="button" class="engine-chip glass-strong is-active" role="radio" aria-checked="true" data-value="https://www.bing.com/search"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">Bing</span></button>
@@ -1054,37 +1165,15 @@
                     </section>
                         </div>
                     </div>
-                <div class="settings_tabbar_wrap">
-                    <nav class="settings_sidebar settings_tabbar glass-strong" id="settingsSidebar" aria-label="设置分类">
-                    <span class="tabbar_pill" aria-hidden="true"></span>
-                    <button type="button" class="settings_nav_item is-active" data-page="personalize">
-                        <span class="settings_nav_icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                        </span>
-                        <span class="settings_nav_label">个性化</span>
-                    </button>
-                    <button type="button" class="settings_nav_item" data-page="search">
-                        <span class="settings_nav_icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-                        </span>
-                        <span class="settings_nav_label">搜索</span>
-                    </button>
-                    <button type="button" class="settings_nav_item" data-page="account">
-                        <span class="settings_nav_icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>
-                        </span>
-                        <span class="settings_nav_label">账号</span>
-                    </button>
-                    </nav>
-                </div>
+
             
                 </div><!-- 设置end -->
             </div>
             
-            <!-- 声明页面 (按 DESIGN-apple.md dense-link + section card 重构) -->
+            <!-- 声明页面 -->
             <div id="shengming_box" class="jump_out_box glass-strong">
                 <div class="setting_btn_box">
-                    <div class="settings_box_heading">
+                                <div class="settings_box_heading">
                         <span class="settings_box_title">声明</span>
                     </div>
                     <button class="close_about_btn glass" onclick="close_shengming ()" aria-label="关闭">
@@ -1093,14 +1182,14 @@
                 </div>
                 <div class="settings_main_box">
                     <section class="settings_section">
-                        <header class="settings_section_head">
+                        <div class="settings_section_head">
                             <span class="settings_section_icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
                             </span>
                             <div class="settings_section_titles">
                                 <h2 class="settings_section_title">使用与版权声明</h2>
                             </div>
-                        </header>
+                        </div>
                         <ol class="legal_list">
                             <li>本网页由 Eric Demisse 制作, 仅供个人学习使用, 禁止用于商业用途。</li>
                             <li>设置中壁纸来源于第三方, 包括但不限于 BiliBili、蔚蓝档案、pixiv 等等, 若有侵权将及时删除。</li>
@@ -1123,14 +1212,14 @@
                 </div>
                 <div class="settings_main_box">
                     <section class="settings_section">
-                        <header class="settings_section_head">
+                        <div class="settings_section_head">
                             <span class="settings_section_icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                             </span>
                             <div class="settings_section_titles">
                                 <h2 class="settings_section_title">使用与设置</h2>
                             </div>
-                        </header>
+                        </div>
                         <div class="qa_list">
                             <article class="qa_item">
                                 <h3 class="qa_q"><span class="qa_chip qa_chip_q" aria-hidden="true">Q</span>为什么自定义壁纸再刷新后未保存？</h3>
@@ -1147,21 +1236,9 @@
                     </div>
                 </div>
             </div>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" crossorigin="anonymous"
-        onerror="var s=document.createElement('script');s.src='https://unpkg.com/jquery@3.7.1/dist/jquery.min.js';s.crossOrigin='anonymous';document.head.appendChild(s);"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 		<script type="text/javascript">
-// 自定义问候语
-let savedText = localStorage.getItem('welcomeText');
-        if (savedText) {
-            document.getElementById('input-text').value = savedText;
-            document.getElementById('display-text').innerText = savedText;
-        }
-        document.getElementById('change-btn').addEventListener('click', function() {
-            var inputText = document.getElementById('input-text').value;
-            document.getElementById('display-text').innerText = inputText;
-            localStorage.setItem('welcomeText', inputText);
-            location.reload();
-        });
 // 自定义壁纸
 function uploadImage() {
             const fileInput = document.getElementById('imageFile');
@@ -1354,7 +1431,7 @@ function uploadImage() {
             });
         })();
 // 加载
-        window.onload = function() {
+        window.addEventListener('load', function() {
             const backgroundImageUrl = localStorage.getItem('backgroundImage');
             const selector1 = document.getElementById('searchEngineSelector1');
             const selector2 = document.getElementById('searchEngineSelector2');
@@ -1363,7 +1440,7 @@ function uploadImage() {
                 document.body.style.backgroundImage = `url(${backgroundImageUrl})`;
             }
             Movein();
-            setTimeout("Moveout()",5000 );
+            setTimeout(Moveout, 5000);
             if (defaultSearchEngine) {
                 for (let i = 0; i < selector1.options.length; i++) {
                     if (selector1.options[i].value === defaultSearchEngine) {
@@ -1391,9 +1468,14 @@ function uploadImage() {
                     if (ipt) ipt.focus();
                 }, 200);
             }
-        };
+        });
 // 预设壁纸
-        if(localStorage.bg && typeof $==='function') $('head').append("<style class='font-style'>" + localStorage.bg + "</style>");
+        if (localStorage.bg) {
+          var style = document.createElement('style');
+          style.className = 'font-style';
+          style.textContent = localStorage.bg;
+          document.head.appendChild(style);
+        }
         // 高亮当前选中的预设壁纸
         (function highlightSelectedBg() {
           try {
@@ -1568,54 +1650,119 @@ document.onkeyup = function(e) {
 // 关于界面
     function about_jump(){ openModal("about"); }
     function close_about (){ closeModal("about"); }
-    // 设置弹窗分页路由: 个性化 / 搜索 / 账号
-function showSettingsPage(page) {
-  if (!page) return;
-  var valid = ['personalize', 'search', 'account'];
-  if (valid.indexOf(page) < 0) page = 'personalize';
-  // 切 nav 高亮
-  var navItems = document.querySelectorAll('#settingsSidebar .settings_nav_item');
-  navItems.forEach(function (n) {
-    if (n.getAttribute('data-page') === page) n.classList.add('is-active');
-    else n.classList.remove('is-active');
-  });
-  // 切 page 显示
-  var pages = document.querySelectorAll('#settings_box .settings_page');
-  pages.forEach(function (pg) {
-    if (pg.getAttribute('data-page') === page) pg.classList.add('is-active');
-    else pg.classList.remove('is-active');
-  });
-  // 内容区滚回顶部
-  var pagesContainer = document.querySelector('#settings_box .settings_pages');
-  if (pagesContainer) pagesContainer.scrollTop = 0;
-  // 滑动 tab 栏高亮滑块
-  moveTabbarPill(page);
-}
-// 滑动 tab 栏高亮滑块到目标 page
-function moveTabbarPill(page) {
-  var sidebar = document.getElementById('settingsSidebar');
-  if (!sidebar) return;
-  var pill = sidebar.querySelector('.tabbar_pill');
-  var target = sidebar.querySelector('.settings_nav_item[data-page="' + page + '"]');
-  if (!pill || !target) return;
-  // nav 内 padding: 5px, item 实际渲染位置 = offsetLeft - sidebar.scrollLeft
-  // 这里 sidebar 不滚动, 直接用 offsetLeft 即可
-  var x = target.offsetLeft;
-  var w = target.offsetWidth;
-  pill.style.transform = 'translateX(' + x + 'px)';
-  pill.style.width = w + 'px';
-  // 首帧后才显示 (避免初始 transform 0 0 时露一下)
-  if (!pill.classList.contains('is-ready')) {
-    // 强制 reflow 再加 is-ready
-    void pill.offsetWidth;
-    pill.classList.add('is-ready');
-  }
-}
+    // 设置弹窗两级导航: 一级菜单 (menu) -> 二级 page (personalize/search/account)
+    // iOS 系统设置风格: 顶部 < 返回 + 大标题, push/pop 切换 transform slide + fade
+    // 切换策略: 始终只有一个页面在显示 (menu 或 page), 另一个 display: none
+    //   - push: menu 立即 display:none, page 从 translateX(100%) -> 0
+    //   - pop:  page 从 0 -> translateX(100%), menu display:flex, fade in
+    var SETTINGS_ANIM_MS = 360;
 
-function settings_jump(){
-      // 每次打开时回到默认页 (个性化), 避免关闭再打开时停留在账号占位
-      if (typeof showSettingsPage === 'function') showSettingsPage('personalize');
-      openModal("settings_box");
+    function __settingsRoot() {
+      return document.querySelector('#settings_box .settings_pages');
+    }
+
+    function __settingsMenu() {
+      var r = __settingsRoot();
+      return r ? r.querySelector('.settings_menu') : null;
+    }
+
+    function __settingsPage(page) {
+      var r = __settingsRoot();
+      return r ? r.querySelector('.settings_page[data-page="' + page + '"]') : null;
+    }
+
+    function setSettingsState(state) {
+      // state: 'menu' | 'page-personalize' | 'page-search' | 'page-account'
+      var root = __settingsRoot();
+      if (root) root.setAttribute('data-state', state);
+    }
+
+    function currentSettingsState() {
+      var root = __settingsRoot();
+      return root ? root.getAttribute('data-state') : null;
+    }
+
+    // push: 一级菜单 -> 二级 page
+    function enterSettingsPage(page) {
+      var valid = ['personalize', 'search', 'account'];
+      if (valid.indexOf(page) < 0) return;
+      var root = __settingsRoot();
+      if (!root) return;
+      if (currentSettingsState() === 'page-' + page) return;
+      var target = __settingsPage(page);
+      var menu = __settingsMenu();
+      if (!target) return;
+      // 准备: target 进入态 (右 -> 中), menu 立即隐藏
+      var allPages = root.querySelectorAll('.settings_page');
+      allPages.forEach(function (pg) {
+        pg.classList.remove('is-active', 'is-entering', 'is-leaving');
+      });
+      if (menu) menu.classList.remove('is-active', 'is-entering', 'is-leaving');
+      // target 先放到屏幕外 (不 transition), 然后加 is-active 触发 transition
+      target.classList.add('is-entering');
+      if (menu) menu.style.display = 'none';
+      // 强制 reflow, 让 .is-entering 的初始 transform 生效
+      void target.offsetWidth;
+      setSettingsState('page-' + page);
+      // 触发 transition: 移除 is-entering, target 滑入到 0
+      target.classList.remove('is-entering');
+      target.classList.add('is-active');
+      // 内容区滚回顶部
+      root.scrollTop = 0;
+      target.scrollTop = 0;
+    }
+
+    // pop: 二级 page -> 一级菜单
+    function backToSettingsMenu() {
+      var root = __settingsRoot();
+      if (!root) return;
+      var state = currentSettingsState();
+      if (!state || state === 'menu') return;
+      var page = state.replace(/^page-/, '');
+      var target = __settingsPage(page);
+      var menu = __settingsMenu();
+      if (!target || !menu) return;
+      // page: 0 -> translateX(100%) (is-leaving)
+      target.classList.remove('is-active', 'is-entering');
+      target.classList.add('is-leaving');
+      // menu: 准备好, 然后下一帧切换 display + opacity
+      menu.style.display = '';
+      // 强制 reflow
+      void root.offsetWidth;
+      setSettingsState('menu');
+      // 触发 menu 出现 (自身 transition 处理 fade)
+      menu.classList.add('is-active');
+      // 等动画结束清掉 page.is-leaving
+      setTimeout(function () {
+        target.classList.remove('is-leaving');
+        root.scrollTop = 0;
+      }, SETTINGS_ANIM_MS + 40);
+    }
+
+    // 兼容旧调用
+    function showSettingsPage(page) {
+      enterSettingsPage(page);
+    }
+
+    function settings_jump(){
+      // 每次打开回到一级菜单, 重置所有 page
+      var root = __settingsRoot();
+      if (root) {
+        root.setAttribute('data-state', 'menu');
+        var pages = root.querySelectorAll('.settings_page');
+        pages.forEach(function (pg) {
+          pg.classList.remove('is-active', 'is-entering', 'is-leaving');
+        });
+        var menu = __settingsMenu();
+        if (menu) {
+          menu.classList.add('is-active');
+          menu.classList.remove('is-entering', 'is-leaving');
+          menu.style.display = '';
+        }
+        root.scrollTop = 0;
+      }
+      console.log('[Limit Startup] settings_jump V4.0.8, state=', root.getAttribute('data-state'));
+      openModal('settings_box');
     }
     function close_settings_box (){ closeModal("settings_box"); }
     function question_jump(){ openModal("question_box"); }
@@ -1630,15 +1777,36 @@ function settings_jump(){
                 if(event.keyCode == 38 || event.keyCode == 40){
             return false;
                  }
+                var val = txt.value;
+                if (!val) {
+                    // 输入清空: 强制收起联想词, 无论 oUl.is-open 是否存在
+                    oUl.innerHTML = "";
+                    oUl.classList.remove('is-open');
+                    var ib0 = document.getElementById('inputBox');
+                    var ibw0 = document.getElementById('inputBoxWrap');
+                    if (ib0) {
+                        ib0.style.height = '44px';
+                        ib0.classList.remove('is-suggesting');
+                    }
+                    if (ibw0) ibw0.classList.remove('is-suggesting');
+                    return;
+                }
             	oUl.innerHTML = "";
                 // 立即收起: 避免清空后 ul 还占着 is-open 状态, 留一条线
                 closeSuggest();
-                var val = txt.value;
-                if (!val) return;
-                var oScript = document.createElement("script");
-                oScript.src = "https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd="+val+"&cb=callback";
-                document.body.appendChild(oScript);
-                document.body.removeChild(oScript);
+                // 注入 <script> 走 JSONP: 浏览器按 charset=gbk 自动解码, 命中后调用 callback
+                // 简单 50ms debounce: 避免连发请求
+                if (typeof _suggestTimer !== 'undefined' && _suggestTimer) clearTimeout(_suggestTimer);
+                _suggestTimer = setTimeout(function () {
+                  // 移除旧 script 避免 callback 回调堆叠
+                  var oldScript = document.getElementById('_suggest_script');
+                  if (oldScript) oldScript.parentNode.removeChild(oldScript);
+                  var oScript = document.createElement('script');
+                  oScript.id = '_suggest_script';
+                  oScript.charset = 'gbk';
+                  oScript.src = 'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=' + encodeURIComponent(val) + '&cb=callback';
+                  document.body.appendChild(oScript);
+                }, 50);
             }
             function callback(data){
                 data.s.slice(0, 10).forEach(function(value){
@@ -1702,62 +1870,17 @@ function settings_jump(){
                     oUl.classList.remove('is-open');
                 });
             }
-            // 切换壁纸
-            // 注意: 旧版的 for 循环 IIFE 块 (9 个 addEventListener) 是写在 for 循环体内的
-            // 但 onload 时 .bg_choice_main 容器在弹窗内, 弹窗默认 is-open=false (不可见),
-            // 不影响 addEventListener 绑定, 它们仍能拿到 bg1..bg9 节点
-            var images = document.querySelector('.bg_choice_main').querySelectorAll('img');
-                    for (var i = 0; i < images.length; i++) {
-                        images[i].onclick = function() {
-                            console.log(this.src);
-                            document.body.style.background = 'url(' + this.src + ');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;';
-                        };  // 注意: 必须分号结尾, 否则 ASI 会把下一行 (function(){})() 当作 onclick 函数立即调用
-                            (function(){var el=document.getElementById('bg1');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/1.png');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                            (function(){var el=document.getElementById('bg2');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/2.jpg');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                            (function(){var el=document.getElementById('bg3');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/3.JPG');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                            (function(){var el=document.getElementById('bg4');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/4.JPG');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                            (function(){var el=document.getElementById('bg5');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/5.JPG');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                            (function(){var el=document.getElementById('bg6');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/6.JPG');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                            (function(){var el=document.getElementById('bg7');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/7.jpg');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                            (function(){var el=document.getElementById('bg8');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/8.jpg');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                            (function(){var el=document.getElementById('bg9');if(!el)return;el.addEventListener('click',function(){
-                                    localStorage.setItem("bg","body{background:url('src/9.jpg');background-repeat:no-repeat;background-attachment:fixed;background-size:cover;background-position: center;}");
-                                    var bs=document.querySelectorAll('style.bg');for(var k=0;k<bs.length;k++)bs[k].parentNode.removeChild(bs[k]);
-                                    if(localStorage.bg){var st=document.createElement('style');st.className='bg';st.textContent=localStorage.bg;document.head.appendChild(st);}
-                            });})();
-                    }
+            // 切换壁纸: 统一从 .bg_choice_small 的子 <img> src 读 url, 一次性设背景 + 持久化
+            // CSS shorthand 一次声明: url(...) center / cover no-repeat fixed
+            var bgMain = document.querySelector('.bg_choice_main');
+            if (bgMain) {
+              bgMain.addEventListener('click', function (e) {
+                var img = e.target.closest('img');
+                if (!img || !img.src) return;
+                document.body.style.background = 'url(' + img.src + ') center / cover no-repeat fixed';
+                try { localStorage.setItem('bg', 'body{background:url(' + img.src + ') center / cover no-repeat fixed;}'); } catch (_) {}
+              });
+            }
         function Movein2() {
             var el = document.getElementById("setsuccess_box");
             el.style.opacity = "1";
@@ -1821,8 +1944,6 @@ function closeModal(id) {
     document.body.classList.remove('modal-open');
   }
 }
-// 兼容 body onload 调用的 load() — 原项目存在此调用，保留为 no-op
-function load() {}
 // 点击遮罩关闭所有弹窗（Apple 风格 modal 行为）
 document.addEventListener('DOMContentLoaded', function () {
   var bg = document.querySelector('.opacity_bg');
@@ -1830,25 +1951,12 @@ document.addEventListener('DOMContentLoaded', function () {
   bg.addEventListener('click', function () {
     // 走 closeModal 统一逻辑, 保证 body.modal-open 在所有 modal 关闭后被移除
     // (之前直接 el.classList.remove('is-open') 漏了 modal-open 移除, 导致汉堡按钮在弹窗关闭后仍 pointer-events: none 点不动)
-    var ids = ['about', 'settings_box', 'shengming_box', 'question_box'];
+    var ids = ['about', 'settings_box', 'shengming_box', 'question_box', 'auth_login_box', 'auth_register_box', 'auth_reset_box'];
     ids.forEach(function (id) {
       if (typeof closeModal === 'function') closeModal(id);
     });
   });
-  // settings 弹窗侧栏导航: 点击切换 page
-  var navItems = document.querySelectorAll('#settingsSidebar .settings_nav_item');
-  navItems.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var page = btn.getAttribute('data-page');
-      if (typeof showSettingsPage === 'function') showSettingsPage(page);
-    });
-  });
-  // 初始定位 pill 到当前激活的 nav item
-  // 注: 弹窗重新打开时元素未被销毁, 只需首帧定位一次
-  var initialActive = document.querySelector('#settingsSidebar .settings_nav_item.is-active');
-  if (initialActive && typeof moveTabbarPill === 'function') {
-    moveTabbarPill(initialActive.getAttribute('data-page'));
-  }
+  // iOS 风格两级导航: page 切换走 settings_menu_item 的 onclick + enterSettingsPage, 无侧栏/tabbar
 });
 
   // ============================================================
@@ -1955,7 +2063,7 @@ var API_BASE = (function () {
 })();
 var AUTH_TOKEN_KEY = 'ls_auth_token';
 var AUTH_USER_KEY = 'ls_auth_user';
-var ALLOWED_PREF_KEYS = ['greeting', 'defaultSearchEngine',
+var ALLOWED_PREF_KEYS = ['defaultSearchEngine',
   'cfg_time24h', 'cfg_timeShowSeconds', 'cfg_timeBlinkColon', 'cfg_timeFontSize', 'cfg_timeFontWeight',
   'cfg_dateShowYear', 'cfg_dateFormat', 'cfg_dateShowWeekday', 'cfg_dateWeekdayLang',
   'cfg_autofocusSearch', 'footer_icp_show'];
@@ -1963,14 +2071,57 @@ var ALLOWED_PREF_KEYS = ['greeting', 'defaultSearchEngine',
 function getToken() { try { return localStorage.getItem(AUTH_TOKEN_KEY); } catch (e) { return null; } }
 function setToken(t) { try { localStorage.setItem(AUTH_TOKEN_KEY, t); } catch (e) {} }
 function clearToken() { try { localStorage.removeItem(AUTH_TOKEN_KEY); localStorage.removeItem(AUTH_USER_KEY); } catch (e) {} }
-// 给 avatar URL 拼上 ?token=xxx, 浏览器 <img> / background-image 加载时不会附加 Authorization header,
-  // 必须用 query token 让后端能鉴权 (后端 /api/avatar GET 同时支持 header / query token)
-  function buildAvatarUrl(baseUrl) {
-    var t = getToken();
-    if (!t) return baseUrl;
-    return baseUrl + (baseUrl.indexOf('?') >= 0 ? '&' : '?') + 'token=' + encodeURIComponent(t);
+function getStoredUser() { try { var v = localStorage.getItem(AUTH_USER_KEY); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  // 头像走 fetch + Authorization header 拿到 blob, 再用 URL.createObjectURL 包成 blob URL
+  // 好处: 1) token 不会出现在 URL 任何地方 (不进浏览器历史 / CF 日志 / Referer)
+  //       2) 多个元素可共享同一个 blob URL, 只请求一次
+  // 缓存: 同 userId 复用 blob URL, 避免重复请求
+  var _avatarBlobUrlCache = null;
+  var _avatarBlobUrlUserId = null;
+
+  async function loadAvatarInto(elements, opts) {
+    if (!elements) return;
+    var arr = Array.isArray(elements) ? elements : [elements];
+    if (!getToken()) { clearAvatarInto(arr); _avatarBlobUrlCache = null; _avatarBlobUrlUserId = null; return; }
+    var user = getStoredUser();
+    var userId = user && user.id;
+    if (_avatarBlobUrlCache && _avatarBlobUrlUserId === userId && (!opts || !opts.force)) {
+      arr.forEach(function (el) {
+        if (!el) return;
+        if (el.classList) el.classList.add('has-avatar');
+        if (el.tagName === 'IMG') el.src = _avatarBlobUrlCache;
+        else el.style.backgroundImage = 'url("' + _avatarBlobUrlCache + '")';
+      });
+      return;
+    }
+    try {
+      var headers = { 'Authorization': 'Bearer ' + getToken() };
+      var r = await fetch(API_BASE + '/api/avatar', { headers: headers });
+      if (!r.ok) { clearAvatarInto(arr); return; }
+      var blob = await r.blob();
+      if (_avatarBlobUrlCache) { try { URL.revokeObjectURL(_avatarBlobUrlCache); } catch (e) {} }
+      _avatarBlobUrlCache = URL.createObjectURL(blob);
+      _avatarBlobUrlUserId = userId;
+      arr.forEach(function (el) {
+        if (!el) return;
+        if (el.classList) el.classList.add('has-avatar');
+        if (el.tagName === 'IMG') el.src = _avatarBlobUrlCache;
+        else el.style.backgroundImage = 'url("' + _avatarBlobUrlCache + '")';
+      });
+    } catch (e) {
+      console.warn('[avatar] fetch failed', e);
+      clearAvatarInto(arr);
+    }
   }
-  function getStoredUser() { try { var v = localStorage.getItem(AUTH_USER_KEY); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function clearAvatarInto(elements) {
+    var arr = Array.isArray(elements) ? elements : [elements];
+    arr.forEach(function (el) {
+      if (!el) return;
+      if (el.classList) el.classList.remove('has-avatar');
+      if (el.tagName === 'IMG') el.src = '';
+      else el.style.backgroundImage = '';
+    });
+  }
 function setStoredUser(u) { try { localStorage.setItem(AUTH_USER_KEY, JSON.stringify(u)); } catch (e) {} }
 
 async function apiFetch(path, opts) {
@@ -2025,7 +2176,7 @@ function openAuthModal(id) {
   // 关闭汉堡菜单抽屉 (避免抽屉开着时 auth 弹窗被遮)
   if (typeof closeMenuDrawer === 'function') closeMenuDrawer();
   // 同步显示目标 auth 弹窗 + 遮罩 (不走 openModal 的 280ms 抽屉延迟)
-  m.hidden = false;
+  /* m.hidden 原为 true, 现改用 .about 默认 visibility:hidden + is-open 控制可见 */
   document.body.classList.add('modal-open');
   var bg = document.querySelector('.opacity_bg');
   if (bg) {
@@ -2038,6 +2189,11 @@ function openAuthModal(id) {
   }
   void m.offsetWidth;
   m.classList.add('is-open');
+  // 显式渲染 Turnstile widget (api.js)
+  // 弹窗此时已可见, 但 Turnstile 内部 init 需要等到下一帧才能拿到非零尺寸
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () { renderTurnstileWidget(id); });
+  });
   // 聚焦第一个输入
   setTimeout(function () {
     var first = m.querySelector('input');
@@ -2046,12 +2202,37 @@ function openAuthModal(id) {
   // 清空错误
   var errEl = m.querySelector('.auth_error');
   if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+  // Turnstile 加载超时看门狗: 8s 内未回调 success 则提示网络异常 + 提供重试
+  armTurnstileWatchdog(id, 8000);
+}
+
+var _turnstileWatchdogTimers = {};
+function armTurnstileWatchdog(modalId, ms) {
+  if (_turnstileWatchdogTimers[modalId]) clearTimeout(_turnstileWatchdogTimers[modalId]);
+  var m = document.getElementById(modalId);
+  if (!m) return;
+  _turnstileWatchdogTimers[modalId] = setTimeout(function () {
+    var inp = m.querySelector('[name="cf-turnstile-response"]');
+    if (inp && inp.value) return;
+    var errEl = m.querySelector('.auth_error');
+    if (errEl) {
+      errEl.innerHTML = '人机验证加载慢 (网络到 Cloudflare 不稳定), <a href="javascript:location.reload()">刷新页面</a> 或稍候重试';
+      errEl.hidden = false;
+    }
+  }, ms);
+}
+function disarmTurnstileWatchdog(modalId) {
+  if (_turnstileWatchdogTimers[modalId]) {
+    clearTimeout(_turnstileWatchdogTimers[modalId]);
+    _turnstileWatchdogTimers[modalId] = null;
+  }
 }
 function closeAuthModal(id) {
   closeModal(id);
+  disarmTurnstileWatchdog(id);
   setTimeout(function () {
     var m = document.getElementById(id);
-    if (m) m.hidden = true;
+    /* 不再设 hidden=true, 改用 is-open 移除 + .about 默认 visibility:hidden 隐藏 (避免 widget 父级 display:none) */
   }, 320);
 }
 // 切换 auth 弹窗: 旧弹窗向左滑出淡出, 新弹窗从右滑入淡入, hero icon 同步旋转
@@ -2142,15 +2323,70 @@ function setSubmitSuccess(btn) {
   if (t) t.textContent = '✓ 成功';
 }
 
+// ============== Cloudflare Turnstile ==============
+// Turnstile: 3 个 widget 独立, 每个弹窗自带, auto-render
+// 读取指定弹窗里的 Turnstile token (从 cf-turnstile iframe 注入的隐藏 input)
+function readTurnstileToken(modalId) {
+  var m = document.getElementById(modalId);
+  if (!m) return '';
+  var inp = m.querySelector('[name="cf-turnstile-response"]');
+  return inp ? inp.value : '';
+}
+// modalId -> 显式 render 用的 widget container id (在 HTML 里)
+var AUTH_TURNSTILE_WIDGET_ID = {
+  auth_login_box: 'cf-turnstile-login',
+  auth_register_box: 'cf-turnstile-register',
+  auth_reset_box: 'cf-turnstile-reset'
+};
+// widgetId -> 已 render 的 widget id (用于 reset/remove)
+var _turnstileRenderedIds = {};
+
+function renderTurnstileWidget(modalId) {
+  var widgetId = AUTH_TURNSTILE_WIDGET_ID[modalId];
+  if (!widgetId) return;
+  var el = document.getElementById(widgetId);
+  if (!el || !window.turnstile || typeof turnstile.render !== 'function') return;
+  // 容器必须非 display:none (visibility:hidden 仍可 render, 因为 layout 尺寸非 0)
+  if (_turnstileRenderedIds[widgetId]) {
+    // 已 render 过, 直接 reset (会重新生成 token)
+    try { turnstile.reset(_turnstileRenderedIds[widgetId]); } catch (e) {}
+    return;
+  }
+  try {
+    // CF Turnstile 文档: callback 必须是函数, 不能是字符串
+    _turnstileRenderedIds[widgetId] = turnstile.render('#' + widgetId, {
+      sitekey: el.getAttribute('data-sitekey'),
+      callback: onTurnstileSuccess,
+      'expired-callback': onTurnstileExpired,
+      'error-callback': onTurnstileError
+    });
+  } catch (e) {
+    console.warn('[turnstile] render failed', e);
+  }
+}
+function resetTurnstileWidget(modalId) {
+  var widgetId = AUTH_TURNSTILE_WIDGET_ID[modalId];
+  if (!widgetId) return;
+  var wid = _turnstileRenderedIds[widgetId];
+  if (wid && window.turnstile && typeof turnstile.reset === 'function') {
+    try { turnstile.reset(wid); } catch (e) {}
+  }
+}
+function onTurnstileSuccess() { disarmTurnstileWatchdog("auth_login_box"); disarmTurnstileWatchdog("auth_register_box"); disarmTurnstileWatchdog("auth_reset_box"); }
+function onTurnstileExpired() { /* 让用户重做 */ }
+function onTurnstileError() { console.warn('[turnstile] widget error, will reset on next open'); disarmTurnstileWatchdog('auth_login_box'); disarmTurnstileWatchdog('auth_register_box'); disarmTurnstileWatchdog('auth_reset_box'); }
+
 // ============== 登录 ==============
 async function doLogin() {
   var email = document.getElementById('auth_login_email').value.trim();
   var password = document.getElementById('auth_login_password').value;
   if (!email || !password) { showAuthError('auth_login_box', '请填写邮箱和密码'); return; }
+  var turnstileToken = readTurnstileToken('auth_login_box');
+  if (!turnstileToken) { showAuthError('auth_login_box', '请完成人机验证'); return; }
   var btn = document.getElementById('auth_login_submit');
   setSubmitLoading(btn, true);
   try {
-    var r = await apiFetch('/api/auth/login', { method: 'POST', body: { email: email, password: password } });
+    var r = await apiFetch('/api/auth/login', { method: 'POST', body: { email: email, password: password, turnstileToken: turnstileToken } });
     setToken(r.token);
     setStoredUser(r.user);
     setSubmitSuccess(btn);
@@ -2162,6 +2398,7 @@ async function doLogin() {
     await onAuthStateChanged();
   } catch (e) {
     setSubmitLoading(btn, false);
+    resetTurnstileWidget('auth_login_box');
     showAuthError('auth_login_box', e.message || '登录失败');
   }
 }
@@ -2169,16 +2406,21 @@ async function doLogin() {
 // ============== 注册 ==============
 async function doRegister() {
   var email = document.getElementById('auth_register_email').value.trim();
+  var nickname = document.getElementById('auth_register_nickname').value.trim();
   var password = document.getElementById('auth_register_password').value;
   if (!email || !password) { showAuthError('auth_register_box', '请填写邮箱和密码'); return; }
+  if (!nickname) { showAuthError('auth_register_box', '请填写昵称'); return; }
+  if (nickname.length > 24) { showAuthError('auth_register_box', '昵称不能超过 24 位'); return; }
   if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/\d/.test(password)) {
     showAuthError('auth_register_box', '密码需 8-128 位, 含字母和数字');
     return;
   }
+  var turnstileToken = readTurnstileToken('auth_register_box');
+  if (!turnstileToken) { showAuthError('auth_register_box', '请完成人机验证'); return; }
   var btn = document.getElementById('auth_register_submit');
   setSubmitLoading(btn, true);
   try {
-    var r = await apiFetch('/api/auth/register', { method: 'POST', body: { email: email, password: password } });
+    var r = await apiFetch('/api/auth/register', { method: 'POST', body: { email: email, password: password, nickname: nickname, turnstileToken: turnstileToken } });
     setToken(r.token);
     setStoredUser(r.user);
     setSubmitSuccess(btn);
@@ -2190,6 +2432,7 @@ async function doRegister() {
     await onAuthStateChanged();
   } catch (e) {
     setSubmitLoading(btn, false);
+    resetTurnstileWidget('auth_register_box');
     showAuthError('auth_register_box', e.message || '注册失败');
   }
 }
@@ -2203,10 +2446,12 @@ async function doReset() {
     showAuthError('auth_reset_box', '新密码需 8-128 位, 含字母和数字');
     return;
   }
+  var turnstileToken = readTurnstileToken('auth_reset_box');
+  if (!turnstileToken) { showAuthError('auth_reset_box', '请完成人机验证'); return; }
   var btn = document.getElementById('auth_reset_submit');
   setSubmitLoading(btn, true);
   try {
-    await apiFetch('/api/auth/reset', { method: 'POST', body: { oldPassword: oldP, newPassword: newP } });
+    await apiFetch('/api/auth/reset', { method: 'POST', body: { oldPassword: oldP, newPassword: newP, turnstileToken: turnstileToken } });
     clearToken();
     setStoredUser(null);
     setSubmitSuccess(btn);
@@ -2218,6 +2463,7 @@ async function doReset() {
     await onAuthStateChanged();
   } catch (e) {
     setSubmitLoading(btn, false);
+    resetTurnstileWidget('auth_reset_box');
     showAuthError('auth_reset_box', e.message || '修改失败');
   }
 }
@@ -2229,6 +2475,40 @@ async function handleLogout() {
   clearToken();
   showSetsuccess('已登出');
   await onAuthStateChanged();
+}
+
+// ============== 修改昵称 ==============
+async function saveAccountNickname() {
+  var input = document.getElementById('accountNickname');
+  var btn = document.getElementById('accountNicknameSave');
+  if (!input || !btn) return;
+  var nickname = input.value.trim();
+  if (!nickname) { showSetsuccess('昵称不能为空'); return; }
+  if (nickname.length > 24) { showSetsuccess('昵称不能超过 24 位'); return; }
+  var oldText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '保存中...';
+  try {
+    await apiFetch('/api/auth/nickname', { method: 'PUT', body: { nickname: nickname } });
+    // 更新本地 user 缓存里的 nickname
+    var u = getStoredUser();
+    if (u) { u.nickname = nickname; setStoredUser(u); }
+    applyNicknameToUI(nickname);
+    showSetsuccess('昵称已更新');
+  } catch (e) {
+    showSetsuccess('保存失败: ' + (e.message || e));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
+}
+
+// 同步昵称到所有显示位置 (问候语 + 账号卡片输入框)
+function applyNicknameToUI(nickname) {
+  var dt = document.getElementById('display-text');
+  if (dt) dt.innerText = nickname || 'User';
+  var an = document.getElementById('accountNickname');
+  if (an && nickname) an.value = nickname;
 }
 
 // ============== 状态切换: 拉取 me + 覆盖本地 + 刷新 UI ==============
@@ -2246,40 +2526,30 @@ async function onAuthStateChanged() {
         var pr = await apiFetch('/api/prefs');
         if (pr && pr.prefs) applyCloudPrefs(pr.prefs);
       } catch (e2) { console.warn('[auth] pull prefs failed', e2); }
-      // 头像 (如果云端有, 显示) — 同步顶栏 entry / 下拉菜单 / 设置 tab
+      // 头像 (如果云端有, 显示) — 走 fetch + blob, 同步顶栏 entry / 下拉菜单 / 设置 tab
       if (user.avatarUrl) {
-        var avUrl = "url('" + buildAvatarUrl(API_BASE + user.avatarUrl + "?t=" + Date.now()) + "')";
-        var av = document.getElementById('accountEntryAvatar');
-        if (av) av.style.backgroundImage = avUrl;
-        var av2 = document.getElementById('accountAvatar');
-        if (av2) {
-          av2.innerHTML = '';
-          av2.classList.add('has-avatar');
-          av2.style.backgroundImage = avUrl;
-        }
-        var av3 = document.getElementById('accountMenuAvatar');
-        if (av3) {
-          av3.innerHTML = '';
-          av3.classList.add('has-avatar');
-          av3.style.backgroundImage = avUrl;
-        }
+        var av2 = document.getElementById('accountAvatar'); if (av2) av2.innerHTML = '';
+        var av3 = document.getElementById('accountMenuAvatar'); if (av3) av3.innerHTML = '';
+        loadAvatarInto([
+          document.getElementById('accountEntryAvatar'),
+          av2,
+          av3
+        ], { force: true });
       } else {
+        clearAvatarInto([
+          document.getElementById('accountEntryAvatar'),
+          document.getElementById('accountAvatar'),
+          document.getElementById('accountMenuAvatar')
+        ]);
         var av2b = document.getElementById('accountAvatar');
-        if (av2b) {
-          av2b.classList.remove('has-avatar');
-          av2b.style.backgroundImage = '';
-          if (!av2b.querySelector('svg')) {
-            av2b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
-          }
+        if (av2b && !av2b.querySelector('svg')) {
+          av2b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
         }
         var av3b = document.getElementById('accountMenuAvatar');
-        if (av3b) {
-          av3b.classList.remove('has-avatar');
-          av3b.style.backgroundImage = '';
-          if (!av3b.querySelector('svg')) {
-            av3b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
-          }
+        if (av3b && !av3b.querySelector('svg')) {
+          av3b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
         }
+        _avatarBlobUrlCache = null; _avatarBlobUrlUserId = null;
       }
     } catch (e) {
       // token 失效 (401), 清掉
@@ -2294,9 +2564,13 @@ async function onAuthStateChanged() {
     }
   }
   if (!signedIn) {
-    var av = document.getElementById('accountEntryAvatar'); if (av) av.style.backgroundImage = '';
-    var av2 = document.getElementById('accountAvatar'); if (av2) av2.style.backgroundImage = '';
-    var av3 = document.getElementById('accountMenuAvatar'); if (av3) av3.style.backgroundImage = '';
+    clearAvatarInto([
+      document.getElementById('accountEntryAvatar'),
+      document.getElementById('accountAvatar'),
+      document.getElementById('accountMenuAvatar')
+    ]);
+    if (_avatarBlobUrlCache) { try { URL.revokeObjectURL(_avatarBlobUrlCache); } catch (e) {} }
+    _avatarBlobUrlCache = null; _avatarBlobUrlUserId = null;
   }
   // 顶栏入口切换
   var out = document.getElementById('accountEntrySignedOut');
@@ -2314,6 +2588,12 @@ async function onAuthStateChanged() {
   if (ae) ae.textContent = emailText;
   var ame = document.getElementById('accountMenuEmail');
   if (ame) ame.textContent = emailText;
+  // 昵称 -> 问候语 + 账号卡片预填
+  if (signedIn && user) {
+    applyNicknameToUI(user.nickname);
+  } else {
+    applyNicknameToUI(null);
+  }
 }
 
 // 把云端 prefs 覆盖到 localStorage, 并同步到 UI 控件
@@ -2363,12 +2643,7 @@ function applyCloudPrefs(prefs) {
   }
   // 联动隐藏 applyDeps
   if (typeof window.applyDeps === 'function') { try { window.applyDeps(); } catch (e) {} }
-  // 称呼 input/display
-  var t = localStorage.getItem('welcomeText');
-  if (t) {
-    var it = document.getElementById('input-text'); if (it) it.value = t;
-    var dt = document.getElementById('display-text'); if (dt) dt.innerText = t;
-  }
+  // 称呼现在从云端 user.nickname 走 (由 onAuthStateChanged 调 applyNicknameToUI)
   // 引擎 chip
   var eng = localStorage.getItem('defaultSearchEngine');
   if (eng) {
@@ -2433,22 +2708,13 @@ async function uploadAccountAvatar() {
   }
   try {
     var r = await apiFetch('/api/avatar', { method: 'POST', body: { dataUrl: dataUrl } });
-    var ts = Date.now();
-    var avUrl2 = "url('" + buildAvatarUrl(API_BASE + r.avatarUrl + "?t=" + ts) + "')";
-    var av = document.getElementById('accountEntryAvatar');
-    if (av) av.style.backgroundImage = avUrl2;
-    var av2 = document.getElementById('accountAvatar');
-    if (av2) {
-      av2.innerHTML = '';
-      av2.classList.add('has-avatar');
-      av2.style.backgroundImage = avUrl2;
-    }
-    var av3 = document.getElementById('accountMenuAvatar');
-    if (av3) {
-      av3.innerHTML = '';
-      av3.classList.add('has-avatar');
-      av3.style.backgroundImage = avUrl2;
-    }
+    var av2 = document.getElementById('accountAvatar'); if (av2) av2.innerHTML = '';
+    var av3 = document.getElementById('accountMenuAvatar'); if (av3) av3.innerHTML = '';
+    loadAvatarInto([
+      document.getElementById('accountEntryAvatar'),
+      av2,
+      av3
+    ], { force: true });
     showSetsuccess('头像已更新');
   } catch (e) {
     showSetsuccess('上传失败: ' + (e.message || ''));
@@ -2458,23 +2724,21 @@ async function uploadAccountAvatar() {
 async function deleteAccountAvatar() {
   try {
     await apiFetch('/api/avatar', { method: 'DELETE' });
-    var av = document.getElementById('accountEntryAvatar'); if (av) av.style.backgroundImage = '';
-    var av2 = document.getElementById('accountAvatar');
-    if (av2) {
-      av2.classList.remove('has-avatar');
-      av2.style.backgroundImage = '';
-      if (!av2.querySelector('svg')) {
-        av2.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
-      }
+    clearAvatarInto([
+      document.getElementById('accountEntryAvatar'),
+      document.getElementById('accountAvatar'),
+      document.getElementById('accountMenuAvatar')
+    ]);
+    var av2b = document.getElementById('accountAvatar');
+    if (av2b && !av2b.querySelector('svg')) {
+      av2b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
     }
-    var av3 = document.getElementById('accountMenuAvatar');
-    if (av3) {
-      av3.classList.remove('has-avatar');
-      av3.style.backgroundImage = '';
-      if (!av3.querySelector('svg')) {
-        av3.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
-      }
+    var av3b = document.getElementById('accountMenuAvatar');
+    if (av3b && !av3b.querySelector('svg')) {
+      av3b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
     }
+    if (_avatarBlobUrlCache) { try { URL.revokeObjectURL(_avatarBlobUrlCache); } catch (e) {} }
+    _avatarBlobUrlCache = null; _avatarBlobUrlUserId = null;
     showSetsuccess('头像已删除');
   } catch (e) {
     showSetsuccess('删除失败: ' + (e.message || ''));
@@ -2564,8 +2828,8 @@ function bindAuthUI() {
   if (sub1) sub1.addEventListener('click', doLogin);
   var sub2 = document.getElementById('auth_register_submit');
   if (sub2) sub2.addEventListener('click', doRegister);
-  if (sub3) sub3.addEventListener('click', doReset);
   var sub3 = document.getElementById('auth_reset_submit');
+  if (sub3) sub3.addEventListener('click', doReset);
   // Enter 提交
   ['auth_login_box', 'auth_register_box', 'auth_reset_box'].forEach(function (id) {
     var m = document.getElementById(id);
@@ -2775,9 +3039,10 @@ document.addEventListener('DOMContentLoaded', function () {
     <span>苏ICP备2026039249号-1</span>
   </a>
   <a class="page_footer_icp_link" href="https://beian.mps.gov.cn/#/query/webSearch?code=32010402002535" target="_blank" rel="noreferrer">
-    <img class="page_footer_icp_mps" src="/src/备案图标.png" alt="" aria-hidden="true">
+    <img class="page_footer_icp_mps" src="/src/备案图标.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
     <span>苏公网安备32010402002535号</span>
   </a>
 </div>
+
 </body>
 </html>

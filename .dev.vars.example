@@ -3,3 +3,8 @@
 JWT_SECRET=请改成强随机串_至少32位
 JWT_EXPIRES_IN=7d
 ALLOWED_ORIGIN=http://127.0.0.1:5815
+
+# Cloudflare Turnstile (V4.0.6+)
+# 测试用: 1x0000000000000000000000000000000AA 永远通过
+# 生产用: 在 https://dash.cloudflare.com Turnstile 后台拿
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA

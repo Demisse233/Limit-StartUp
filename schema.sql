@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT UNIQUE NOT NULL,
   password_salt TEXT NOT NULL,
   password_hash TEXT NOT NULL,
+  nickname TEXT,              -- 用户昵称, 问候语里用这个 (1-24 位任意字符)
   prefs_json TEXT NOT NULL DEFAULT '{}',
   avatar_b64 TEXT,            -- 256x256 压缩后的 jpeg/png/webp, base64 编码
   avatar_content_type TEXT,   -- 'image/jpeg' / 'image/png' / 'image/webp'
@@ -16,6 +17,10 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+-- 旧版本 (V4.0.6) 没有 nickname 字段, 迁移时补 + 用 email 前缀兜底
+-- ALTER TABLE users ADD COLUMN nickname TEXT;
+-- UPDATE users SET nickname = SUBSTR(email, 1, INSTR(email, '@') - 1) WHERE nickname IS NULL;
 
 CREATE TABLE IF NOT EXISTS jwt_revocations (
   jti TEXT PRIMARY KEY,

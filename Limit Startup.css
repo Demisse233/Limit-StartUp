@@ -676,7 +676,6 @@ img { max-width: 100%; display: block; }
     transform 0.42s cubic-bezier(0.32, 0.72, 0, 1),
     visibility 0s linear 0s;
 }
-.close_about_btn_box { display: none; } /* about 弹窗已迁移到 .setting_btn_box 风格 */
 .close_about_btn,
 .close_about_btn.glass {
   border: 1px solid rgba(255, 255, 255, 0.45);
@@ -704,64 +703,6 @@ img { max-width: 100%; display: block; }
 .close_about_btn:active { transform: scale(0.96); }
 .close_about_btn svg { width: 22px; height: 22px; }
 
-.about_text { padding: 8px 0 16px; }
-.about_text svg { max-width: 60%; height: auto; margin: 0 auto; }
-.version {
-  margin-top: 12px;
-  font-family: var(--font-text);
-  font-size: var(--fs-caption);
-  color: #000;
-  letter-spacing: -0.224px;
-}
-#count_days {
-  margin-top: 6px;
-  font-family: var(--font-text);
-  font-size: var(--fs-caption);
-  color: #000;
-  letter-spacing: -0.224px;
-}
-
-.update_text {
-  text-align: left;
-  margin-top: 18px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--color-ink-muted-80);
-}
-.update_text > span { display: inline-block; margin-right: 4px; }
-.update_text .add_ui_box,
-.update_text .update_ui_box,
-.update_text .fix_ui_box,
-.update_text .del_ui_box {
-  display: inline-block;
-  padding: 1px 8px;
-  border-radius: var(--r-pill);
-  font-size: var(--fs-micro-legal);
-  font-weight: 600;
-  letter-spacing: 0;
-  margin-right: 4px;
-  line-height: var(--lh-micro-legal);
-  vertical-align: middle;
-}
-.add_ui_box,
-.update_ui_box,
-.fix_ui_box,
-.del_ui_box {
-  display: inline-flex !important;
-  align-items: center;
-  height: 20px;
-  padding: 0 8px !important;
-  border-radius: 6px !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.2px !important;
-  vertical-align: middle;
-}
-.add_ui_box    { background: #e3f4ea; color: #1a7f37; }
-.update_ui_box { background: #e7eefe; color: #1f4f99; }
-.fix_ui_box    { background: #fdecea; color: #b3261e; }
-.del_ui_box    { background: #f0f0f0; color: #555555; }
-
 /* ========== Settings / FAQ / 声明 modal (shared) ========== */
 .settings_box,
 .jump_out_box,
@@ -775,8 +716,9 @@ img { max-width: 100%; display: block; }
   max-height: 88vh;
   display: flex !important;
   flex-direction: column;
-  /* shuding/liquid-glass 真实实现 */
-  background-color: var(--glass-bg-strong);
+  /* fallback (SVG filter 不生效时): 半透明卡片, 不依赖 backdrop-filter */
+  background-color: rgba(255, 255, 255, 0.78);
+  /* liquid-glass SVG filter 路径 (现代浏览器); 失败回退到上面的实色半透明 background-color */
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   border: 1px solid var(--glass-border);
@@ -805,12 +747,14 @@ img { max-width: 100%; display: block; }
 .settings_box.is-open,
 .jump_out_box.is-open {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%);  /* 打开动画结束后回到仅居中 (去掉 scale), 让 backdrop-filter 跑在 identity 合成层, 避免 Edge 色带断层 */
   visibility: visible;
   pointer-events: auto;
+  z-index: 130;            /* 提一层, 避免被首页 z-index 120 元素覆盖 */
+  isolation: isolate;      /* 强制新建层叠上下文, 避免 backdrop-filter + transform 合成 bug */
   transition:
     opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.42s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.32s cubic-bezier(0.32, 0.72, 0, 1),
     visibility 0s linear 0s;
 }
 
@@ -821,15 +765,6 @@ img { max-width: 100%; display: block; }
   gap: 2px;
   min-width: 0;
 }
-.settings_box_subtitle {
-  font-family: var(--font-text);
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: -0.078px;
-  line-height: 1.23;
-  color: #000;
-}
-
 /* 弹窗内文 text-link (Apple Action Blue, no underline) */
 .text_link {
   color: var(--color-primary);
@@ -1171,15 +1106,8 @@ img { max-width: 100%; display: block; }
   padding-right: 4px;  /* 给滚动条留一点视觉空间, 避免内容贴边 */
 }
 /* ============================================================
-   Settings 弹窗分页 + 底部 tab 栏 (v4 最终版: absolute 浮 + body padding-bottom 留通行道)
-   结构: .settings_box > header / .settings_body > (.settings_pages + .settings_tabbar_wrap > nav)
-   - 弹窗 max-height: 88vh
-   - .settings_body flex column, flex:1, min-height:0, 不加 padding-bottom
-   - .settings_pages flex:1 + overflow-y:auto + min-height:0, 占满 body 全部高度
-   - .settings_tabbar_wrap position:absolute + left:50% + bottom:16px + transform: translateX(-50%) + width: min(420px, calc(100% - 32px))
-   - .settings_tabbar, .settings_sidebar transform: none 显式覆盖 menu.css 的 nav { transform: translateX(-100%) } (菜单抽屉关闭态规则)
-   关键: 之前几轮 flex/absolute 方案都没看到根本问题——nav 被 menu.css 的全局 nav 选择器命中平移 -100% 跑出弹窗
-   ============================================================ */
+   Settings 弹窗分页 + 底部 tab 栏 (v6: absolute 浮起 + iOS 时钟 App 效果)
+   结构: .settings_box > header / .settings_body > (.settings_pages + ============================================================ */
 
 /* .settings_box 主规则 (line 760-) 已经有: position:fixed + top/left:50% + transform: translate(-50%,-50%) scale(0.96) + max-height: 88vh + display:flex flex-direction:column
    这里只补: .settings_box 内部布局 (header 固定, body 滚动, tab 贴底) */
@@ -1189,31 +1117,22 @@ img { max-width: 100%; display: block; }
   text-align: left;
 }
 
-/* 弹窗内 body: header 之下, pages 的 flex 列容器
-   不加 padding-bottom: tab 用 absolute 浮在 .settings_box 底部, pages 占满 body 全部高度
-   这样 pages 滚到最底时内容延伸到 tab 视觉位置之下 (iOS 时钟 App 真实行为, tab 浮在上面透出来) */
-.settings_body {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-  text-align: left;
-  width: 100%;
-  box-sizing: border-box;
-  gap: 0;
-}
-
-/* 内容区: 弹窗主滚动容器 */
+/* 弹窗内 body: header 之下, pages + tab 容器
+   grid 1fr auto 让 pages 占满剩余空间, tab (absolute 浮起) 在 grid 第二行只占 padding-bottom 位置
+   实际显示由 /* 内容区: 弹窗主滚动容器
+   关键: 改成 grid 子项, 不用 flex, 由 .settings_body (grid 1fr auto) 控制 pages 高度 = 1fr 占满剩余空间 */
 .settings_pages {
-  flex: 1 1 auto;
   min-width: 0;
-  min-height: 0;            /* 关键: 允许收缩, 让出底部 tab 栏 */
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 18px;
   overflow-y: auto;
-  padding-right: 4px;        /* 滚动条视觉空间 */
-  padding-bottom: 80px;     /* 给底部 tab 栏让出通行道, 滚到最底不被遮挡 */
+  padding-right: 4px;
+  /* padding-bottom 等于 tab 视觉高度 + 间距, 让内容能滚到 tab 视觉区域之下 (iOS 时钟 App 效果)
+     tab 实际渲染高 ~71px, margin-top: 12px, 上下各 8px 余量
+     = 71 + 12 + 16 = 99, 取 100 */
+  padding-bottom: 24px;
   text-align: left;
 }
 
@@ -1221,197 +1140,246 @@ img { max-width: 100%; display: block; }
    关键: position: absolute + bottom: 16px + left: 50% + transform: translateX(-50%) 浮在 .settings_box 底沿
    .settings_body 不加 padding-bottom, pages 占满 body 全部高度, 弹窗自身 overflow 裁切;
    滚到最底时 pages 内容延伸到 tab 视觉位置之下, tab 浮在上面 (液态玻璃半透明) 透出下方内容
-   配套 .settings_tabbar, .settings_sidebar 的 transform: none 覆盖 menu.css 的 nav { transform: translateX(-100%) } */
-.settings_tabbar_wrap {
-  /* 浮在 .settings_box 底部 16px 内, 水平居中 (iOS 时钟 App 风格)
-     用 absolute 相对 .settings_box (fixed 祖先) 作为 containing block
-     .settings_body 用 padding-bottom 留出 tab 高度的通行道避免遮住最后内容 */
-  position: absolute;
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
-  z-index: 2;
-  /* 限宽 420, 弹窗窄时跟随 (减 32px 留左右边距) */
-  width: min(420px, calc(100% - 32px));
-  padding: 0;
-  box-sizing: border-box;
-}
+   配套 */
+/* ============================================================
+   Settings 弹窗两级导航: 一级菜单 -> push 进二级 page
+   iOS 系统设置风格: 顶部 < 返回 + 大标题, push/pop 切换动画
+   结构: .settings_box > .settings_body > .settings_pages[data-state]
+     data-state='menu' (默认): 显示 .settings_menu, 3 个分类卡片
+     data-state='page-personalize|page-search|page-account': 显示对应 .settings_page
+   切换: transform translateX(100% <-> 0) + opacity 0 <-> 1, 360ms cubic-bezier
+   ============================================================ */
 
-/* 底部 tab 栏: iOS 时钟 App 风格胶囊, 液态玻璃 + 3 tab 平均分布 */
-.settings_tabbar,
-.settings_sidebar {
-  position: relative;
-  z-index: 1;
+/* 移除原底部 tab 栏样式, 不再需要; /* 一级菜单项: glass card, 圆角 16, 左 icon + 中 text + 右 chevron */
+.settings_menu_item {
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 6px;
-  width: 100%;
-  /* 关键: menu.css 的 nav { transform: translateX(-100%) } 是菜单抽屉关闭态规则,
-     但因为这个 nav 没有更具体的 transform 覆盖, 它直接继承 -100% 平移, 整个 tab 跑出弹窗外
-     这里显式 transform: none 覆盖, 锁住位置 */
-  transform: none;
-  padding: 5px;
-  border-radius: var(--r-pill);  /* 拉满圆角, 胶囊完全无棱角 */
-  background-color: var(--glass-bg-strong);
-  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-/* 单个 tab: 垂直布局 (icon 上, label 下), 横向均分 */
-.settings_nav_item {
-  display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
-  min-width: 0;
-  position: relative;
-  z-index: 2;
-  padding: 9px 6px 8px;       /* 水平 padding 缩短, 按钮更紧凑 */
-  border: 0;
-  border-radius: var(--r-pill);  /* 激活态 pill 拉满 */
-  background: transparent;
-  color: var(--color-ink-muted-80);
-  font-family: var(--font-text);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: -0.078px;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-.settings_nav_item:hover {
-  background-color: var(--color-divider-soft);
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  text-decoration: none;
   color: var(--color-ink);
-}
-/* 滑块: 跟随 is-active 滑动, 液态玻璃背景
-   JS 改 transform: translateX(X) + width, transition 让滑动有缓动 */
-.tabbar_pill {
-  position: absolute;
-  top: 5px;
-  bottom: 5px;
-  left: 0;
-  width: 0;
-  border-radius: var(--r-pill);
-  background-color: var(--glass-bg-strong);
-  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  /* fallback (no SVG filter / dark bg): 半透明卡片, 不依赖 backdrop-filter */
+  background-color: rgba(255, 255, 255, 0.72);
+  background-color: var(--glass-bg, rgba(255, 255, 255, 0.72));
+  -webkit-backdrop-filter: url(#liquid-glass) blur(0.5px) brightness(1.04) saturate(1.06);
+  backdrop-filter: url(#liquid-glass) blur(0.5px) brightness(1.04) saturate(1.06);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
-  z-index: 1;
-  pointer-events: none;
-  transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1),
-              width 0.38s cubic-bezier(0.32, 0.72, 0, 1),
-              opacity 0.22s ease;
-  opacity: 0;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.32, 0.72, 0, 1),
+              background-color 0.18s ease;
+  will-change: transform;
 }
-.tabbar_pill.is-ready { opacity: 1; }
-
-/* 激活态: 文字蓝色, 背景透明 (由 .tabbar_pill 接管) */
-.settings_nav_item.is-active {
-  background-color: transparent;
-  color: var(--color-primary);
-  font-weight: 700;
+.settings_menu_item:hover {
+  background-color: var(--glass-bg-strong);
 }
-
-/* tab 内 icon + label */
-.settings_nav_icon {
-  flex: 0 0 20px;
-  width: 20px;
-  height: 20px;
+.settings_menu_item:active {
+  background-color: var(--glass-bg);
+}
+.settings_menu_icon {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, #4a8df0 0%, #2c5fc4 100%);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
-.settings_nav_icon svg { width: 20px; height: 20px; display: block; }
-.settings_nav_label { flex: 1 1 auto; min-width: 0; }
+.settings_menu_item[data-page="search"] .settings_menu_icon {
+  background: linear-gradient(135deg, #5856d6 0%, #3634a3 100%);
+}
+.settings_menu_item[data-page="account"] .settings_menu_icon {
+  background: linear-gradient(135deg, #34c759 0%, #1f8a3a 100%);
+}
+.settings_menu_icon svg { width: 22px; height: 22px; display: block; }
 
-/* tab 右上角 "即将" 徽章 */
-.settings_nav_badge {
-  position: absolute;
-  top: 4px;
-  right: 8px;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  padding: 2px 5px;
-  border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.85);
-  color: #ffffff;
-  line-height: 1;
+.settings_menu_text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
-.settings_nav_item.is-active .settings_nav_badge {
-  /* 蓝色玻璃激活态下保留深色徽章, 对比度更稳 */
-  background: rgba(0, 0, 0, 0.85);
-  color: #ffffff;
+.settings_menu_title {
+  font-family: var(--font-text);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.43px;
+  color: var(--color-ink);
+  line-height: 1.2;
+}
+.settings_menu_sub {
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.078px;
+  color: var(--color-ink-muted-48);
+  line-height: 1.3;
+}
+.settings_menu_chev {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-muted-48);
+}
+.settings_menu_chev svg { width: 16px; height: 16px; }
+
+/* 二级 page 头部: 顶部 < 返回按钮 + 大标题 (iOS 设置 push 后页头) */
+.settings_page_head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0 14px;
+  margin: -4px 0 4px;
+  position: sticky;
+  top: -16px;     /* 跟 .settings_pages padding 抵消, 贴顶 */
+  z-index: 4;
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--glass-bg-strong) 88%, transparent) 0%,
+    color-mix(in srgb, var(--glass-bg-strong) 60%, transparent) 70%,
+    transparent 100%);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+}
+.settings_back_btn {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background-color 0.16s ease, transform 0.16s ease;
+  padding: 0;
+}
+.settings_back_btn:hover {
+  background-color: var(--glass-bg);
+}
+.settings_back_btn:active {
+  transform: scale(0.92);
+}
+.settings_back_btn svg { width: 20px; height: 20px; display: block; }
+.settings_page_title {
+  font-family: var(--font-text);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+  line-height: 1.2;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ====== push / pop 切换动画 ======
+   .settings_pages 是一个 flex 列容器, menu + 3 page 都是它的直接子元素
+   - 默认 state=menu, menu 显示, page 隐藏 (display: none, 不参与布局)
+   - 切到 state=page-XX, 对应 page display:flex, menu display:none
+   - 进入动画: 新 page 从 translateX(100%) -> 0, opacity 0 -> 1
+   - 退出动画: 旧 page 从 0 -> translateX(100%), opacity 1 -> 0 (pop 时) 或 menu -> translateX(-30%) (push 时)
+   实现: 通过 .is-entering / .is-leaving class 临时加 transform, 配合 transition
+   因 display:none 没法 transition, 所以同时存在 menu + page 期间用 class 切换可见性
+*/
+.settings_page {
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 0.36s cubic-bezier(0.32, 0.72, 0, 1),
+              opacity 0.28s ease;
+  will-change: transform, opacity;
+}
+
+/* push 动画: 新 page 从右滑入 */
+.settings_page.is-entering {
+  display: flex;
+  transform: translateX(100%);
+  opacity: 0;
+}
+.settings_page.is-active {
+  display: flex;
+  transform: translateX(0);
+  opacity: 1;
+}
+/* pop 动画: 旧 page 滑出到右 (iOS push/pop 标准方向) */
+.settings_page.is-leaving {
+  display: flex;
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* 一级菜单也走同样的滑入滑出, 跟 page 对称 */
+.settings_menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 0.36s cubic-bezier(0.32, 0.72, 0, 1),
+              opacity 0.28s ease;
+  will-change: transform, opacity;
+}
+.settings_menu.is-entering {
+  display: flex;
+  transform: translateX(-30%);
+  opacity: 0;
+}
+.settings_menu.is-leaving {
+  display: flex;
+  transform: translateX(-30%);
+  opacity: 0;
 }
 
 .settings_page { display: none; flex-direction: column; gap: 18px; }
 .settings_page.is-active { display: flex; }
 
-/* 账号占位卡片 */
-.settings_account_placeholder {
-  display: flex !important;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 4px 0 0;
-}
-.settings_account_lead {
-  margin: 0;
-  font-family: var(--font-text);
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: -0.224px;
-  line-height: 1.5;
-  color: var(--color-ink-muted-48);
-}
-.settings_account_placeholder .diy_bg_but2[disabled] {
-  opacity: 0.55;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
 /* ========== Section card (Apple system-settings row group) ========== */
 .settings_section {
-  /* shuding/liquid-glass: section 卡用弱版 filter */
+  /* v4.0.7: glass 风格 + row 紧贴 panel
+     不加 overflow:hidden (避免裁掉 row 的 border-top 和圆角细节) */
   background-color: var(--glass-bg);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   border: 1px solid var(--glass-border);
   border-radius: 14px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  padding: 18px 20px 20px;
+  padding: 0;
 }
 .about_milestone_card {
   padding: 16px 20px;
 }
 .settings_section_head {
   display: flex !important;
-  align-items: center;  /* 图标与文字水平基线对齐, 避免图标偏下 */
+  align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
+  padding: 14px 16px 6px;
 }
 .settings_section_icon {
-  flex: 0 0 28px;
-  width: 28px;
-  height: 28px;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 6px;
   background-color: var(--color-canvas);
   color: var(--color-primary);
 }
 .settings_section_icon svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   display: block;
 }
 .settings_section_titles {
@@ -1422,57 +1390,87 @@ img { max-width: 100%; display: block; }
   min-width: 0;
 }
 .settings_section_title {
-  font-family: var(--font-display);
-  font-size: 21px;
+  font-family: var(--font-text);
+  font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.231px;
-  line-height: 1.19;
+  letter-spacing: -0.2px;
+  line-height: 1.3;
   color: var(--color-ink);
 }
-.settings_section_desc {
-  font-family: var(--font-text);
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: -0.224px;
-  line-height: 1.43;
-  color: var(--color-ink-muted-48);
-}
+/* group 变体: 内部 group 卡片, 没 icon, title 字号小, 跟 iOS 设置 group 风格一致
+   用于 "时间与日期"section 拆出的 "时间格式 / 时间外观 / 日期显示" */
 .settings_section_body {
   display: flex !important;
   flex-direction: column;
   gap: 0;
 }
-.settings_subsection_title {
+.settings_section_body > .settings_subsection_title:first-child { margin-top: 0; }
+.settings_section_body > *:last-child { padding-bottom: 0; }
+/* iOS 设置分组标签: 灰色 13px, 上下留呼吸空间, 不画竖线 (跟 Apple 现代设置一致) */
+/* section_body 内的 subsection_title: group label, 14px 粗体灰字, 上下 padding 撑出间距 */
+.settings_section_body > .settings_subsection_title {
   font-family: var(--font-text);
   font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
   line-height: 1.3;
-  color: var(--color-ink);
-  padding: 0 0 0 8px;
-  min-height: 32px;  /* 跟字段高度一致, 保证间距 */
+  color: var(--color-ink-muted-80);
+  text-transform: none;
+  padding: 12px 16px 8px;
+  margin: 0;
   display: flex;
   align-items: center;
+  gap: 6px;
   position: relative;
-  border-left: none;  /* 改用 ::before 画竖线, 高度=行高, 不会跟随元素高度 */
 }
-.settings_subsection_title::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 18px;  /* ≈ 14px * 1.3 行高, 跟文字同高 */
-  background-color: #000;
-}
-.settings_subsection_title--spaced { margin-top: 0; }
 .settings_field {
   display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 12px;
+  min-height: 36px;
+  padding: 6px 16px;
+  position: relative;
+  border-radius: 0;
+}
+/* row 紧贴圆角:
+   简单模式: section_body 的第一个 child 圆角顶部, 最后一个 child 圆角底部
+   - 第一个是 field: 圆角顶部
+   - 第一个是 subsection_title: 圆角顶部 (subsection 当 group header)
+   - 最后一个是 field: 圆角底部
+   - 最后一个是 subsection_title: 圆角底部 */
+.settings_section_body > :first-child { border-top-left-radius: 10px; border-top-right-radius: 10px; }
+.settings_section_body > :last-child { border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+/* row 紧贴: 紧跟 subsection_title 后的 row 也圆角顶部, 但如果 subsection_title 已是 section 第一个 child, 规则重复不冲突 */
+/* 紧邻的 row 之间画 1px 分隔线 (液态玻璃: 半透明白色) */
+.settings_field + .settings_field,
+.settings_subsection_title + .settings_field { border-top: 1px solid rgba(255, 255, 255, 0.22); }
+/* 分隔线已在 .settings_field + .settings_field / .settings_subsection_title + .settings_field 合并规则里 */
+/* 账号 tab 内的 field 走 .settings_field--panel 变体 (独立 panel, 跟 row group 区别) */
+.settings_field--panel {
   flex-direction: column;
-  gap: 6px;
-  min-height: 32px;
-  padding-bottom: 12px;
+  align-items: stretch;
+  min-height: 36px;
+  border-radius: 12px;
+  border-top: 0;
+  padding: 14px 16px;
+  background-color: var(--glass-bg-strong);
+  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.settings_field--panel + .settings_field--panel { border-top: 1px solid rgba(0, 0, 0, 0.06); }
+
+/* 账号 tab 内的 field 走 panel 变体 (跟 account_user_card / settings_upload 风格统一) */
+.settings_field--panel {
+  padding: 14px 16px;
+  background-color: var(--glass-bg-strong);
+  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 .settings_field_label {
   font-family: var(--font-text);
@@ -1489,29 +1487,23 @@ img { max-width: 100%; display: block; }
   flex-wrap: wrap;
 }
 
-/* 通用设置: 标签-控件行布局 (iOS 系统设置风格) */
+/* row 字段默认布局 (label 左, control 右) */
 .settings_field:has(.settings_field_control) {
-  flex-direction: row !important;
-  align-items: center !important;
   justify-content: space-between;
-  gap: 12px;
-  min-height: 32px;
-  padding: 4px 0;
+  /* 让 label 占据主轴剩余空间, 文本超出时省略 */
+}
+.settings_field:has(.settings_field_control) > .settings_field_label {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 /* 联动隐藏: 由父开关控制, 关闭时整个字段淡出 + 不可交互 */
 .settings_field.is-dep-hidden {
   display: none;
 }
-/* 让 label 自身垂直居中于 row (line-height + flex baseline) */
-.settings_field:has(.settings_field_control) > .settings_field_label {
-  line-height: 1.3;
-  flex: 1 1 auto;
-  min-width: 0;
-}
+/* label 垂直居中由基础 .settings_field row 布局保证 */
 /* 字段之间: 1px 白色细分隔线 (iOS 列表风格), 只在同 section_body 内紧邻的 field 之间 */
-.settings_section_body > .settings_field + .settings_field {
-  border-top: 1px solid rgba(255, 255, 255, 0.6);
-}
+/* field 间 1px 分隔线已合并到 .settings_field 基础规则 */
+
 .settings_section_body > *:last-child { padding-bottom: 0; }
 .settings_field_control {
   flex: 0 0 auto;
@@ -1580,16 +1572,12 @@ img { max-width: 100%; display: block; }
 }
 .settings_select:focus { outline: 2px solid var(--color-primary-focus); outline-offset: 1px; }
 
-/* 兼容旧 .set_choice / .set_title (FAQ 弹窗或旧内容可能用到), 不再强制 display:none */
-.set_title { display: none; }
-.set_choice,
-.set_choice2 { font-size: 14px; color: var(--color-ink-muted-48); }
-
 /* 壁纸选择 */
 .bg_choice_main {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 12px;
+  padding: 4px 14px 14px;
 }
 .bg_choice_small {
   position: relative;
@@ -1644,16 +1632,19 @@ img { max-width: 100%; display: block; }
 /* 自定义上传: 一个上 label + 下文件行 + 按钮组的清晰分层, 不再一行挤 */
 .settings_upload,
 .settings_upload.glass {
+  /* v4.0.7 重构: 取消外层 panel (灰里套灰), 改成简洁上下两行
+     上行: 文件选择 label (左) + 文件名 (右)
+     下行: 操作按钮右对齐 */
   display: flex !important;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px;
+  gap: 10px;
+  padding: 14px 16px;
   background-color: var(--glass-bg);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   border: 1px solid var(--glass-border);
-  border-radius: 11px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 .settings_upload_field,
 .settings_upload_field.glass {
@@ -1667,27 +1658,25 @@ img { max-width: 100%; display: block; }
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   cursor: pointer;
   font-family: var(--font-text);
   font-size: 14px;
   letter-spacing: -0.224px;
   color: var(--color-ink);
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease;
 }
-.settings_upload_field:hover { box-shadow: var(--glass-shadow); }
-.settings_upload_field-label {
-  font-weight: 500;
-  color: var(--color-ink);
-}
+.settings_upload_field:hover { background-color: rgba(255, 255, 255, 0.18); }
+.settings_upload_field:active { transform: scale(0.99); }
 .settings_upload_filename {
   flex: 0 1 auto;
-  color: var(--color-ink-muted-48);
+  color: var(--color-ink-muted-80);
   font-weight: 400;
   max-width: 60%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 13px;
 }
 .settings_upload_input {
   position: absolute;
@@ -1705,9 +1694,15 @@ img { max-width: 100%; display: block; }
   gap: 8px;
   flex-wrap: wrap;
 }
+.settings_upload_actions .diy_bg_but,
+.settings_upload_actions .diy_bg_but2 {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
 /* 兼容旧 .diy_bg_box, 不强制隐藏, 留作 fallback */
 .diy_bg_box,
-.diy_bg { display: none; }
 .diy_bg_but,
 .diy_bg_but2,
 #change-btn {
@@ -1792,27 +1787,6 @@ img { max-width: 100%; display: block; }
 }
 
 /* 设置中搜索引擎选择 */
-.set_choice .select_box2 {
-  height: 44px;
-  min-width: 200px;
-  margin: 8px 0 12px;
-  padding: 0 36px 0 16px;
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  border-radius: 10px;
-  font-size: 14px;
-  color: var(--color-ink);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'><path d='M764.864 387.008a42.624 42.624 0 0 0-60.288 0L512 579.712 319.424 387.008a42.624 42.624 0 1 0-60.288 60.288l222.976 223.04a42.624 42.624 0 0 0 60.288 0l222.976-223.04a42.624 42.624 0 0 0 0-60.288z' fill='%237a7a7a'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px 12px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.set_choice .select_box2:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.18);
-}
-
 /* 引擎 chip (radiogroup) */
 .engine-chip-group {
   display: flex !important;
@@ -1875,25 +1849,23 @@ img { max-width: 100%; display: block; }
   display: flex !important;
   align-items: flex-start;
   gap: 10px;
-  margin-top: 4px;
-  padding: 12px 14px 16px;
-  /* 黄色玻璃: 高饱和暖黄半透明 + 琥珀左边框 (与液态玻璃风格一致) */
-  background-color: rgba(255, 200, 60, 0.42);
+  margin: 12px 14px 14px;  /* v4.0.7 紧贴模式: section_body gap 0, 由 notice 自身 margin 撑出间距 */
+  padding: 12px 14px;
+  background-color: rgba(120, 120, 128, 0.08);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
   backdrop-filter: blur(14px) saturate(180%);
-  border-radius: 11px;
-  border-left: 3px solid rgba(217, 119, 6, 0.95);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 2px rgba(180, 120, 0, 0.10);
+  border-radius: 12px;
+  border-left: 0;
+  box-shadow: none;
 }
 .set_notice_icon {
   flex: 0 0 18px;
   width: 18px;
   height: 18px;
   margin-top: 1px;
-  color: rgba(245, 158, 11, 0.95);
+  color: var(--color-ink-muted-80);
 }
 .set_notice_icon svg { width: 18px; height: 18px; display: block; }
-.set_notice-body { flex: 1 1 auto; }
 .set_notice_title {
   font-family: var(--font-text);
   font-size: 14px;
@@ -1950,29 +1922,12 @@ img { max-width: 100%; display: block; }
     border-radius: 14px;
   }
   .settings_box_title { font-size: 22px; }
-  .diy_bg {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
   .diy_bg input[type="file"] { max-width: 100%; }
   .diy_bg_but, .diy_bg_but2, #change-btn { width: 100%; }
 
-  /* settings 弹窗分页: 窄屏把侧栏改造成顶部水平 tab */
-  /* 桌面端用 absolute 定位; 窄屏改回 static + row 滚动 */
-  /* settings 弹窗分页: 底部 tab 在窄屏 (≤640px) 也保留, 字号略缩, 圆角稍小 */
+  /* settings 弹窗分页: 窄屏 (≤640px) tab 字号略缩, 圆角稍小 */
   /* 移动端中等屏: 弹窗更紧凑, tab 字号略缩, 隐藏 icon (只保留 label) */
-  .settings_tabbar_wrap {
-    max-width: 360px;
-    /* 沿用桌面端 absolute + bottom: 16px, 不用 margin-top: auto */
-  }
-  .settings_tabbar,
-  .settings_sidebar {
-    padding: 3px;
-    border-radius: var(--r-pill);
-  }
-  .settings_nav_item { padding: 7px 5px; font-size: 12px; }
-  .settings_nav_icon { display: none; }
-  /* 窄屏: 沿用桌面端 absolute + bottom: 16px, pages 占满 body 全部高度, tab 浮在上面 */
+  /* 窄屏: 沿用桌面端 grid 1fr auto, tab 贴底 */
   .settings_box#settings_box { width: calc(100vw - 24px); }
 }
 @media (max-width: 419px) {
@@ -2271,6 +2226,22 @@ img { max-width: 100%; display: block; }
 .auth_actions .diy_bg_but,
 .auth_actions .diy_bg_but2 { width: 100%; }
 
+/* Turnstile widget 容器: 显式模式需要明确尺寸, 否则 widget 0 尺寸 → 渲染失败 → 300010 */
+.auth_turnstile {
+  min-height: 65px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.auth_turnstile .cf-turnstile {
+  transform: scale(0.95);
+  transform-origin: center;
+  min-height: 65px;
+  width: 100%;
+  max-width: 302px;
+}
+
 /* 提交按钮: 集成 loading 状态 */
 .auth_submit {
   position: relative;
@@ -2350,8 +2321,6 @@ img { max-width: 100%; display: block; }
   to   { transform: translateY(0); opacity: 1; }
 }
 
-/* 兼容: 旧 .settings_field_* / .auth_hint 不用了, 但保留以防 JS 引用 */
-.auth_hint { display: none; }
 
 /* 顶栏账号入口 (浮在右上, 与汉堡按钮并列) */
 .account_entry {
@@ -2495,20 +2464,28 @@ img { max-width: 100%; display: block; }
 .account_menu_item--danger:hover { background-color: rgba(215, 0, 21, 0.08); }
 .account_menu_item--danger:active { background-color: rgba(215, 0, 21, 0.14); }
 
-/* 账号 tab 内的用户卡片 */
+/* ========== 账号 tab 重构 (v4.0.7 重排) ==========
+   结构: 账号卡 (头像+邮箱+状态) / 昵称 / 头像上传 / 提示
+   设计: Apple 现代设置风格, 大量留白, 玻璃面板嵌套不超过 1 层 */
+
 .account_user_card {
-  display: flex;
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
   align-items: center;
-  gap: 14px;
-  padding: 14px;
-  border-radius: 14px;
-  margin-bottom: 16px;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background-color: var(--glass-bg-strong);
+  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 .account_avatar {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background-color: rgba(0,0,0,0.06);
+  background-color: rgba(120, 120, 128, 0.16);  /* iOS 系统灰 */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -2516,41 +2493,88 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-ink-muted-48);
+  color: rgba(60, 60, 67, 0.6);
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 0;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.04);
 }
-.account_avatar svg { width: 28px; height: 28px; opacity: 0.6; }
-/* 有头像时: 完全圆形裁剪, 隐藏 svg */
-.account_avatar.has-avatar { background-color: transparent; }
+.account_avatar svg { width: 30px; height: 30px; opacity: 0.85; }
+.account_avatar.has-avatar { background-color: transparent; box-shadow: none; }
 .account_avatar.has-avatar svg { display: none; }
+
 .account_user_meta {
-  flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
-/* user card 右侧操作区: 修改密码 + 登出 按钮 (横向排列) */
+.account_email {
+  font-family: var(--font-text);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  line-height: 1.3;
+  color: var(--color-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.account_sync_state {
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.08px;
+  line-height: 1.3;
+  color: var(--color-ink-muted-80);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.account_sync_state::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #34c759;  /* iOS 绿 */
+  box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.18);
+}
+
 .account_user_actions {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
   align-items: center;
 }
 .account_user_actions .diy_bg_but2 {
-  padding: 7px 14px;
+  padding: 7px 12px;
   font-size: 12px;
   font-weight: 500;
   border-radius: 8px;
   white-space: nowrap;
+  height: 30px;
 }
 /* 登出按钮: 红色字 + 红色边框 (危险操作强调) */
 .account_logout_btn {
   color: #d70015 !important;
   border-color: rgba(215, 0, 21, 0.5) !important;
   background-color: rgba(215, 0, 21, 0.06) !important;
+}
+
+/* 弹窗窄时 (≤ 480px): 账号卡换成上下排版, 按钮也放下面整行 */
+@media (max-width: 520px) {
+  .account_user_card {
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: auto auto;
+    row-gap: 14px;
+  }
+  .account_avatar { width: 56px; height: 56px; }
+  .account_user_meta { grid-column: 2; }
+  .account_user_actions {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+  .account_user_actions .diy_bg_but2 { flex: 1; }
 }
 .account_logout_btn:hover {
   background-color: rgba(215, 0, 21, 0.12) !important;
@@ -2573,8 +2597,6 @@ img { max-width: 100%; display: block; }
 }
 
 /* 隐藏老占位元素 (保险) */
-.settings_account_placeholder { display: none !important; }
-
 /* 移动端: 顶栏入口贴右上 (汉堡可能隐藏) */
 @media (max-width: 480px) {
   .account_entry { top: 10px; right: 12px; width: 36px; height: 36px; }
@@ -2676,7 +2698,8 @@ img { max-width: 100%; display: block; }
 .page_footer_icp_mps {
   height: 14px;
   width: auto;
-  display: inline-block;
+  display: inline-block !important;
   flex-shrink: 0;
   object-fit: contain;
+  vertical-align: middle;
 }

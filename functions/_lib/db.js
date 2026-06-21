@@ -7,16 +7,23 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT UNIQUE NOT NULL,
   password_salt TEXT NOT NULL,
   password_hash TEXT NOT NULL,
+  nickname TEXT,              -- 用户昵称, 问候语用 (1-24 位任意字符)
   prefs_json TEXT NOT NULL DEFAULT '{}',
   avatar_b64 TEXT,
   avatar_content_type TEXT,
   avatar_size INTEGER,
+  token_version INTEGER NOT NULL DEFAULT 1,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL,
   last_login_at INTEGER
 );
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+-- 旧版本迁移:
+-- V4.0.3: ALTER TABLE users ADD COLUMN token_version INTEGER NOT NULL DEFAULT 1;
+-- V4.0.7: ALTER TABLE users ADD COLUMN nickname TEXT;
+--         UPDATE users SET nickname = SUBSTR(email, 1, INSTR(email, '@') - 1) WHERE nickname IS NULL;
 
 CREATE TABLE IF NOT EXISTS jwt_revocations (
   jti TEXT PRIMARY KEY,
@@ -33,10 +40,15 @@ export async function getAuthUser(request, env) {
   const { verifyJwt } = await import('./crypto.js');
   const payload = await verifyJwt(token, env.JWT_SECRET);
   if (!payload) return null;
-  // 检查吊销
+  // 检查 jti 黑名单
   if (payload.jti) {
     const bl = await env.DB.prepare('SELECT 1 FROM jwt_revocations WHERE jti = ?').bind(payload.jti).first();
     if (bl) return null;
+  }
+  // 检查 token_version (改密 / 登出 +1 后旧 token 立即失效)
+  if (payload.tv) {
+    const row = await env.DB.prepare('SELECT token_version FROM users WHERE id = ?').bind(payload.sub).first();
+    if (!row || row.token_version !== payload.tv) return null;
   }
   return { id: payload.sub, email: payload.email, jti: payload.jti };
 }
@@ -74,7 +86,6 @@ export function err(code, message, status = 400, env = null) {
 
 // 允许同步的偏好字段白名单
 export const ALLOWED_PREF_KEYS = new Set([
-  'greeting',
   'defaultSearchEngine',
   'cfg_time24h',
   'cfg_timeShowSeconds',

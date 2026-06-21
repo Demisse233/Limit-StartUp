@@ -1,15 +1,28 @@
 // POST /api/auth/login
 import { verifyPassword, normalizeEmail, isValidEmail, signJwt } from '../../_lib/crypto.js';
 import { readJson, json, err } from '../../_lib/db.js';
+import { verifyTurnstile, rateLimit, getClientIp } from '../../_lib/turnstile.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(env) });
+  const ip = getClientIp(request);
+
+  // 1) 限流: 同 IP 每小时最多 10 次登录
+  const rl = await rateLimit(env, 'login:' + ip, 10, 3600);
+  if (!rl.ok) return err('rate_limited', '请求过于频繁, 请稍后再试', 429, env);
+
   const body = await readJson(request);
   if (!body) return err('invalid_body', '请求体必须是 JSON', 400, env);
   const email = normalizeEmail(body.email);
   const password = body.password;
+  const turnstileToken = body.turnstileToken || '';
   if (!isValidEmail(email) || !password) return err('invalid_credentials', '邮箱或密码错误', 401, env);
+
+  // 2) Turnstile 验证
+  if (!await verifyTurnstile(turnstileToken, env, ip)) {
+    return err('captcha_required', '人机验证失败, 请刷新页面重试', 403, env);
+  }
 
   const user = await env.DB.prepare('SELECT id, email, password_salt, password_hash FROM users WHERE email = ?').bind(email).first();
   if (!user) return err('invalid_credentials', '邮箱或密码错误', 401, env);
@@ -20,16 +33,17 @@ export async function onRequestPost(context) {
   const now = Date.now();
   await env.DB.prepare('UPDATE users SET last_login_at = ? WHERE id = ?').bind(now, user.id).run();
 
-  // 取头像状态, 登录响应里直接带上 avatarUrl, 避免前端多一次 /me 调用
-  const avatarRow = await env.DB.prepare('SELECT avatar_b64 FROM users WHERE id = ?').bind(user.id).first();
-  const token = await signJwt({ sub: user.id, email: user.email }, env.JWT_SECRET);
+  const userAll = await env.DB.prepare('SELECT nickname, avatar_b64, token_version FROM users WHERE id = ?').bind(user.id).first();
+  const tv = (userAll && userAll.token_version) || 1;
+  const token = await signJwt({ sub: user.id, email: user.email, tv }, env.JWT_SECRET);
   return json({
     ok: true,
     token,
     user: {
       id: user.id,
       email: user.email,
-      avatarUrl: avatarRow && avatarRow.avatar_b64 ? '/api/avatar' : null
+      nickname: userAll ? userAll.nickname : null,
+      avatarUrl: userAll && userAll.avatar_b64 ? '/api/avatar' : null
     }
   }, 200, env);
 }

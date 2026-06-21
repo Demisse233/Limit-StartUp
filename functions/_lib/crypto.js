@@ -77,15 +77,41 @@ function b64urlDecode(str) {
   return base64ToBytes(str);
 }
 
+// 读取 JWT 过期时间 (秒), 默认 7 天
+function getJwtExpiresIn() {
+  // 可被环境变量 JWT_EXPIRES_IN 覆盖, 例如 "7d" / "24h" / "3600"
+  const v = (typeof globalThis !== 'undefined' && globalThis.__JWT_EXPIRES_IN__) || '7d';
+  return parseDuration(v, 7 * 24 * 3600);
+}
+function parseDuration(v, fallbackSec) {
+  if (typeof v === 'number' && v > 0) return v;
+  if (typeof v !== 'string') return fallbackSec;
+  const m = /^(\d+)([smhd]?)$/i.exec(v.trim());
+  if (!m) return fallbackSec;
+  const n = parseInt(m[1], 10);
+  const unit = m[2].toLowerCase();
+  const mult = unit === 's' ? 1 : unit === 'm' ? 60 : unit === 'h' ? 3600 : 86400;
+  return n * mult;
+}
+
 export async function signJwt(payload, secret) {
   const header = { alg: 'HS256', typ: 'JWT' };
   const now = Math.floor(Date.now() / 1000);
-  const fullPayload = { iat: now, ...payload };
+  const exp = now + getJwtExpiresIn();
+  const jti = genJti();
+  const fullPayload = { iat: now, exp, jti, ...payload };
   const headerB64 = b64urlEncode(strToBytes(JSON.stringify(header)));
   const payloadB64 = b64urlEncode(strToBytes(JSON.stringify(fullPayload)));
   const sigInput = headerB64 + '.' + payloadB64;
   const sig = await hmacSha256(secret, sigInput);
   return sigInput + '.' + sig;
+}
+
+function genJti() {
+  // 22 字符 URL-safe base64 (足够唯一)
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return b64urlEncode(bytes);
 }
 
 export async function verifyJwt(token, secret) {

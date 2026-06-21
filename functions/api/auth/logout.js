@@ -11,6 +11,8 @@ export async function onRequestPost(context) {
     const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60;
     await env.DB.prepare('INSERT OR IGNORE INTO jwt_revocations (jti, expires_at) VALUES (?, ?)').bind(user.jti, exp).run();
   }
+  // token_version += 1, 让本用户所有旧 token 立即失效 (双保险: jti 黑名单 + tv 校验)
+  await env.DB.prepare('UPDATE users SET token_version = token_version + 1 WHERE id = ?').bind(user.id).run();
   return json({ ok: true }, 200, env);
 }
 

@@ -7,7 +7,7 @@ export async function onRequestGet(context) {
   const user = await getAuthUser(request, env);
   if (!user) return err('unauthorized', '未登录', 401, env);
 
-  const row = await env.DB.prepare('SELECT id, email, prefs_json, avatar_b64, created_at, last_login_at FROM users WHERE id = ?').bind(user.id).first();
+  const row = await env.DB.prepare('SELECT id, email, nickname, prefs_json, avatar_b64, created_at, last_login_at FROM users WHERE id = ?').bind(user.id).first();
   if (!row) return err('user_not_found', '用户不存在', 404, env);
 
   let prefs = {};
@@ -17,6 +17,7 @@ export async function onRequestGet(context) {
     user: {
       id: row.id,
       email: row.email,
+      nickname: row.nickname,
       avatarUrl: row.avatar_b64 ? '/api/avatar' : null,
       prefs,
       createdAt: row.created_at,

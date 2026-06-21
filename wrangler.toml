@@ -11,4 +11,13 @@ binding = "DB"
 database_name = "limit-startup-db"
 database_id = "de871d75-01ee-4fbc-a7af-62fddb23e6ff"
 
+# KV namespace 限流 (注册 / 登录 / 改密)
+[[kv_namespaces]]
+binding = "RL"
+id = "6c19b13174d24705a21ac436c1ccc4cd"
+
 # 头像走 D1 base64 (方案 C, 不需要 R2)
+# 环境变量 (在 Cloudflare Pages 后台设置, 不入 git):
+#   JWT_SECRET        - 32 位以上强随机串
+#   TURNSTILE_SECRET  - Cloudflare Turnstile secret key
+#   ALLOWED_ORIGIN    - 生产域 https://www.demisse.cn

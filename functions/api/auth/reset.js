@@ -3,17 +3,29 @@
 // 改完前端会清除 localStorage token, 强制用新密码重新登录
 import { hashPassword, verifyPassword } from '../../_lib/crypto.js';
 import { getAuthUser, readJson, json, err } from '../../_lib/db.js';
+import { verifyTurnstile, rateLimit, getClientIp } from '../../_lib/turnstile.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(env) });
   const user = await getAuthUser(request, env);
   if (!user) return err('unauthorized', '未登录', 401, env);
+  const ip = getClientIp(request);
+
+  // 1) 限流: 同 IP 每小时最多 5 次改密
+  const rl = await rateLimit(env, 'reset:' + ip, 5, 3600);
+  if (!rl.ok) return err('rate_limited', '请求过于频繁, 请稍后再试', 429, env);
+
   const body = await readJson(request);
   if (!body) return err('invalid_body', '请求体必须是 JSON', 400, env);
-  const { oldPassword, newPassword } = body;
+  const { oldPassword, newPassword, turnstileToken } = body;
   if (!oldPassword || !newPassword) return err('missing_fields', '缺少 oldPassword 或 newPassword', 400, env);
   if (oldPassword === newPassword) return err('same_password', '新密码不能与旧密码相同', 400, env);
+
+  // 2) Turnstile 验证
+  if (!await verifyTurnstile(turnstileToken || '', env, ip)) {
+    return err('captcha_required', '人机验证失败, 请刷新页面重试', 403, env);
+  }
 
   const row = await env.DB.prepare('SELECT password_salt, password_hash FROM users WHERE id = ?').bind(user.id).first();
   if (!row) return err('user_not_found', '用户不存在', 404, env);
@@ -27,7 +39,8 @@ export async function onRequestPost(context) {
   const newSalt = genSalt();
   const newHash = await hashPassword(newPassword, newSalt);
   const now = Date.now();
-  await env.DB.prepare('UPDATE users SET password_salt = ?, password_hash = ?, updated_at = ? WHERE id = ?').bind(newSalt, newHash, now, user.id).run();
+  // 改密后让旧 token 全部失效 (token_version += 1)
+  await env.DB.prepare('UPDATE users SET password_salt = ?, password_hash = ?, token_version = token_version + 1, updated_at = ? WHERE id = ?').bind(newSalt, newHash, now, user.id).run();
 
   return json({ ok: true }, 200, env);
 }

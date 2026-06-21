@@ -157,16 +157,16 @@ main .content {
   pointer-events: auto;
 }
 
-[id="navcheck"]:checked + .burger_btn .burger::before {
+[id="navcheck"]:checked ~ .burger_btn .burger::before {
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
 }
-[id="navcheck"]:checked + .burger_btn .burger::after {
+[id="navcheck"]:checked ~ .burger_btn .burger::after {
   bottom: 50%;
   transform: translateY(50%) rotate(-45deg);
 }
 
-[id="navcheck"]:checked + .burger_btn .burger .bar {
+[id="navcheck"]:checked ~ .burger_btn .burger .bar {
   opacity: 0;
 }
 
