@@ -348,7 +348,7 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge glass-strong">Version 4.0.8</span>
+                        <span class="about_version_badge glass-strong">Version 4.0.10</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
@@ -400,12 +400,12 @@
                         </article>
                         <article class="changelog_version">
                             <header class="changelog_version_head">
-                                <span class="changelog_version_tag">V4.0.9</span>
+                                <span class="changelog_version_tag">V4.0.10</span>
                                 <span class="changelog_version_date">2026.6.21</span>
                             </header>
                             <ul class="changelog_items">
                                 <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">页脚"苏公网安备"前的 <code>备案图标.png</code> 被全局 <code>img{display:block}</code> 规则顶走，<code>.page_footer_icp_mps</code> 加 <code>!important</code> + <code>vertical-align:middle</code> 恢复 14px 高度内联对齐</span></li>
-                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗 Edge 色带断层根因修复 (玻璃风保留)：弹窗 <code>.is-open</code> 打开动画结束后，<code>transform</code> 从 <code>translate(-50%, -50%) scale(1)</code> 收回到 <code>translate(-50%, -50%)</code>（去掉 scale）+ 清掉 <code>will-change</code>，让 backdrop-filter 跑在 identity transform 的合成层上，不再触发 Edge/Chromium 著名的 <code>position:fixed + transform:scale + 大 radius backdrop-filter</code> 合成 bug (puppeteer 复现：底图用彩色渐变时弹窗下半部出现明显水平色带)。关闭动画仍从 identity 状态 scale(0.96) 弹回去。同期：① 一级分类卡片 hover/active 去掉 <code>transform: scale()</code> 缩放 (puppeteer 实测 hover 态 transform: none) ② <code>.settings_menu</code> 加 <code>display:flex; gap:10px</code>，3 个分类卡片间距从 ~30px 收到 10px</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗 Edge 色带断层终极修复 (玻璃风保留)：弹窗从 <code>position:fixed; top/left:50% + transform: translate(-50%,-50%) scale()</code> 改为 <code>position:fixed; inset:0; margin:auto</code> 居中（元素本身永远 identity transform，<code>backdrop-filter</code> 跑在干净合成层上，绕开 Edge/Chromium 著名的 <code>fixed + transform + backdrop-filter</code> 合成 bug）。打开动画从 <code>transform: scale()</code> 改为 <code>clip-path: inset(0 0 100% 0 → 0)</code> 展开（clip-path 不会触发 backdrop-filter 合成 bug），视觉上仍是 iOS 风格弹入。puppeteer 实测：彩色渐变底图下，弹窗是真正的磨砂玻璃（紫红渐变透出 + 模糊），整块弹窗完全干净，无任何色带断层。同期：① 一级分类卡片 hover/active 去掉 <code>transform: scale()</code> 缩放 ② <code>.settings_menu</code> 加 <code>display:flex; gap:10px</code>，3 个分类卡片间距从 ~30px 收到 10px</span></li>
                             </ul>
                         </article>
                         <article class="changelog_version">

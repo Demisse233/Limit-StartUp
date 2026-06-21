@@ -709,13 +709,13 @@ img { max-width: 100%; display: block; }
 .settings_box.glass,
 .jump_out_box.glass {
   position: fixed;
-  top: 50%;
-  left: 50%;
+  inset: 0;               /* 全屏铺满, 居中交给 margin: auto, 不用 transform (避免 Edge backdrop-filter + transform 合成 bug 出色带) */
   z-index: 120;
   height: 88vh;            /* 固定高度, 4 个弹窗大小一致 */
   max-height: 88vh;
   display: flex !important;
   flex-direction: column;
+  margin: auto;            /* 配合 inset: 0 让弹窗在视口内水平+垂直居中, 元素本身 identity transform, backdrop-filter 跑在干净合成层上 */
   /* fallback (SVG filter 不生效时): 半透明卡片, 不依赖 backdrop-filter */
   background-color: rgba(255, 255, 255, 0.78);
   /* liquid-glass SVG filter 路径 (现代浏览器); 失败回退到上面的实色半透明 background-color */
@@ -723,20 +723,19 @@ img { max-width: 100%; display: block; }
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   border: 1px solid var(--glass-border);
   border-radius: 18px;
-  box-shadow: var(--glass-shadow);
-  padding: 24px 28px 32px;  /* 底部多 4px 给浮出的 tab 栏阴影留空间 */
-  transform: translate(-50%, -50%) scale(0.96);
-  transform-origin: center top;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.04),
     0 12px 24px rgba(0, 0, 0, 0.06),
     0 24px 64px rgba(0, 0, 0, 0.12);
+  padding: 24px 28px 32px;
+  /* 打开/关闭动画改用 clip-path 缩放 (clip-path 不会触发 backdrop-filter 合成 bug), 视觉上仍是 iOS 风格的弹入 */
+  clip-path: inset(0 0 100% 0 round 18px);  /* 关闭态: 高度 0, 圆角保留 */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   transition:
     opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.42s cubic-bezier(0.32, 0.72, 0, 1),
+    clip-path 0.42s cubic-bezier(0.32, 0.72, 0, 1),
     visibility 0s linear 0.32s;
 }
 /* settings 弹窗加宽 (容纳侧栏 200px + 内容区): 880px, 只作用于 .settings_box, 不影响 .jump_out_box (声明/FAQ) */
@@ -747,14 +746,13 @@ img { max-width: 100%; display: block; }
 .settings_box.is-open,
 .jump_out_box.is-open {
   opacity: 1;
-  transform: translate(-50%, -50%);  /* 打开动画结束后回到仅居中 (去掉 scale), 让 backdrop-filter 跑在 identity 合成层, 避免 Edge 色带断层 */
+  clip-path: inset(0 0 0 0 round 18px);  /* 打开: clip-path 展开, 元素本身保持 identity transform, backdrop-filter 跑在干净合成层上, 不会出色带 */
   visibility: visible;
   pointer-events: auto;
   z-index: 130;            /* 提一层, 避免被首页 z-index 120 元素覆盖 */
-  isolation: isolate;      /* 强制新建层叠上下文, 避免 backdrop-filter + transform 合成 bug */
   transition:
     opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+    clip-path 0.42s cubic-bezier(0.32, 0.72, 0, 1),
     visibility 0s linear 0s;
 }
 
