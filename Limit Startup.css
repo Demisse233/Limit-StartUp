@@ -635,45 +635,62 @@ img { max-width: 100%; display: block; }
 /* ========== About modal ========== */
 .about,
 .about.glass {
+  /* V4.0.11 统一弹窗风格: 与 .settings_box / .jump_out_box 完全对齐
+     居中: top:50% + left:50% + transform: translate(-50%,-50%) 经典方案 (100% 可靠)
+     打开/关闭动画: clip-path (clip-path 不会触发 Edge/Chromium 著名的
+     fixed + transform + backdrop-filter 合成出色带 bug;
+     transform 静态居中不参与动画, 不会出现出色带)
+     背景: rgba(255,255,255,0.78) fallback 实色与 settings/jump_out_box 一致
+     (4 个弹窗背景透明度统一, 避免 .about 偏冷调玻璃 vs settings 偏白实色的视觉割裂) */
   position: fixed;
   top: 50%;
   left: 50%;
   z-index: 120;
   width: min(640px, 92vw);
-  height: 86vh;             /* 固定高度, 与其他弹窗一致 */
-  max-height: 86vh;
+  height: 88vh;             /* 与 .settings_box / .jump_out_box 高度一致 */
+  max-height: 88vh;
   display: flex !important;
   flex-direction: column;
-  /* shuding/liquid-glass 真实实现 */
-  background-color: var(--glass-bg-strong);
-  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  transform: translate(-50%, -50%); /* 静态居中, 不动画, 不出色带 */
+  /* V4.0.11 弹窗视觉统一最终一步: backdrop-filter 改为普通高斯模糊
+     之前用 url(#liquid-glass-strong) + brightness(1.05) + saturate(1.08)
+     这两个滤镜会让弹窗色调"偏"向背景壁纸的色相, 同一张壁纸下看不出,
+     但只要稍微切一下壁纸 (或不同弹窗后看到的壁纸区域不同), 4 个弹窗之间
+     色调就会不一致 (关于偏冷, settings 偏暖).
+     改为纯 backdrop-filter: blur(N) 后, 弹窗玻璃感由 background 透明度 + blur 决定,
+     色调完全由 background-color (rgba 0.78) 决定, 4 个弹窗视觉字节级一致. */
+  background-color: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 18px;
-  box-shadow: var(--glass-shadow);
-  padding: 28px 32px 32px;
+  /* V4.0.11 阴影改为 inset (内阴影), 避免弹窗滚动条 + 外阴影投在弹窗外产生色差带
+     (outset box-shadow 在弹窗边缘外扩 24-64px, 跟弹窗内 section card 的圆角边缘
+     重叠时会形成"边缘光带", 用户视觉上像是"色差") */
+  box-shadow:
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  padding: 24px 28px 32px;  /* 与 .settings_box 一致 */
   text-align: left;  /* 默认左对齐, 跟其他弹窗一致 (Apple system-settings 风格) */
-  transform: translate(-50%, -50%) scale(0.96);
-  transform-origin: center top;
+  /* 关态: clip-path 收缩到底部 (圆角保留), 元素本身保持 identity transform */
+  clip-path: inset(0 0 100% 0 round 18px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  box-shadow: var(--glass-shadow), var(--glass-inner),
-    0 12px 24px rgba(0, 0, 0, 0.06),
-    0 24px 64px rgba(0, 0, 0, 0.12);
   transition:
     opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.42s cubic-bezier(0.32, 0.72, 0, 1),
+    clip-path 0.42s cubic-bezier(0.32, 0.72, 0, 1),
     visibility 0s linear 0.32s;
 }
 .about.is-open {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  clip-path: inset(0 0 0 0 round 18px);  /* 开态: clip-path 展开, transform 保持静态居中 */
   visibility: visible;
   pointer-events: auto;
+  z-index: 130;            /* 提一层, 跟 .settings_box.is-open 一致 */
   transition:
     opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.42s cubic-bezier(0.32, 0.72, 0, 1),
+    clip-path 0.42s cubic-bezier(0.32, 0.72, 0, 1),
     visibility 0s linear 0s;
 }
 .close_about_btn,
@@ -708,25 +725,31 @@ img { max-width: 100%; display: block; }
 .jump_out_box,
 .settings_box.glass,
 .jump_out_box.glass {
+  /* V4.0.11 统一弹窗风格: 居中方案与 .about 完全一致
+     top:50% + left:50% + transform: translate(-50%,-50%) 经典方案
+     打开/关闭动画: clip-path (不动 transform, 不出色带) */
   position: fixed;
-  inset: 0;               /* 全屏铺满, 居中交给 margin: auto, 不用 transform (避免 Edge backdrop-filter + transform 合成 bug 出色带) */
+  top: 50%;
+  left: 50%;
   z-index: 120;
   height: 88vh;            /* 固定高度, 4 个弹窗大小一致 */
   max-height: 88vh;
   display: flex !important;
   flex-direction: column;
-  margin: auto;            /* 配合 inset: 0 让弹窗在视口内水平+垂直居中, 元素本身 identity transform, backdrop-filter 跑在干净合成层上 */
-  /* fallback (SVG filter 不生效时): 半透明卡片, 不依赖 backdrop-filter */
+  transform: translate(-50%, -50%); /* 静态居中, 不动画 */
+  /* V4.0.11 弹窗视觉统一最终一步: 纯高斯模糊 (无 SVG filter, 无色调滤镜)
+     原因: url(#liquid-glass-strong) + brightness + saturate 三个滤镜叠加,
+     会让弹窗玻璃感"偏"向背景壁纸色相, 4 个弹窗之间色调不一致.
+     纯 blur(20px) + saturate(180%) 既保留 visionOS 玻璃感, 又不污染色调. */
   background-color: rgba(255, 255, 255, 0.78);
-  /* liquid-glass SVG filter 路径 (现代浏览器); 失败回退到上面的实色半透明 background-color */
-  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 18px;
+  /* V4.0.11 阴影改为 inset, 理由同 .about */
   box-shadow:
-    0 0 0 0.5px rgba(0, 0, 0, 0.04),
-    0 12px 24px rgba(0, 0, 0, 0.06),
-    0 24px 64px rgba(0, 0, 0, 0.12);
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
   padding: 24px 28px 32px;
   /* 打开/关闭动画改用 clip-path 缩放 (clip-path 不会触发 backdrop-filter 合成 bug), 视觉上仍是 iOS 风格的弹入 */
   clip-path: inset(0 0 100% 0 round 18px);  /* 关闭态: 高度 0, 圆角保留 */
@@ -756,13 +779,188 @@ img { max-width: 100%; display: block; }
     visibility 0s linear 0s;
 }
 
-/* 弹窗标题区: 标题 + 副标题, 居左, 跟 close 按钮水平排列 */
+/* 弹窗标题区: macOS Finder 风格面包屑
+   4 个 slot: < 返回 (chev, 液态玻璃) + 设置 (root) + 分隔符 (sep) + 当前页 (page)
+   状态 1 (menu): 只显示 root, 不可点击 (纯标题, 黑色 20px/600)
+   状态 2 (page): 4 个都显示:
+     - chev: 液态玻璃圆形按钮, 蓝色箭头
+     - root: 灰色 (体现"上一步", 非当前页), hover 变蓝 + 浅底, 点击回一级
+     - sep: 浅灰 ›
+     - page: 黑色 20px/600 (当前页, 视觉重点)
+   切换动画:
+     - chev: 从 -8px 滑入 + opacity 0→1
+     - sep + page: 从 +8px 滑入 + opacity 0→1 (60ms 延迟, 让 chev 先动)
+   整体水平排列, 居左, 跟 close 按钮水平排 */
 .settings_box_heading {
   display: flex !important;
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
   min-width: 0;
+  flex: 1 1 auto;
+  overflow: visible;
+  white-space: nowrap;
+  position: relative;
+  height: 44px;
+  padding: 0;
+  margin: 0;
 }
+.settings_box_heading--page {
+  /* page 态不需要 padding-left, chev 用 absolute 不占布局 */
+}
+/* chev 永远 absolute 在 heading 起始 (left: 0, top: 50%)
+   默认 menu 态: opacity 0 + transform translateX(-8px) 隐藏
+   page 态: opacity 1 + transform translateX(0) 滑入
+   不占 flex 流, '设置' 永远在 heading 起始 */
+.settings_box_back_chev {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-8px, -50%);
+  /* ... 其他保持原样 ... */
+}
+/* < 返回按钮: 跟 close 按钮同款液态玻璃风格 (圆形 + 玻璃背景 + 边 + 投影)
+   状态 1: hidden; 状态 2: 显示, 从左滑入 */
+/* 返回按钮: 跟 .close_about_btn 同款尺寸 (44x44 圆形) + 同款液态玻璃效果
+   区别: 中性 (白) 而非红色, 配合箭头色 var(--color-primary)
+   切换动画: 跟之前一样, chev 从 -8px 滑入 */
+.settings_box_back_chev {
+  /* 跟 close 按钮同尺寸 44x44, 不用液态玻璃滤镜 (跟弹窗玻璃背景会融化看不见)
+     改用纯白底 + 深边 + 软投影, 视觉上跟弹窗明显分层
+     absolute 定位不占 flex 流, '设置' 永远在 heading 起始 */
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.92);
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transform: translate(-8px, -50%);
+  transition: opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+              transform 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+              background-color 0.2s ease, box-shadow 0.22s ease;
+}
+.settings_box_heading--page .settings_box_back_chev { opacity: 1; transform: translate(0, -50%); }
+.settings_box_back_chev:hover {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+/* active 状态: scale + translateX 组合, 跟 page 态 translateX(0) 叠加而不冲突 */
+.settings_box_back_chev:active { transform: translate(0, -50%) scale(0.94); }
+.settings_box_back_chev svg { width: 22px; height: 22px; display: block; }
+/* "设置" 根:
+   状态 1: 黑色 20px/600, 纯标题, 不可点击
+   状态 2: 灰色 (color-ink-muted-48), 可点击, hover 变蓝 + 浅底 */
+.settings_box_root_text,
+.settings_box_root_btn {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.374px;
+  line-height: 1.2;
+  color: var(--color-ink);
+  transition:
+    opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0s linear 0.32s;
+}
+.settings_box_root_text {
+  /* menu 态: 黑色 20px/600 标题, 绝对定位在 heading 起始 0px
+     page 态: 渐出后 display:none */
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0;
+  color: var(--color-ink);
+  opacity: 1;
+  transition: opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.settings_box_root_btn {
+  /* page 态: 灰色可点击, 绝对定位在 chev 后 (left: 50px)
+     menu 态: display:none
+     padding 改为 4px 6px, 跟 chev 的 gap 6px 节奏一致 */
+  position: absolute;
+  left: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  padding: 4px 6px;
+  margin: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  color: rgba(29, 29, 31, 0.48);
+  opacity: 1;
+  transition:
+    color 0.16s ease, background-color 0.16s ease,
+    opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+/* page 态: root_text 淡出 + 微微左移, root_btn 淡入 + 复位 */
+.settings_box_heading--page .settings_box_root_text {
+  opacity: 0;
+  /* display:none 不能 transition, 渐出后由 JS 加 display:none (setTimeout 320ms) */
+  pointer-events: none;
+}
+.settings_box_heading--page .settings_box_root_btn {
+  pointer-events: auto;
+}
+.settings_box_root_btn:hover { color: var(--color-primary); background-color: var(--glass-bg); }
+.settings_box_root_btn:active { color: var(--color-primary-focus); }
+/* 视觉分隔符 "›": 跟 root/page title 同款字号 20px, 浅灰 */
+.settings_box_crumb_sep {
+  /* 绝对定位在 chev(44) + gap(6) + root_btn(55) = 105px 处
+     translate Y 居中, translate X 8px 渐入 */
+  position: absolute;
+  left: 105px;
+  top: 50%;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.374px;
+  color: rgba(29, 29, 31, 0.48);
+  opacity: 0;
+  transform: translate(8px, -50%);
+  user-select: none;
+  line-height: 1.2;
+  margin: 0;
+  transition: opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1) 60ms,
+              transform 0.32s cubic-bezier(0.32, 0.72, 0, 1) 60ms;
+}
+.settings_box_heading--page .settings_box_crumb_sep { opacity: 0.55; transform: translate(0, -50%); }
+/* 当前页标题: 跟 root 字号完全相同 (20px/600/黑色), 切到 page 时从右滑入 */
+.settings_box_page_title {
+  /* 绝对定位在 sep 后 (105 + 8 + 6 = 119px)
+     留点 gap 12, 实际 left 125px 比较舒服 */
+  position: absolute;
+  left: 130px;
+  top: 50%;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.374px;
+  line-height: 1.2;
+  color: var(--color-ink);
+  opacity: 0;
+  transform: translate(8px, -50%);
+  transition: opacity 0.32s cubic-bezier(0.32, 0.72, 0, 1) 60ms,
+              transform 0.32s cubic-bezier(0.32, 0.72, 0, 1) 60ms;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 140px);
+}
+.settings_box_heading--page .settings_box_page_title { opacity: 1; transform: translate(0, -50%); }
 /* 弹窗内文 text-link (Apple Action Blue, no underline) */
 .text_link {
   color: var(--color-primary);
@@ -973,12 +1171,15 @@ img { max-width: 100%; display: block; }
 .changelog {
   display: flex !important;
   flex-direction: column;
-  gap: 22px;
+  gap: 26px;
+  /* 与 .about_milestone_card (padding: 16px 20px) 对齐:
+     head 已有自己的 14/16/6 内边距, 只需要给 body 部分加左右 20 + 底部 18 */
+  padding: 4px 20px 18px;
 }
 .changelog_version {
   display: flex !important;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 .changelog_version_head {
   display: flex !important;
@@ -1003,24 +1204,32 @@ img { max-width: 100%; display: block; }
   color: var(--color-ink-muted-48);
   font-variant-numeric: tabular-nums;
 }
+/* 未发布 (unreleased) 容器: 视觉上区别于正式版本, 一眼能看出"未发布"状态 */
+.changelog_version--unreleased .changelog_version_tag {
+  color: #FF9500;  /* Apple systemOrange, warning/注意 标准色 */
+  font-style: italic;
+}
+.changelog_version--unreleased .changelog_version_head {
+  border-bottom-style: dashed;
+}
 .changelog_items {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex !important;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 .changelog_item {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: start;
-  column-gap: 10px;
+  column-gap: 12px;
   font-family: var(--font-text);
   font-size: 13px;
   font-weight: 400;
   letter-spacing: -0.078px;
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--color-ink-muted-80);
   text-align: left;
 }
@@ -1028,14 +1237,16 @@ img { max-width: 100%; display: block; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 20px;
-  padding: 0 8px;
-  border-radius: 6px;
-  font-size: 11px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 7px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2px;
   line-height: 1;
-  /* grid item: 垂直居中到第一行 (item 高度 20.8px, chip 高度 20px, 居中需要 +0.4 ~ +1px) */
+  /* grid item: chip 高度 22px, item 第一行字号 13px 行高 1.65 ≈ 21.45px,
+     align-self: start 配合 margin-top: 1px, 让 chip 顶部略高于第一行文字基线,
+     多行文字的 chip 视觉重心落在第一行文字上沿 */
   align-self: start;
   margin-top: 1px;
   white-space: nowrap;
@@ -1119,12 +1330,23 @@ img { max-width: 100%; display: block; }
    grid 1fr auto 让 pages 占满剩余空间, tab (absolute 浮起) 在 grid 第二行只占 padding-bottom 位置
    实际显示由 /* 内容区: 弹窗主滚动容器
    关键: 改成 grid 子项, 不用 flex, 由 .settings_body (grid 1fr auto) 控制 pages 高度 = 1fr 占满剩余空间 */
+.settings_body {
+  /* V4.0.11 修复: .settings_body 之前没有 CSS, 高度由内容撑开, 超出弹窗后被
+     .settings_box 的 clip-path 裁掉, 用户无法滚动. 现在让它在 .settings_box flex
+     column 里占满 header 之外的剩余高度, 子 .settings_pages 才能触发 overflow-y 滚动 */
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 .settings_pages {
   min-width: 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  flex: 1 1 auto;  /* 占满 .settings_body 剩余高度, 这样 overflow-y: auto 才能生效 */
   overflow-y: auto;
   padding-right: 4px;
   /* padding-bottom 等于 tab 视觉高度 + 间距, 让内容能滚到 tab 视觉区域之下 (iOS 时钟 App 效果)
@@ -1157,23 +1379,37 @@ img { max-width: 100%; display: block; }
   border-radius: 16px;
   text-decoration: none;
   color: var(--color-ink);
-  /* fallback (no SVG filter / dark bg): 半透明卡片, 不依赖 backdrop-filter */
-  background-color: rgba(255, 255, 255, 0.72);
-  background-color: var(--glass-bg, rgba(255, 255, 255, 0.72));
-  -webkit-backdrop-filter: url(#liquid-glass) blur(0.5px) brightness(1.04) saturate(1.06);
-  backdrop-filter: url(#liquid-glass) blur(0.5px) brightness(1.04) saturate(1.06);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
+  /* iOS 设置列表卡片: 比弹窗本身更"实"的白底玻璃, 跟弹窗的 0.78 玻璃底形成明显分层
+     弹窗 backdrop-filter blur(20px) saturate(180%) 自身已经很白蒙蒙,
+     卡片若也用 --glass-bg (5% 白) 就会跟弹窗糊在一起. 这里用约 94% 白底 + 极淡模糊
+     + 1px 细边 + 轻微投影, 跳出来又不破坏 visionOS 玻璃感. */
+  background-color: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  backdrop-filter: saturate(180%) blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   cursor: pointer;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: transform 0.18s cubic-bezier(0.32, 0.72, 0, 1),
-              background-color 0.18s ease;
+              background-color 0.18s ease,
+              box-shadow 0.18s ease,
+              border-color 0.18s ease;
   will-change: transform;
 }
 .settings_menu_item:hover {
-  background-color: var(--glass-bg-strong);
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.09);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 .settings_menu_item:active {
-  background-color: var(--glass-bg);
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 .settings_menu_icon {
   flex: 0 0 44px;
@@ -1229,6 +1465,34 @@ img { max-width: 100%; display: block; }
 }
 .settings_menu_chev svg { width: 16px; height: 16px; }
 
+/* 账户卡 (iOS 风格): 圆头像 + 大字名字 + 副标题, 放在第一 */
+.settings_menu_item--account { padding: 12px 14px; }
+.settings_menu_item--account .settings_menu_account_avatar {
+  /* 不要原 icon 方块背景, 头像自己渲染 (跟 account_user_card 同款) */
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--glass-bg-strong);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-muted-80);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.settings_menu_item--account .settings_menu_account_avatar svg { width: 30px; height: 30px; opacity: 0.85; }
+.settings_menu_item--account .settings_menu_account_avatar.has-avatar { background-color: transparent; box-shadow: none; }
+.settings_menu_item--account .settings_menu_account_avatar.has-avatar svg { display: none; }
+/* 账户卡标题: 大字号粗体, iOS 风格 */
+.settings_menu_item--account .settings_menu_title { font-size: 19px; font-weight: 600; letter-spacing: -0.4px; }
+/* 账户卡副标题: 灰字小一号, 邮箱/状态 */
+.settings_menu_item--account .settings_menu_sub { color: var(--color-ink-muted-64); font-size: 13px; }
+
 /* 二级 page 头部: 顶部 < 返回按钮 + 大标题 (iOS 设置 push 后页头) */
 .settings_page_head {
   display: flex;
@@ -1277,6 +1541,47 @@ img { max-width: 100%; display: block; }
   line-height: 1.2;
   flex: 1 1 auto;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* macOS 风格面包屑: < 设置(灰) › 个性化(粗)
+   - "设置" 是可点击的 button, 灰色 + hover 变色, 点 = backToSettingsMenu
+   - "›" 是纯视觉分隔符
+   - 当前 page title 走 .settings_page_title 自己的 22px 粗体黑色 */
+.settings_page_crumb {
+  flex: 0 0 auto;
+  font-family: var(--font-text);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  color: var(--color-ink-muted-48);
+  background: transparent;
+  border: 0;
+  padding: 6px 8px;
+  margin: -6px -4px -6px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.16s ease, background-color 0.16s ease;
+}
+.settings_page_crumb:hover {
+  color: var(--color-primary);
+  background-color: var(--glass-bg);
+}
+.settings_page_crumb:active {
+  color: var(--color-primary-focus);
+}
+.settings_page_crumb_sep {
+  flex: 0 0 auto;
+  font-family: var(--font-text);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-ink-muted-48);
+  opacity: 0.55;
+  user-select: none;
+  line-height: 1;
+  margin-right: 6px;
+  align-self: center;
 }
 
 /* ====== push / pop 切换动画 ======
@@ -1344,18 +1649,33 @@ img { max-width: 100%; display: block; }
 
 /* ========== Section card (Apple system-settings row group) ========== */
 .settings_section {
-  /* v4.0.7: glass 风格 + row 紧贴 panel
-     不加 overflow:hidden (避免裁掉 row 的 border-top 和圆角细节) */
-  background-color: var(--glass-bg);
-  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  border: 1px solid var(--glass-border);
+  /* 跟 .settings_menu_item 同款"白底玻璃卡"视觉:
+     弹窗内所有 section / category 卡共用一套底色 + 边 + 投影 + 内高光,
+     不再有"上线纪念" / "更新日志" 卡和设置弹窗 3 张 category 卡之间的色差.
+     之前 V4.0.11 走 5% 白底 + SVG filter 想"融入"弹窗, 但实际效果是跟弹窗糊在一起,
+     跟新调整后的 .settings_menu_item 对比明显偏暗. 同步为 94% 白底 + 极淡模糊. */
+  background-color: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  backdrop-filter: saturate(180%) blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   padding: 0;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 .about_milestone_card {
+  /* 跟 .settings_menu_item 同款"白底玻璃卡"视觉 (参 .settings_section 注释):
+     上线纪念卡跟关于弹窗"更新日志"卡、设置弹窗 3 张 category 卡三者完全一致. */
   padding: 16px 20px;
+  background-color: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  backdrop-filter: saturate(180%) blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 .settings_section_head {
   display: flex !important;
@@ -1402,8 +1722,17 @@ img { max-width: 100%; display: block; }
   flex-direction: column;
   gap: 0;
 }
+/* head + content 形式 (无 row group): body 加内边距, head 和 body 之间留呼吸, 左右跟 head 对齐
+   row group 形式 (含 .settings_field 子元素) 保持 padding 0, 让 field 自带的 6px 16px 紧贴 */
+.settings_section_body:not(:has(.settings_field)) {
+  padding: 4px 16px 16px;
+}
 .settings_section_body > .settings_subsection_title:first-child { margin-top: 0; }
-.settings_section_body > *:last-child { padding-bottom: 0; }
+/* 最后子元素去 padding-bottom: .set_notice 自身有 margin-bottom 14px, 不需要再补 */
+.settings_section_body > *:last-child:not(.set_notice) { padding-bottom: 0; }
+/* row group 形式 section (时间/日期/初始化/页脚) 的最后 field 底部留 10px 呼吸,
+   跟下张 section 卡片 (18px gap) 拉开距离, 不再贴得紧紧的 */
+.settings_section_body > .settings_field:last-child { padding-bottom: 10px; }
 /* iOS 设置分组标签: 灰色 13px, 上下留呼吸空间, 不画竖线 (跟 Apple 现代设置一致) */
 /* section_body 内的 subsection_title: group label, 14px 粗体灰字, 上下 padding 撑出间距 */
 .settings_section_body > .settings_subsection_title {
@@ -1502,7 +1831,7 @@ img { max-width: 100%; display: block; }
 /* 字段之间: 1px 白色细分隔线 (iOS 列表风格), 只在同 section_body 内紧邻的 field 之间 */
 /* field 间 1px 分隔线已合并到 .settings_field 基础规则 */
 
-.settings_section_body > *:last-child { padding-bottom: 0; }
+.settings_section_body > *:last-child:not(.set_notice) { padding-bottom: 0; }
 .settings_field_control {
   flex: 0 0 auto;
   display: inline-flex;
@@ -1573,20 +1902,21 @@ img { max-width: 100%; display: block; }
 /* 壁纸选择 */
 .bg_choice_main {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 12px;
-  padding: 4px 14px 14px;
+  padding: 4px 0 14px;
 }
 .bg_choice_small {
   position: relative;
   aspect-ratio: 4 / 3;
-  border-radius: 14px;  /* 跟 settings_section 圆角统一 */
+  border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  background-color: var(--color-canvas);
-  transition: transform 0.18s ease, border-color 0.18s ease;
-  border: 2px solid transparent;
+  background-color: rgba(0, 0, 0, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06);
   outline: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 .bg_choice_small img {
   width: 100%;
@@ -1596,25 +1926,39 @@ img { max-width: 100%; display: block; }
   transition: transform 0.25s ease;
 }
 .bg_choice_small:hover img { transform: scale(1.04); }
+.bg_choice_small:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); border-color: rgba(0, 0, 0, 0.12); }
 .bg_choice_small:active { transform: scale(0.98); }
 .bg_choice_small:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
-/* 选中态: 用 Action Blue (single interactive color) 描边 + 角标 */
+/* 选中态: 浅蓝 tint 覆盖 (不拉暗原图) + 描边 + 角标
+   之前用 filter: brightness(0.7) saturate(1.2) 会让选中的壁纸"变糊/发暗",
+   视觉上像图片坏了. 改用 ::after 浅蓝渐变覆盖, 保留原图鲜艳度, 视觉更轻盈 */
 .bg_choice_small.is-selected {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary), 0 6px 16px rgba(0, 102, 204, 0.22);
+}
+.bg_choice_small.is-selected::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(0, 102, 204, 0.06), rgba(0, 102, 204, 0.18));
+  pointer-events: none;
+  z-index: 1;
 }
 .bg_choice_small.is-selected .check_badge {
   opacity: 1;
   transform: scale(1);
+  z-index: 2;
 }
 .check_badge {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
   border-radius: 9999px;
   background-color: var(--color-primary);
   color: var(--color-on-primary);
@@ -1624,58 +1968,153 @@ img { max-width: 100%; display: block; }
   opacity: 0;
   transform: scale(0.6);
   transition: opacity 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 2px 6px rgba(0, 102, 204, 0.4);
 }
-.check_badge svg { width: 14px; height: 14px; display: block; }
+.check_badge svg { width: 16px; height: 16px; display: block; }
 
 /* 自定义上传: 一个上 label + 下文件行 + 按钮组的清晰分层, 不再一行挤 */
 .settings_upload,
 .settings_upload.glass {
-  /* v4.0.7 重构: 取消外层 panel (灰里套灰), 改成简洁上下两行
-     上行: 文件选择 label (左) + 文件名 (右)
-     下行: 操作按钮右对齐 */
+  /* V4.0.12 重构: 取消 liquid-glass SVG filter (跟 14 张"白底玻璃卡"风格统一)
+     纯白底卡 + 细边 + 轻投影, 跟弹窗玻璃背景明显分层
+     内部: 上行文件选择 label + 下行按钮右对齐 */
   display: flex !important;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px 16px;
-  background-color: var(--glass-bg);
-  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  gap: 12px;
+  padding: 16px 18px;
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 .settings_upload_field,
 .settings_upload_field.glass {
+  /* V4.0.13 文件选择按钮: 浅蓝玻璃胶囊 + 主蓝文字 (跟"重置网页壁纸"同款次按钮视觉
+     系: 蓝字 + 透明底 + 蓝边 + 轻投影, 跟白底玻璃卡和谐; "设为壁纸"是主蓝按钮, 形成
+     主次层次). 文件名走主蓝半透明, 跟左边"选择本地图片"字色一致, 但更弱一些 */
   display: flex !important;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 14px;
-  background-color: var(--glass-bg-strong);
-  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 11px 16px;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--color-primary);
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   cursor: pointer;
   font-family: var(--font-text);
   font-size: 14px;
   letter-spacing: -0.224px;
-  color: var(--color-ink);
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  color: var(--color-primary);
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.settings_upload_field:hover { background-color: rgba(255, 255, 255, 0.18); }
+.settings_upload_field:hover {
+  background-color: rgba(0, 102, 204, 0.08);
+  border-color: var(--color-primary);
+  box-shadow: var(--glass-shadow);
+}
 .settings_upload_field:active { transform: scale(0.99); }
 .settings_upload_filename {
   flex: 0 1 auto;
-  color: var(--color-ink-muted-80);
+  color: var(--color-primary);
+  opacity: 0.65;
   font-weight: 400;
   max-width: 60%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
+  text-align: right;
 }
+
+
+/* ============================================================
+   设置弹窗: 自定义壁纸上传预览 + 框选裁切 (v4.0.12)
+   结构: .settings_upload_cropper > .upload_cropper_stage (img + overlay + box)
+   - img: 原图
+   - overlay: 框外的半透明黑色遮罩
+   - box: 16:9 裁切框 (8 个 handle: 4 角 + 4 边)
+   ============================================================ */
+.settings_upload_cropper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.upload_cropper_stage {
+  /* 固定 320px 高 (之前 max-height, 高由内容决定, 导致高图会出现左右留白,
+     框选坐标跟图片实际显示区域对不上, 预览和最终壁纸不一致) */
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.upload_cropper_img {
+  /* 铺满整个 stage, object-fit:contain 让图片按比例居中显示
+     (宽图上下留白, 高图左右留白, 跟 stage 中心对齐)
+     图片在 stage 里的实际显示区域由 JS 在 __initCropper 里算:
+     renderX/renderY/renderW/renderH, 框选和导出都基于这个区域 */
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+/* 暗化层: 4 块 div 拼出 box 周围的暗化
+   原因: Chrome 在 transparent box 上渲染大 spread box-shadow 有 bug
+   (会把 box 内部也填黑, 遮住下面的图片), polygon clip-path 又没法打洞
+   所以改用 4 个独立 div 方案 */
+.upload_cropper_dim {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+.upload_cropper_dim--top    { left: 0; top: 0; }
+.upload_cropper_dim--right  { /* 由 JS 算 */ }
+.upload_cropper_dim--bottom { /* 由 JS 算 */ }
+.upload_cropper_dim--left   { /* 由 JS 算 */ }
+/* 裁切框: 4 边 1px 实线 + 4 角 handle */
+.upload_cropper_box {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  cursor: move;
+  /* box 区域不阻挡 overlay, 但内部 box 自身可拖 */
+}
+.upload_cropper_handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.upload_cropper_handle--nw { top: -6px; left: -6px; cursor: nw-resize; }
+.upload_cropper_handle--ne { top: -6px; right: -6px; cursor: ne-resize; }
+.upload_cropper_handle--sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+.upload_cropper_handle--se { bottom: -6px; right: -6px; cursor: se-resize; }
+/* 边中点: 透明的, 通过 cursor 提示 */
+.upload_cropper_handle--n { top: -3px; left: 50%; transform: translateX(-50%); width: 24px; height: 6px; cursor: n-resize; background-color: transparent; border: 0; box-shadow: none; }
+.upload_cropper_handle--s { bottom: -3px; left: 50%; transform: translateX(-50%); width: 24px; height: 6px; cursor: s-resize; background-color: transparent; border: 0; box-shadow: none; }
+.upload_cropper_handle--w { top: 50%; left: -3px; transform: translateY(-50%); width: 6px; height: 24px; cursor: w-resize; background-color: transparent; border: 0; box-shadow: none; }
+.upload_cropper_handle--e { top: 50%; right: -3px; transform: translateY(-50%); width: 6px; height: 24px; cursor: e-resize; background-color: transparent; border: 0; box-shadow: none; }
+.upload_cropper_hint {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(29, 29, 31, 0.5);
+  font-weight: 400;
+  padding: 2px 0 0;
+  letter-spacing: -0.1px;
+}
+
 .settings_upload_input {
   position: absolute;
   width: 1px;
@@ -1844,26 +2283,29 @@ img { max-width: 100%; display: block; }
 
 /* 警示框: 使用单色 Action Blue 替代原金色, 保持"single interactive color"原则 */
 .set_notice {
+  /* v4.0.11+ 改造: 浅灰底 + 细边 + 蓝色 info icon, 跟白底 section card 视觉分层
+     (原 8% 灰底太淡, 跟 section 卡片糊在一起, 现在跟白底有 1-2 档明度差) */
   display: flex !important;
   align-items: flex-start;
-  gap: 10px;
-  margin: 12px 14px 14px;  /* v4.0.7 紧贴模式: section_body gap 0, 由 notice 自身 margin 撑出间距 */
-  padding: 12px 14px;
-  background-color: rgba(120, 120, 128, 0.08);
+  gap: 12px;
+  margin: 12px 14px 14px;  /* 紧贴模式: section_body gap 0, 由 notice 自身 margin 撑出间距 */
+  padding: 14px 16px;       /* 12px 14px → 14px 16px (宽松) */
+  background-color: rgba(0, 0, 0, 0.035);   /* 8% 灰 → 3.5% 黑 (更柔和, 跟白底 section 区分) */
+  border: 1px solid rgba(0, 0, 0, 0.06);     /* 新加细边框, 跟 section 卡片边框一致 */
+  border-radius: 12px;
+  box-shadow: none;
   -webkit-backdrop-filter: blur(14px) saturate(180%);
   backdrop-filter: blur(14px) saturate(180%);
-  border-radius: 12px;
-  border-left: 0;
-  box-shadow: none;
 }
 .set_notice_icon {
-  flex: 0 0 18px;
-  width: 18px;
-  height: 18px;
+  /* 18px → 20px, 颜色改蓝色 (跟 .settings_section_icon 一致), 强调"信息"性质 */
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
   margin-top: 1px;
-  color: var(--color-ink-muted-80);
+  color: #FF9500;  /* Apple systemOrange, warning/注意 标准色 (跟 section icon 同款 stroke 风格) */
 }
-.set_notice_icon svg { width: 18px; height: 18px; display: block; }
+.set_notice_icon svg { width: 20px; height: 20px; display: block; }
 .set_notice_title {
   font-family: var(--font-text);
   font-size: 14px;
@@ -1871,7 +2313,7 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.224px;
   line-height: 1.29;
   color: var(--color-ink);
-  margin-bottom: 4px;
+  margin-bottom: 8px;       /* 4px → 8px (跟列表更明显分组) */
 }
 .set_notice_list {
   margin: 0;
@@ -1883,7 +2325,29 @@ img { max-width: 100%; display: block; }
   line-height: 1.43;
   color: var(--color-ink-muted-80);
 }
-.set_notice_list li + li { margin-top: 2px; }
+.set_notice_list li + li { margin-top: 6px; }  /* 2px → 6px (列表项之间留呼吸) */
+
+/* 自定义壁纸状态指示 chip: 贴在 "自定义上传" subsection title 旁,
+   仅当 localStorage.backgroundImage 存在时显示, 提示用户当前壁纸是自定义的 */
+.bg_status_chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 8px;
+  padding: 2px 8px 2px 6px;
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+  line-height: 1.3;
+  color: #1B7E3B;  /* 深绿, 在浅绿底上更易读 */
+  background-color: rgba(52, 199, 89, 0.15);  /* Apple systemGreen 15% 透明 */
+  border-radius: 999px;
+  vertical-align: 1px;  /* 跟中文字基线对齐 */
+}
+.bg_status_chip svg { width: 12px; height: 12px; display: block; }
+
+
 
 /* FAQ / 声明 内文排版 -> 已迁移到 .qa_list / .legal_list */
 /* .Q_ui_box / .A_ui_box 已迁移到 .qa_chip (见上方) */
@@ -1988,25 +2452,24 @@ img { max-width: 100%; display: block; }
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0071e3 0%, #4f9bff 100%);
+  /* 透明背景: 让 .auth_hero_img (limit account.png) 完整显示, 不被渐变色遮盖.
+     改密弹窗 (.auth_hero_svg) 仍然用彩色, 所以这条规则被 [data-mode=reset] 覆盖 */
+  background: transparent;
   color: #fff;
-  /* 自身彩色光晕: 多层 box-shadow 形成柔光圈, 模仿 Apple ID 登录页 logo 光晕 */
+  /* 登录/注册: 中性黑色光晕, 配合 limit account.png 暗灰底 (不再用蓝色) */
   box-shadow:
-    0 8px 32px rgba(0, 113, 227, 0.35),
-    0 0 0 1px rgba(0, 113, 227, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.30),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.10);
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
   transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
               background 0.5s ease,
               box-shadow 0.5s ease;
 }
 .auth_modal[data-mode="register"] .auth_hero_icon {
-  background: linear-gradient(135deg, #af52de 0%, #d384ff 100%);
+  /* 透明背景: 让 .auth_hero_img (limit account.png) 完整显示, 不被渐变色遮盖 */
+  background: transparent;
   box-shadow:
-    0 8px 32px rgba(175, 82, 222, 0.35),
-    0 0 0 1px rgba(175, 82, 222, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.30),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.10);
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 .auth_modal[data-mode="reset"] .auth_hero_icon {
   background: linear-gradient(135deg, #ff9f0a 0%, #ffc46b 100%);
@@ -2025,6 +2488,16 @@ img { max-width: 100%; display: block; }
 .auth_hero_svg {
   width: 56%;
   height: 56%;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+              opacity 0.4s ease;
+}
+/* 登录/注册用 limit account.png 替代 SVG: 容器是圆形, 图片 object-fit: cover 铺满 */
+.auth_hero_img {
+  width: 88%;
+  height: 88%;
+  object-fit: cover;
+  border-radius: 50%;
   display: block;
   transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1),
               opacity 0.4s ease;
@@ -2221,8 +2694,28 @@ img { max-width: 100%; display: block; }
   gap: 10px;
   margin-top: 12px;
 }
-.auth_actions .diy_bg_but,
-.auth_actions .diy_bg_but2 { width: 100%; }
+.auth_modal .auth_actions .diy_bg_but,
+.auth_modal .auth_actions .diy_bg_but2 { width: 100%; }
+
+/* 设置 → 账号 tab 的按钮 (.auth_actions 在 .settings_section_body 内):
+   弹窗里主按钮全宽更醒目, 但 tab 里按钮横排 + 居中, 紧凑不丑
+   - flex-direction: row 让两个按钮并排
+   - justify-content: center 让按钮组在容器中居中
+   - align-self: center 让 .auth_actions 容器自身不拉满
+   - 主按钮 (.diy_bg_but) 弹性占满剩余, 副按钮 (.diy_bg_but2) 按内容宽 */
+.settings_section_body .auth_actions {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;          /* 容器缩短: 480 → 320, 两按钮等宽更紧凑 */
+  margin: 0 auto;
+  gap: 12px;
+}
+.settings_section_body .auth_actions .diy_bg_but,
+.settings_section_body .auth_actions .diy_bg_but2 {
+  flex: 1 1 0;               /* 两按钮等宽 (flex-grow: 1, basis: 0, 平均分配) */
+}
 
 /* Turnstile widget 容器: 显式模式需要明确尺寸, 否则 widget 0 尺寸 → 渲染失败 → 300010 */
 .auth_turnstile {
