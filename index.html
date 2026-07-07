@@ -335,7 +335,7 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge glass-strong">Version 4.0.11</span>
+                        <span class="about_version_badge glass-strong">Version 4.0.13</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
@@ -362,22 +362,33 @@
                     <div class="changelog">
 <article class="changelog_version">
                             <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.0.13</span>
+                                <span class="changelog_version_date">2026.7.7</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置 → 账号 tab 3 个内卡片和请注意框左右对齐 (都用外卡片 16px padding), 不再一个宽一个窄</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">在设置页等非搜索界面按回车也会触发搜索的问题 (现在只有搜索框内按回车才搜索)</span></li>
+                            </ul>
+                        </article>
+<article class="changelog_version">
+                            <header class="changelog_version_head">
                                 <span class="changelog_version_tag">V4.0.11</span>
                                 <span class="changelog_version_date">2026.6.30</span>
                             </header>
                             <ul class="changelog_items">
-                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">设置弹窗"搜索" tab 点不动: 之前"搜索"页跑到了 .settings_pages 容器外面, enterSettingsPage 找不到对应节点, 静默退出; 现在"搜索"页也回到了 .settings_pages 内, 3 个 tab (个性化/搜索/账号) 都能正常切换</span></li>
-                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">页面底部的备案号重新显示在视口底部, 不再跟着弹窗一起跑到中间或消失 (之前备案号被错误地嵌进了设置弹窗里)</span></li>
-                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">更新日志顺序: 历史版本按 V 号从新到旧排列, 不再按插入时间乱序</span></li>
-                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">壁纸 3 个相关 bug: 预设壁纸点其他后高亮跟着移; 上传自定义壁纸刷新后不闪回原壁纸 (预设/自定义两套状态没互斥, 解析时注入的 <code>&lt;style&gt;</code> 标签会盖掉自定义那张); 上传壁纸预览框选跟最终导出对不上 (框选/导出统一基于图片在 stage 的实际显示区域)</span></li>
-                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">登录/注册/改密 3 个弹窗视觉调整: hero 图标换成 limit account.png (圆形裁剪 + 暗色光晕, 跟图片色调协调), 标题统一加 "Limit ID" 后缀, 删掉弹窗下面那行说明文字</span></li>
-                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗整体重构 + 视觉统一 (16 处同类改动合 1 条): 顶部导航改 macOS Finder 风格 (返回按钮 + 一/二级面包屑); 弹窗内 14 张"白底玻璃卡"视觉统一 (白底 + 细边 + 轻投影); 7 个弹窗 (关于/设置/声明/FAQ/登录/注册/改密) 视觉统一; section 卡片加内边距; 关于弹窗"更新日志"区域视觉更整齐; "请注意"提示框图标换 ⚠️ 三角 + 内容精简; 账号卡改成 iOS 风格 (圆头像 + 大字名字 + 副标题) + 移到第一个; "时间与日期"拆成"时间""日期"两张独立卡; 3 个菜单卡片 (登录 Limit ID / 个性化 / 搜索) 副标题都删了; 账号 tab 未登录态卡片标题改 "登录 Limit ID"; 账号 tab 按钮宽度 480→320 + 文字精简 + 改成等宽</span></li>
-                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">壁纸体验优化: 选择栏选中态不再把图片拉暗 (改用浅蓝叠加 + 角标, 选中的壁纸照样鲜艳); 设置 → 个性化 → 自定义上传 旁边加绿色 ✓ "正在使用"状态提示 (用了自定义后显示, 刷新页面也保留, 改回预设或重置后自动消失)</span></li>
-                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">本地预览流程: 改完后默认在本地测试, 确认无误再部署; 不再自动部署</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置 → 账号 tab 布局重排, 各子区域之间加 14px 呼吸, 不再糊在一起 (昵称输入框拉满同行, 头像按钮铺满整行, 请注意文字加深)</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">设置弹窗"搜索" tab 点不动 (之前"搜索"页跑到了 .settings_pages 容器外面, enterSettingsPage 找不到节点, 现在回到容器内 3 个 tab 都能切换)</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">页面底部备案号重新显示在视口底部 (之前被错误地嵌进了设置弹窗里, 跟着弹窗一起藏起来)</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">更新日志顺序按 V 号从新到旧排列, 不再按插入时间乱序</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">壁纸 3 个相关 bug: 预设点其他后高亮不跟手、上传自定义刷新后闪回原壁纸、上传预览框选跟最终导出对不上</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">登录/注册/改密 3 个弹窗视觉调整 (hero 图标换 limit account.png, 标题统一加 "Limit ID" 后缀, 删掉弹窗下面那行说明文字)</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置弹窗整体重构 + 视觉统一 (顶部导航 macOS Finder 风, 14 张玻璃卡统一, 7 个弹窗一致, section 卡内边距, "请注意"图标换 ⚠️ + 内容精简, 账号卡 iOS 风 + 移到第一个, 时间/日期拆成两张卡, 菜单卡副标题删, 账号 tab 按钮紧凑)</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">壁纸体验优化 (选择栏选中态改用浅蓝叠加 + 角标, 自定义上传旁加绿色 ✓ "正在使用"状态提示)</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">本地预览流程 (改完后默认本地测试, 确认无误再部署, 不再自动部署)</span></li>
                                 <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">浏览器标题改回 "Limit Startup"</span></li>
-                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">上传本地壁纸后立刻在弹窗里显示预览图, 不再"设了才知道长啥样"</span></li>
-                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">上传壁纸支持 16:9 框选裁切: 拖动选区框或角/边调整, 设为壁纸时只取选区部分, 横屏显示更合身</span></li>
-                            </ul>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">上传本地壁纸后立刻在弹窗里显示预览图</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">上传壁纸支持 16:9 框选裁切 (拖动选区框或角/边调整, 设为壁纸时只取选区部分)</span></li>
+                                                            </ul>
                         </article>
 <article class="changelog_version">
                             <header class="changelog_version_head">
@@ -2021,11 +2032,12 @@ btn.onclick = function() {
     a.click();
     document.body.removeChild(a);
 }
-document.onkeyup = function(e) {
-    if (e.keyCode == 13) {
+texts.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
         btn.click();
     }
-}
+});
 // 关于界面
     function about_jump(){ openModal("about"); }
     function close_about (){ closeModal("about"); }

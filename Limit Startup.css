@@ -1722,6 +1722,24 @@ img { max-width: 100%; display: block; }
   flex-direction: column;
   gap: 0;
 }
+/* 账号 tab (已登录/未登录) section_body: 各子元素之间加 14px gap, 跟其他纯 row group 的"贴在一起"区分
+   选中条件: 直接子元素里有 #accountSignedIn / #accountSignedOut
+   还要加 padding: 跟 .settings_section_body:not(:has(.settings_field)) 一样 4px 16px 16px,
+   不然 3 个内卡片 (账号 / 昵称 / 头像) 直接贴到外 section 卡边缘, 没有呼吸 */
+/* 账号 tab (已登录/未登录) section_body: 各子元素之间加 14px gap, 跟其他纯 row group 的"贴在一起"区分
+   之前写反成 :has(> #accountSignedIn) (body 是 #accountSignedIn 的子, 不是父), 那个选择器永远不匹配, padding 没生效 */
+#accountSignedIn > .settings_section_body,
+#accountSignedOut > .settings_section_body {
+  gap: 14px;
+  padding: 4px 16px 16px;
+}
+/* 账号 tab 内 set_notice: 去掉自己 14px 水平 margin, 跟 3 个内卡片对齐 (都用 section_body 的 16px padding)
+   壁纸 tab 的 set_notice 不动, 保留原 14px margin (那里 section_body 没 padding, set_notice 自己撑边距) */
+#accountSignedIn > .settings_section_body > .set_notice,
+#accountSignedOut > .settings_section_body > .set_notice {
+  margin-left: 0;
+  margin-right: 0;
+}
 /* head + content 形式 (无 row group): body 加内边距, head 和 body 之间留呼吸, 左右跟 head 对齐
    row group 形式 (含 .settings_field 子元素) 保持 padding 0, 让 field 自带的 6px 16px 紧贴 */
 .settings_section_body:not(:has(.settings_field)) {
@@ -1775,12 +1793,12 @@ img { max-width: 100%; display: block; }
 /* 分隔线已在 .settings_field + .settings_field / .settings_subsection_title + .settings_field 合并规则里 */
 /* 账号 tab 内的 field 走 .settings_field--panel 变体 (独立 panel, 跟 row group 区别) */
 .settings_field--panel {
-  flex-direction: column;
+  flex-direction: column !important;   /* 压过 .settings_field 的 row !important, 让 label 单独占一行, input 顶边框清晰可见 */
   align-items: stretch;
   min-height: 36px;
   border-radius: 12px;
   border-top: 0;
-  padding: 14px 16px;
+  padding: 20px 20px;
   background-color: var(--glass-bg-strong);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
@@ -1791,11 +1809,12 @@ img { max-width: 100%; display: block; }
 
 /* 账号 tab 内的 field 走 panel 变体 (跟 account_user_card / settings_upload 风格统一) */
 .settings_field--panel {
-  padding: 14px 16px;
+  flex-direction: column !important;   /* 压过 .settings_field 的 row !important */
+  padding: 20px 20px;
   background-color: var(--glass-bg-strong);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
@@ -1810,8 +1829,9 @@ img { max-width: 100%; display: block; }
 .settings_field_row {
   display: flex !important;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
+  margin-top: 12px;  /* 跟 label 之间留 12px 呼吸, 让 input 顶边框清晰可见不贴 label */
 }
 
 /* row 字段默认布局 (label 左, control 右) */
@@ -1981,44 +2001,45 @@ img { max-width: 100%; display: block; }
   display: flex !important;
   flex-direction: column;
   gap: 12px;
-  padding: 16px 18px;
+  padding: 20px 20px;
   background-color: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 14px;
+  border-radius: 12px;          /* 跟 .set_notice 一致 (之前 14px) */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 .settings_upload_field,
 .settings_upload_field.glass {
-  /* V4.0.13 文件选择按钮: 浅蓝玻璃胶囊 + 主蓝文字 (跟"重置网页壁纸"同款次按钮视觉
-     系: 蓝字 + 透明底 + 蓝边 + 轻投影, 跟白底玻璃卡和谐; "设为壁纸"是主蓝按钮, 形成
-     主次层次). 文件名走主蓝半透明, 跟左边"选择本地图片"字色一致, 但更弱一些 */
+  /* V4.0.12+ 统一成"矩形 + 中性边框" 风格, 跟 .special-input (昵称 input) 视觉一致:
+     - 矩形 12px 圆角 (之前 9999px 胶囊, 跟 input 不一致)
+     - 中性边框 1px solid rgba(0,0,0,0.25) (之前蓝色 var(--color-primary), 跟 input 不一致)
+     仍保留可点击视觉: cursor:pointer + hover/focus 状态 */
   display: flex !important;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 11px 16px;
-  background-color: var(--glass-bg);
-  border: 1px solid var(--color-primary);
-  border-radius: 9999px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  padding: 0 16px;
+  background-color: var(--glass-bg-strong);
+  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
+  border: 1px solid rgba(0, 0, 0, 0.5);  /* 跟 input 一致, 50% 黑 */
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   cursor: pointer;
   font-family: var(--font-text);
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: -0.224px;
-  color: var(--color-primary);
-  font-weight: 500;
-  transition: background-color 0.2s ease, transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  color: var(--color-ink);
+  font-weight: 400;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .settings_upload_field:hover {
-  background-color: rgba(0, 102, 204, 0.08);
-  border-color: var(--color-primary);
-  box-shadow: var(--glass-shadow);
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 .settings_upload_field:active { transform: scale(0.99); }
 .settings_upload_filename {
   flex: 0 1 auto;
-  color: var(--color-primary);
-  opacity: 0.65;
+  color: var(--color-ink-muted-80);
   font-weight: 400;
   max-width: 60%;
   overflow: hidden;
@@ -2127,13 +2148,15 @@ img { max-width: 100%; display: block; }
 }
 .settings_upload_actions {
   display: flex !important;
-  justify-content: flex-end;
-  gap: 8px;
+  justify-content: stretch;
+  gap: 10px;
   flex-wrap: wrap;
 }
 .settings_upload_actions .diy_bg_but,
 .settings_upload_actions .diy_bg_but2 {
-  height: 32px;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 36px;
   padding: 0 14px;
   font-size: 13px;
   font-weight: 500;
@@ -2201,21 +2224,23 @@ img { max-width: 100%; display: block; }
 .special-input,
 .special-input.glass {
   width: 100%;
-  max-width: 360px;
+  max-width: none;         /* 撑满 (之前 360px 上限, 跟头像 file picker 不一样宽) */
+  flex: 1 1 0;
+  min-width: 0;
   height: 40px;
   padding: 0 14px;
   margin: 0;
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(0, 0, 0, 0.5);   /* 25% → 50% 黑, 4 边都深, 上边框终于能看清 (之前 25% 在白底上太淡) */
   background-color: var(--glass-bg-strong);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  border-radius: 10px;
+  border-radius: 12px;
   outline: none;
   font-family: var(--font-text);
   font-size: 15px;
   color: var(--color-ink);
   letter-spacing: -0.224px;
-  box-shadow: var(--glass-shadow);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   transition: box-shadow 0.2s ease;
 }
 .special-input:focus {
@@ -2290,8 +2315,8 @@ img { max-width: 100%; display: block; }
   gap: 12px;
   margin: 12px 14px 14px;  /* 紧贴模式: section_body gap 0, 由 notice 自身 margin 撑出间距 */
   padding: 14px 16px;       /* 12px 14px → 14px 16px (宽松) */
-  background-color: rgba(0, 0, 0, 0.035);   /* 8% 灰 → 3.5% 黑 (更柔和, 跟白底 section 区分) */
-  border: 1px solid rgba(0, 0, 0, 0.06);     /* 新加细边框, 跟 section 卡片边框一致 */
+  background-color: rgba(0, 0, 0, 0.055);   /* 3.5% → 5.5% 黑, 跟白底 section 区分更明显 */
+  border: 1px solid rgba(0, 0, 0, 0.08);     /* 边框 6% → 8%, 跟 section 卡片边框一致 */
   border-radius: 12px;
   box-shadow: none;
   -webkit-backdrop-filter: blur(14px) saturate(180%);
@@ -2322,8 +2347,8 @@ img { max-width: 100%; display: block; }
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.224px;
-  line-height: 1.43;
-  color: var(--color-ink-muted-80);
+  line-height: 1.5;
+  color: var(--color-ink);  /* 之前 color-ink-muted-80 太淡, 跟浅灰底叠加后看起来糊, 改用纯黑墨色 */
 }
 .set_notice_list li + li { margin-top: 6px; }  /* 2px → 6px (列表项之间留呼吸) */
 
@@ -2964,7 +2989,7 @@ img { max-width: 100%; display: block; }
   grid-template-columns: 64px 1fr auto;
   align-items: center;
   gap: 16px;
-  padding: 18px 20px;
+  padding: 22px 24px;
   border-radius: 16px;
   background-color: var(--glass-bg-strong);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
