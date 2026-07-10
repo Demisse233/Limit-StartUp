@@ -994,72 +994,6 @@ img { max-width: 100%; display: block; }
   font-variant-numeric: tabular-nums;
 }
 
-/* ========== question_box: Q/A list ========== */
-.qa_list {
-  display: flex !important;
-  flex-direction: column;
-  gap: 20px;
-}
-.qa_item {
-  display: flex !important;
-  flex-direction: column;
-  gap: 6px;
-}
-.qa_q {
-  margin: 0;
-  font-family: var(--font-text);
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.224px;
-  line-height: 1.4;
-  color: var(--color-ink);
-  display: flex !important;
-  align-items: flex-start;
-  gap: 8px;
-}
-.qa_a {
-  margin: 0;
-  font-family: var(--font-text);
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: -0.224px;
-  line-height: 1.55;
-  color: var(--color-ink-muted-80);
-  display: flex !important;
-  align-items: flex-start;
-  gap: 8px;
-}
-/* Q/A chip — 22x22 圆形 mini icon */
-.qa_chip {
-  flex: 0 0 22px;
-  width: 22px;
-  height: 22px;
-  line-height: 22px;
-  text-align: center;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1px;
-}
-.qa_chip_q { background: var(--color-primary); color: var(--color-on-primary); }
-.qa_chip_a { background: var(--color-ink-muted-48); color: #ffffff; }
-
-/* 弹窗底部插图 (跟内文分隔, 不喧宾夺主) */
-.modal_footer_illustration {
-  margin-top: 8px;
-  border-radius: 14px;
-  overflow: hidden;
-}
-.modal_footer_illustration img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
 /* ========== about modal: hero + milestone + changelog ========== */
 .about_hero {
   display: flex !important;
@@ -2143,16 +2077,19 @@ img { max-width: 100%; display: block; }
   border: 0;
 }
 
-/* 账号 tab 头像上传: 左预览 + 右控件 (水平布局) */
+/* 账号 tab 头像上传: 与壁纸上传一致的左预览 + 右控件布局 */
 #accountAvatarUpload {
   flex-direction: row !important;
-  align-items: center;
-  gap: 20px;
+  align-items: stretch;
+  gap: 24px;
+  padding: 22px !important;
+  margin: 12px 14px 14px;
 }
 .avatar_upload_preview {
   flex-shrink: 0;
-  width: 72px;
-  height: 72px;
+  width: 136px;
+  height: 136px;
+  align-self: flex-start;
   border-radius: 50%;
   background-color: rgba(120, 120, 128, 0.16);
   background-size: cover;
@@ -2163,17 +2100,112 @@ img { max-width: 100%; display: block; }
   justify-content: center;
   color: rgba(60, 60, 67, 0.6);
   overflow: hidden;
-  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.06);
 }
-.avatar_upload_preview svg { width: 32px; height: 32px; opacity: 0.85; }
-.avatar_upload_preview.has-avatar { background-color: transparent; box-shadow: none; }
+.avatar_upload_preview svg { width: 42px; height: 42px; opacity: 0.72; }
+.avatar_upload_preview.has-avatar { background-color: transparent; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
 .avatar_upload_preview.has-avatar svg { display: none; }
 .avatar_upload_controls {
   flex: 1 1 0;
   min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  align-self: center;
+}
+.avatar_upload_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
+}
+.avatar_upload_title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+.avatar_upload_reset_link {
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(0, 102, 204, 0.85);
+  cursor: pointer;
+  font-family: var(--font-text);
+  font-size: 12px;
+  padding: 2px 4px;
+}
+.avatar_upload_reset_link:hover { color: #0066cc; background-color: rgba(0, 102, 204, 0.06); }
+.avatar_upload_subtitle {
+  color: rgba(29, 29, 31, 0.55);
+  font-family: var(--font-text);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.avatar_upload_primary_btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  margin-top: 4px;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  background-color: rgba(0, 102, 204, 0.95);
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-text);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 102, 204, 0.18), inset 0 0 0 0.5px rgba(255, 255, 255, 0.15);
+}
+.avatar_upload_primary_btn:hover { background-color: #0066cc; }
+.avatar_upload_primary_btn svg { width: 16px; height: 16px; }
+.avatar_upload_apply_btn {
+  width: 100%;
+  height: 44px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 9999px;
+  background-color: rgba(0, 102, 204, 0.12);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-family: var(--font-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+.avatar_upload_apply_btn:disabled { background-color: rgba(0, 0, 0, 0.04); color: rgba(29, 29, 31, 0.28); cursor: not-allowed; }
+.avatar_upload_apply_btn:disabled .avatar_upload_apply_text::before { content: '选好图后可'; }
+.avatar_cropper { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.avatar_cropper_stage {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.03);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.avatar_cropper_img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.avatar_cropper_dim {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  -webkit-mask: radial-gradient(circle at var(--avatar-crop-x, 50%) var(--avatar-crop-y, 50%), transparent 0 calc(var(--avatar-crop-radius, 0px) - 1px), #000 var(--avatar-crop-radius, 0px));
+  mask: radial-gradient(circle at var(--avatar-crop-x, 50%) var(--avatar-crop-y, 50%), transparent 0 calc(var(--avatar-crop-radius, 0px) - 1px), #000 var(--avatar-crop-radius, 0px));
+}
+.avatar_cropper_box { position: absolute; border: 2px solid rgba(255, 255, 255, 0.95); border-radius: 50%; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35); cursor: move; }
+.avatar_cropper_handle { position: absolute; width: 12px; height: 12px; border: 1px solid rgba(0, 0, 0, 0.3); border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+.avatar_cropper_handle--nw { top: 6%; left: 6%; cursor: nw-resize; }
+.avatar_cropper_handle--ne { top: 6%; right: 6%; cursor: ne-resize; }
+.avatar_cropper_handle--sw { bottom: 6%; left: 6%; cursor: sw-resize; }
+.avatar_cropper_handle--se { right: 6%; bottom: 6%; cursor: se-resize; }
+.avatar_cropper_hint { color: rgba(29, 29, 31, 0.5); font-size: 12px; text-align: center; }
 }
 /* 壁纸 tab 自定义上传: 左 16:9 大预览 + 右标题/副标题/主按钮 (Apple 设置风)
    水平 margin 14px 跟下方的 set_notice 对齐 */
@@ -2552,9 +2584,6 @@ img { max-width: 100%; display: block; }
 .bg_status_chip svg { width: 12px; height: 12px; display: block; }
 
 
-
-/* FAQ / 声明 内文排版 -> 已迁移到 .qa_list / .legal_list */
-/* .Q_ui_box / .A_ui_box 已迁移到 .qa_chip (见上方) */
 
 /* ========== Responsive (DESIGN-apple.md breakpoints) ========== */
 @media (max-width: 1068px) {
