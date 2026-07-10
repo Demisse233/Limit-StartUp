@@ -1313,6 +1313,7 @@ img { max-width: 100%; display: block; }
   overflow-y: auto;  /* 内容超出时独立滚动, header 保持固定 */
   text-align: left;  /* 显式左对齐, 跟 DESIGN 一致 */
   padding-right: 4px;  /* 给滚动条留一点视觉空间, 避免内容贴边 */
+  padding-bottom: 8px;  /* 最后 section 跟弹窗底边留一点呼吸, 不贴死 */
 }
 /* ============================================================
    Settings 弹窗分页 + 底部 tab 栏 (v6: absolute 浮起 + iOS 时钟 App 效果)
@@ -1420,11 +1421,16 @@ img { max-width: 100%; display: block; }
   justify-content: center;
   border-radius: 12px;
   color: #fff;
-  background: linear-gradient(135deg, #4a8df0 0%, #2c5fc4 100%);
+  background: linear-gradient(145deg, #5aa8ff 0%, #3478e6 55%, #245cc0 100%);
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
+.settings_menu_item[data-page="personalize"] .settings_menu_icon {
+  background: linear-gradient(145deg, #5aa8ff 0%, #3478e6 55%, #245cc0 100%);
+  box-shadow: 0 4px 10px rgba(45, 106, 211, 0.24);
+}
 .settings_menu_item[data-page="search"] .settings_menu_icon {
-  background: linear-gradient(135deg, #5856d6 0%, #3634a3 100%);
+  background: linear-gradient(145deg, #8a72ff 0%, #5b4ddd 54%, #3d35aa 100%);
+  box-shadow: 0 4px 10px rgba(81, 66, 188, 0.24);
 }
 .settings_menu_item[data-page="account"] .settings_menu_icon {
   background: linear-gradient(135deg, #34c759 0%, #1f8a3a 100%);
@@ -1748,9 +1754,9 @@ img { max-width: 100%; display: block; }
 .settings_section_body > .settings_subsection_title:first-child { margin-top: 0; }
 /* 最后子元素去 padding-bottom: .set_notice 自身有 margin-bottom 14px, 不需要再补 */
 .settings_section_body > *:last-child:not(.set_notice) { padding-bottom: 0; }
-/* row group 形式 section (时间/日期/初始化/页脚) 的最后 field 底部留 10px 呼吸,
+/* row group 形式 section (时间/日期/初始化/页脚) 的最后 field 底部留 18px 呼吸,
    跟下张 section 卡片 (18px gap) 拉开距离, 不再贴得紧紧的 */
-.settings_section_body > .settings_field:last-child { padding-bottom: 10px; }
+.settings_section_body > .settings_field:last-child { padding-bottom: 18px; }
 /* iOS 设置分组标签: 灰色 13px, 上下留呼吸空间, 不画竖线 (跟 Apple 现代设置一致) */
 /* section_body 内的 subsection_title: group label, 14px 粗体灰字, 上下 padding 撑出间距 */
 .settings_section_body > .settings_subsection_title {
@@ -1790,26 +1796,11 @@ img { max-width: 100%; display: block; }
 /* 紧邻的 row 之间画 1px 分隔线 (液态玻璃: 半透明白色) */
 .settings_field + .settings_field,
 .settings_subsection_title + .settings_field { border-top: 1px solid rgba(255, 255, 255, 0.22); }
-/* 分隔线已在 .settings_field + .settings_field / .settings_subsection_title + .settings_field 合并规则里 */
-/* 账号 tab 内的 field 走 .settings_field--panel 变体 (独立 panel, 跟 row group 区别) */
+/* 账号 tab 内的 field 走 panel 变体 (独立 panel, 跟 row group 区别) */
 .settings_field--panel {
-  flex-direction: column !important;   /* 压过 .settings_field 的 row !important, 让 label 单独占一行, input 顶边框清晰可见 */
+  flex-direction: column !important;
   align-items: stretch;
   min-height: 36px;
-  border-radius: 12px;
-  border-top: 0;
-  padding: 20px 20px;
-  background-color: var(--glass-bg-strong);
-  -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-.settings_field--panel + .settings_field--panel { border-top: 1px solid rgba(0, 0, 0, 0.06); }
-
-/* 账号 tab 内的 field 走 panel 变体 (跟 account_user_card / settings_upload 风格统一) */
-.settings_field--panel {
-  flex-direction: column !important;   /* 压过 .settings_field 的 row !important */
   padding: 20px 20px;
   background-color: var(--glass-bg-strong);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
@@ -1817,6 +1808,11 @@ img { max-width: 100%; display: block; }
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+/* panel 变体跟在 subsection_title 后: 覆盖通用 .settings_subsection_title + .settings_field
+   的白色半透明分隔线 (在白底上不可见), 恢复 4 边统一边框 */
+.settings_subsection_title + .settings_field--panel {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 .settings_field_label {
   font-family: var(--font-text);
@@ -2146,21 +2142,206 @@ img { max-width: 100%; display: block; }
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-.settings_upload_actions {
-  display: flex !important;
-  justify-content: stretch;
-  gap: 10px;
-  flex-wrap: wrap;
+
+/* 账号 tab 头像上传: 左预览 + 右控件 (水平布局) */
+#accountAvatarUpload {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 20px;
 }
-.settings_upload_actions .diy_bg_but,
-.settings_upload_actions .diy_bg_but2 {
+.avatar_upload_preview {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(120, 120, 128, 0.16);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(60, 60, 67, 0.6);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+}
+.avatar_upload_preview svg { width: 32px; height: 32px; opacity: 0.85; }
+.avatar_upload_preview.has-avatar { background-color: transparent; box-shadow: none; }
+.avatar_upload_preview.has-avatar svg { display: none; }
+.avatar_upload_controls {
   flex: 1 1 0;
   min-width: 0;
-  height: 36px;
-  padding: 0 14px;
-  font-size: 13px;
-  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
+/* 壁纸 tab 自定义上传: 左 16:9 大预览 + 右标题/副标题/主按钮 (Apple 设置风)
+   水平 margin 14px 跟下方的 set_notice 对齐 */
+#customBgUpload {
+  flex-direction: row !important;
+  align-items: stretch;
+  gap: 24px;
+  padding: 22px !important;
+  margin: 12px 14px 14px;     /* 跟 .set_notice 的 14px 水平 margin 对齐, 垂直 12/14 */
+}
+.bg_upload_preview {
+  flex-shrink: 0;
+  width: 240px;
+  aspect-ratio: 16 / 9;       /* 锁死比例, 高度 = 240/16*9 = 135px, 不被 flex 拉伸 */
+  align-self: flex-start;     /* 顶部对齐右栏, 不被 stretch */
+  border-radius: 12px;
+  background-color: rgba(120, 120, 128, 0.12);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(60, 60, 67, 0.45);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+}
+.bg_upload_preview svg {
+  /* SF Symbols photo.fill (115x90 viewBox), 用 currentColor 跟主题色
+     28% 容器: SVG 在 240x135 预览框里实际显示 ~67x52 (受 viewBox 5:4 比例约束, 高度先到顶),
+     视觉大小跟头像预览 72px 头像接近 */
+  width: 28%;
+  height: 28%;
+  color: rgba(60, 60, 67, 0.45);  /* 跟原占位灰底同色 */
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+.bg_upload_preview.has-bg {
+  background-color: transparent;
+  box-shadow:
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.bg_upload_preview.has-bg svg { display: none; }
+.bg_upload_controls {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: center;            /* 控件列垂直居中对齐预览图 */
+}
+.bg_upload_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bg_upload_title_row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.bg_upload_title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.22px;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+.bg_upload_reset_link {
+  background: none;
+  border: 0;
+  padding: 2px 4px;
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(0, 102, 204, 0.85);
+  cursor: pointer;
+  letter-spacing: -0.05px;
+  border-radius: 4px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+.bg_upload_reset_link:hover { color: #0066cc; background-color: rgba(0, 102, 204, 0.06); }
+.bg_upload_reset_link:active { opacity: 0.6; }
+.bg_upload_subtitle {
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(29, 29, 31, 0.55);
+  letter-spacing: -0.05px;
+  line-height: 1.4;
+}
+.bg_upload_primary_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 10px 18px;
+  height: 40px;
+  background-color: rgba(0, 102, 204, 0.95);
+  color: #ffffff;
+  border-radius: 9999px;
+  font-family: var(--font-text);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  cursor: pointer;
+  box-shadow:
+    0 1px 2px rgba(0, 102, 204, 0.18),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.15);
+  transition: background-color 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+}
+.bg_upload_primary_btn:hover {
+  background-color: #0066cc;
+  box-shadow:
+    0 2px 8px rgba(0, 102, 204, 0.28),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.18);
+}
+.bg_upload_primary_btn:active { transform: scale(0.98); }
+.bg_upload_primary_btn svg { width: 16px; height: 16px; }
+.bg_upload_apply_btn {
+  margin-top: 4px;
+  width: 100%;
+  height: 44px;
+  border: 0;
+  border-radius: 9999px;
+  background-color: rgba(0, 102, 204, 0.12);
+  color: var(--color-primary);
+  font-family: var(--font-text);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.15px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.08s ease;
+}
+.bg_upload_apply_btn:not(:disabled):hover {
+  background-color: rgba(0, 102, 204, 0.18);
+}
+.bg_upload_apply_btn:not(:disabled):active { transform: scale(0.99); }
+.bg_upload_apply_btn:disabled {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: rgba(29, 29, 31, 0.28);
+  cursor: not-allowed;
+}
+.bg_upload_apply_btn:disabled .bg_upload_apply_text::before {
+  content: '选好图后可';
+}
+/* 窄屏: 回到上下堆叠 (头像 + 壁纸统一) */
+@media (max-width: 480px) {
+  #accountAvatarUpload,
+  #customBgUpload {
+    flex-direction: column !important;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .avatar_upload_preview,
+  .bg_upload_preview {
+    align-self: center;
+  }
+}
+/* 旧版壁纸上传按钮组 (.settings_upload_actions) 已废弃, 改为新设计 .bg_upload_apply_btn */
 /* 兼容旧 .diy_bg_box, 不强制隐藏, 留作 fallback */
 .diy_bg_box,
 .diy_bg_but,
@@ -2352,13 +2533,11 @@ img { max-width: 100%; display: block; }
 }
 .set_notice_list li + li { margin-top: 6px; }  /* 2px → 6px (列表项之间留呼吸) */
 
-/* 自定义壁纸状态指示 chip: 贴在 "自定义上传" subsection title 旁,
-   仅当 localStorage.backgroundImage 存在时显示, 提示用户当前壁纸是自定义的 */
+/* 自定义壁纸状态指示 chip: 跟标题并排显示 (inline-flex), 仅当 localStorage.backgroundImage 存在时显示 */
 .bg_status_chip {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  margin-left: 8px;
   padding: 2px 8px 2px 6px;
   font-family: var(--font-text);
   font-size: 12px;
@@ -2368,7 +2547,7 @@ img { max-width: 100%; display: block; }
   color: #1B7E3B;  /* 深绿, 在浅绿底上更易读 */
   background-color: rgba(52, 199, 89, 0.15);  /* Apple systemGreen 15% 透明 */
   border-radius: 999px;
-  vertical-align: 1px;  /* 跟中文字基线对齐 */
+  flex-shrink: 0;
 }
 .bg_status_chip svg { width: 12px; height: 12px; display: block; }
 
