@@ -87,11 +87,13 @@ export function err(code, message, status = 400, env = null) {
 // 允许同步的偏好字段白名单
 export const ALLOWED_PREF_KEYS = new Set([
   'defaultSearchEngine',
+  'cfg_timeShow',
   'cfg_time24h',
   'cfg_timeShowSeconds',
   'cfg_timeBlinkColon',
   'cfg_timeFontSize',
   'cfg_timeFontWeight',
+  'cfg_dateShow',
   'cfg_dateShowYear',
   'cfg_dateFormat',
   'cfg_dateShowWeekday',

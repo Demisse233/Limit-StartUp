@@ -273,6 +273,7 @@
             <select id="searchEngineSelector2" hidden>
                 <option value="https://www.bing.com/search" selected>Bing</option>
                 <option value="https://www.baidu.com/s">百度</option>
+                <option value="https://github.com/search">GitHub</option>
                 <option value="https://search.bilibili.com/all">BiliBili</option>
                 <option value="https://metaso.cn/?s=alolk&referrer_s=alolk&">秘塔 AI</option>
             </select>
@@ -289,6 +290,10 @@
                     </li>
                     <li class="engine_row" role="option" data-value="https://www.baidu.com/s" aria-selected="false" tabindex="-1">
                         <span class="engine_row_label">百度</span>
+                        <svg class="engine_row_check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7.5"/></svg>
+                    </li>
+                    <li class="engine_row" role="option" data-value="https://github.com/search" aria-selected="false" tabindex="-1">
+                        <span class="engine_row_label">GitHub</span>
                         <svg class="engine_row_check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7.5"/></svg>
                     </li>
                     <li class="engine_row" role="option" data-value="https://search.bilibili.com/all" aria-selected="false" tabindex="-1">
@@ -334,7 +339,7 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge glass-strong">Version 4.0.14</span>
+                        <span class="about_version_badge glass-strong">Version 4.0.15</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
@@ -361,6 +366,14 @@
                     <div class="changelog">
 <article class="changelog_version">
                             <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.0.15</span>
+                                <span class="changelog_version_date">2026.7.12</span>
+                            </header>
+                            <ul class="changelog_items">
+                            </ul>
+                        </article>
+<article class="changelog_version">
+                            <header class="changelog_version_head">
                                 <span class="changelog_version_tag">V4.0.14</span>
                                 <span class="changelog_version_date">2026.7.10</span>
                             </header>
@@ -368,6 +381,13 @@
                                 <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">切换壁纸后的设置成功提示会一直停留在页面上的问题</span></li>
                                 <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">头像上传区升级为预览与裁切一体化操作</span></li>
                                 <li class="changelog_item changelog_item--remove"><span class="changelog_tag changelog_tag--remove">移除</span><span class="changelog_msg">常见问题功能，包括菜单入口、FAQ 弹窗和相关代码</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索设置页面的排版与搜索引擎选择体验</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">GitHub 搜索引擎，排在百度后并可在首页下拉完整显示</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">输入法选字时回车会提前触发搜索的问题</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">主题设置支持自动、浅色和深色模式，首页、菜单与提示文字同步适配壁纸</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">自定义壁纸上传区排版错乱的问题</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">设置卡片底部增加留白，最后一项不再紧贴边缘</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">首页时间和日期可分别显示或隐藏</span></li>
                             </ul>
                         </article>
 <article class="changelog_version">
@@ -1023,6 +1043,32 @@
                             <section class="settings_section">
                             <div class="settings_section_head">
                                 <span class="settings_section_icon" aria-hidden="true">
+                                    <svg viewBox="0 0 107.666 102.588" fill="currentColor" aria-hidden="true">
+                                        <path d="M21.1035 45.2227C13.1456 49.7952 7.8125 58.3761 7.8125 68.1641C7.8125 82.9102 19.6777 94.7754 34.375 94.7754C39.2563 94.7754 43.834 93.4524 47.7532 91.1214C49.542 93.1714 51.5954 94.979 53.8495 96.5161C48.3215 100.349 41.6104 102.588 34.375 102.588C15.4297 102.588 0 87.1582 0 68.1641C0 54.5608 7.99617 42.7541 19.5639 37.2423C19.735 40.0149 20.2679 42.6869 21.1035 45.2227ZM68.75 68.1641C68.75 76.9972 65.4236 85.0596 59.9258 91.1313C57.639 89.827 55.5825 88.1727 53.827 86.2348C58.216 81.5389 60.901 75.2358 60.9308 68.304C63.6366 67.7439 66.223 66.8579 68.6316 65.659ZM67.0703 57.682C64.8483 58.9913 62.4073 59.9635 59.8127 60.535C58.6375 56.618 56.5706 53.0879 53.8444 50.1767C55.5966 48.2497 57.6478 46.6016 59.9279 45.3003C63.1317 48.8329 65.5994 53.0367 67.0703 57.682ZM53.8388 39.9122C51.5886 41.4452 49.5388 43.2472 47.7528 45.2896C43.8337 42.9679 39.2562 41.6504 34.375 41.6504C32.311 41.6504 30.3029 41.8854 28.3847 42.3527C27.6407 39.9239 27.2461 37.3428 27.2461 34.668C27.2461 34.6422 27.2461 34.6164 27.25 34.5916C29.547 34.0945 31.9318 33.8379 34.375 33.8379C41.5966 33.8379 48.3073 36.0798 53.8388 39.9122Z" opacity="0.2125"/>
+                                        <path d="M107.666 68.1641C107.666 87.1582 92.2363 102.588 73.3398 102.588C54.3457 102.588 38.916 87.1582 38.916 68.1641C38.916 67.3186 38.9469 66.4802 39.0434 65.659C41.4496 66.8535 44.0327 67.7372 46.7352 68.2963C46.8007 82.9819 58.6871 94.7754 73.3398 94.7754C88.0371 94.7754 99.8535 82.8613 99.8535 68.1641C99.8535 58.3321 94.4861 49.7539 86.5288 45.1957C87.3588 42.6581 87.8878 39.9848 88.0553 37.2109C99.6396 42.7096 107.666 54.5351 107.666 68.1641ZM80.3661 34.5703C80.371 34.6021 80.3711 34.635 80.3711 34.668C80.3711 37.3367 79.9799 39.9121 79.2414 42.3357C77.3482 41.8798 75.37 41.6504 73.3398 41.6504C61.3134 41.6504 51.1504 49.6279 47.8642 60.5305C45.2594 59.9573 42.8089 58.9827 40.5788 57.6703C45.025 43.8708 58.0235 33.8379 73.3398 33.8379C75.7472 33.8379 78.0983 34.0883 80.3661 34.5703Z" opacity="0.425"/>
+                                        <path d="M53.8574 69.043C72.8027 69.043 88.1836 53.6621 88.1836 34.668C88.1836 15.7227 72.8027 0.292969 53.8574 0.292969C34.8633 0.292969 19.4336 15.7227 19.4336 34.668C19.4336 53.6621 34.8633 69.043 53.8574 69.043ZM53.8574 61.2305C39.1602 61.2305 27.2461 49.3652 27.2461 34.668C27.2461 20.0195 39.1602 8.10547 53.8574 8.10547C68.457 8.10547 80.3711 20.0195 80.3711 34.668C80.3711 49.3652 68.5059 61.2305 53.8574 61.2305Z" opacity="0.85"/>
+                                    </svg>
+                                </span>
+                                <div class="settings_section_titles">
+                                    <div class="settings_section_title">主题</div>
+                                </div>
+                            </div>
+                            <div class="settings_section_body">
+                                <label class="settings_field">
+                                    <span class="settings_field_label">文字颜色</span>
+                                    <span class="settings_field_control">
+                                    <select class="settings_select" id="homeTextTone">
+                                        <option value="auto" selected>自动</option>
+                                        <option value="light">浅色</option>
+                                        <option value="dark">深色</option>
+                                    </select>
+                                    </span>
+                                </label>
+                            </div>
+                            </section>
+                            <section class="settings_section">
+                            <div class="settings_section_head">
+                                <span class="settings_section_icon" aria-hidden="true">
                                     <svg viewBox="0 0 99.6094 99.6582" fill="currentColor" aria-hidden="true"><path d="M49.8047 99.6094C77.2949 99.6094 99.6094 77.2949 99.6094 49.8047C99.6094 22.3145 77.2949 0 49.8047 0C22.3145 0 0 22.3145 0 49.8047C0 77.2949 22.3145 99.6094 49.8047 99.6094ZM49.8047 91.3086C26.8555 91.3086 8.30078 72.7539 8.30078 49.8047C8.30078 26.8555 26.8555 8.30078 49.8047 8.30078C72.7539 8.30078 91.3086 26.8555 91.3086 49.8047C91.3086 72.7539 72.7539 91.3086 49.8047 91.3086Z"/><path d="M24.2676 55.0781L49.7559 55.0781C51.6602 55.0781 53.1738 53.6133 53.1738 51.6602L53.1738 18.75C53.1738 16.8457 51.6602 15.3809 49.7559 15.3809C47.8516 15.3809 46.3867 16.8457 46.3867 18.75L46.3867 48.291L24.2676 48.291C22.3145 48.291 20.8496 49.7559 20.8496 51.6602C20.8496 53.6133 22.3145 55.0781 24.2676 55.0781Z"/></svg>
                                 </span>
                                 <div class="settings_section_titles">
@@ -1030,6 +1076,13 @@
                                 </div>
                             </div>
                             <div class="settings_section_body">
+                                <label class="settings_field">
+                                    <span class="settings_field_label">显示时间</span>
+                                    <span class="settings_field_control">
+                                    <input type="checkbox" class="settings_toggle" id="timeShow" checked>
+                                    <span class="settings_toggle_track" aria-hidden="true"></span>
+                                    </span>
+                                </label>
                                 <div class="settings_subsection_title">格式</div>
                                 <label class="settings_field">
                                     <span class="settings_field_label">24 小时制</span>
@@ -1090,6 +1143,13 @@
                                 </div>
                             </div>
                             <div class="settings_section_body">
+                                <label class="settings_field">
+                                    <span class="settings_field_label">显示日期</span>
+                                    <span class="settings_field_control">
+                                    <input type="checkbox" class="settings_toggle" id="dateShow" checked>
+                                    <span class="settings_toggle_track" aria-hidden="true"></span>
+                                    </span>
+                                </label>
                                 <label class="settings_field">
                                     <span class="settings_field_label">显示年份</span>
                                     <span class="settings_field_control">
@@ -1269,7 +1329,7 @@
                     </div>
                         <!-- Page: 搜索 -->
                                             <div class="settings_page" data-page="search" id="settingsPageSearch" data-title="搜索" hidden>
-                    <section class="settings_section">
+                    <section class="settings_section search_engine_section">
                         <div class="settings_section_head">
                             <span class="settings_section_icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -1279,15 +1339,23 @@
                             </div>
                         </div>
                         <div class="settings_section_body">
-                            <div class="engine-chip-group" id="engineChips" role="radiogroup" aria-label="默认搜索引擎">
-                                <button type="button" class="engine-chip glass-strong is-active" role="radio" aria-checked="true" data-value="https://www.bing.com/search"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">Bing</span></button>
-                                <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://www.baidu.com/s"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">百度</span></button>
-                                <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://search.bilibili.com/all"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">BiliBili</span></button>
-                                <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://metaso.cn/?s=alolk&referrer_s=alolk&"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">秘塔 AI</span></button>
+                            <div class="search_engine_panel">
+                                <div class="search_engine_panel_head">
+                                    <div class="search_engine_panel_label">默认搜索引擎</div>
+                                    <span class="search_engine_current" id="engineCurrent" aria-live="polite">Bing</span>
+                                </div>
+                                <div class="engine-chip-group" id="engineChips" role="radiogroup" aria-label="默认搜索引擎">
+                                    <button type="button" class="engine-chip glass-strong is-active" role="radio" aria-checked="true" data-value="https://www.bing.com/search"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">Bing</span></button>
+                                    <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://www.baidu.com/s"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">百度</span></button>
+                                    <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://github.com/search"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">GitHub</span></button>
+                                    <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://search.bilibili.com/all"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">BiliBili</span></button>
+                                    <button type="button" class="engine-chip glass-strong" role="radio" aria-checked="false" data-value="https://metaso.cn/?s=alolk&referrer_s=alolk&"><span class="chip-dot" aria-hidden="true"></span><span class="chip-label">秘塔 AI</span></button>
+                                </div>
                             </div>
                             <select class="select_box2" id="searchEngineSelector1" hidden>
                                 <option value="https://www.bing.com/search" selected>Bing</option>
                                 <option value="https://www.baidu.com/s">百度</option>
+                                <option value="https://github.com/search">GitHub</option>
                                 <option value="https://search.bilibili.com/all">BiliBili</option>
                                 <option value="https://metaso.cn/?s=alolk&referrer_s=alolk&">秘塔 AI</option>
                             </select>
@@ -1335,6 +1403,79 @@
 		<script type="text/javascript">
 // v4.0.12 自定义壁纸: 选文件 -> 预览 -> 16:9 框选裁切 -> 导出
 var __uploadState = { img: null, naturalW: 0, naturalH: 0, scale: 1, box: null };
+var __homeTextToneRequest = 0;
+
+function __setHomepageTextTone(tone) {
+  document.body.classList.toggle('home-text-light', tone === 'light');
+}
+
+function __getHomepageWallpaperSource() {
+  try {
+    var custom = localStorage.getItem('backgroundImage');
+    if (custom) return custom;
+  } catch (e) {}
+  var selected = document.querySelector('.bg_choice_small.is-selected img');
+  if (selected && selected.src) return selected.src;
+  var background = getComputedStyle(document.body).backgroundImage;
+  var matched = background && background.match(/^url\(["']?(.*?)["']?\)$/);
+  return matched ? matched[1] : '';
+}
+
+function applyHomepageTextTone(source) {
+  var tone = 'auto';
+  try { tone = localStorage.getItem('cfg_homeTextTone') || 'auto'; } catch (e) {}
+  var request = ++__homeTextToneRequest;
+  if (tone !== 'auto') {
+    __setHomepageTextTone(tone);
+    return;
+  }
+  source = source || __getHomepageWallpaperSource();
+  if (!source) {
+    __setHomepageTextTone('dark');
+    return;
+  }
+  var image = new Image();
+  image.onload = function () {
+    if (request !== __homeTextToneRequest) return;
+    try {
+      var canvas = document.createElement('canvas');
+      canvas.width = 64;
+      canvas.height = 36;
+      var context = canvas.getContext('2d', { willReadFrequently: true });
+      var imageRatio = image.naturalWidth / image.naturalHeight;
+      var canvasRatio = canvas.width / canvas.height;
+      var sx = 0;
+      var sy = 0;
+      var sw = image.naturalWidth;
+      var sh = image.naturalHeight;
+      if (imageRatio > canvasRatio) {
+        sw = image.naturalHeight * canvasRatio;
+        sx = (image.naturalWidth - sw) / 2;
+      } else {
+        sh = image.naturalWidth / canvasRatio;
+        sy = (image.naturalHeight - sh) / 2;
+      }
+      context.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      var pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      var total = 0;
+      var count = 0;
+      for (var y = 3; y < 23; y++) {
+        for (var x = 10; x < 54; x++) {
+          var index = (y * canvas.width + x) * 4;
+          total += pixels[index] * 0.2126 + pixels[index + 1] * 0.7152 + pixels[index + 2] * 0.0722;
+          count++;
+        }
+      }
+      __setHomepageTextTone(total / count < 150 ? 'light' : 'dark');
+    } catch (e) {
+      __setHomepageTextTone('dark');
+    }
+  };
+  image.onerror = function () {
+    if (request === __homeTextToneRequest) __setHomepageTextTone('dark');
+  };
+  image.src = source;
+}
 
 function uploadImage() {
   var fileInput = document.getElementById('imageFile');
@@ -1347,6 +1488,7 @@ function uploadImage() {
     var cropped = __exportCroppedImage();
     if (cropped) {
       document.body.style.backgroundImage = 'url(' + cropped + ')';
+      applyHomepageTextTone(cropped);
       try {
         localStorage.setItem('backgroundImage', cropped);
         // 清除预设壁纸记录: 两个 key 必须互斥, 否则页面解析时
@@ -1364,6 +1506,7 @@ function uploadImage() {
     var reader = new FileReader();
     reader.onload = function (e) {
       document.body.style.backgroundImage = 'url(' + e.target.result + ')';
+      applyHomepageTextTone(e.target.result);
       try {
         localStorage.setItem('backgroundImage', e.target.result);
         // 同上: 清除预设记录, 避免 reload 后被 <style> 标签拉回
@@ -1858,6 +2001,11 @@ function __updateBgPreview() {
                 var on = chip.getAttribute('data-value') === value;
                 chip.classList.toggle('is-active', on);
                 chip.setAttribute('aria-checked', on ? 'true' : 'false');
+                if (on) {
+                    var current = document.getElementById('engineCurrent');
+                    var label = chip.querySelector('.chip-label');
+                    if (current && label) current.textContent = label.textContent;
+                }
             });
         }
         // 引擎 chip 点击: 切换到对应引擎, 同步 select 与首页
@@ -1895,6 +2043,7 @@ function __updateBgPreview() {
             if (backgroundImageUrl) {
                 document.body.style.backgroundImage = `url(${backgroundImageUrl})`;
             }
+            applyHomepageTextTone(backgroundImageUrl);
             Movein();
             setTimeout(Moveout, 5000);
             if (defaultSearchEngine) {
@@ -1949,10 +2098,12 @@ function __updateBgPreview() {
           } catch (e) {}
         })();
 // 时间与日期设置 (localStorage 持久化)
-    var DEFAULT_TIME_CFG = { hour24: true, showSeconds: false, blinkColon: false, fontSize: 'md', fontWeight: '500', showYear: true, dateFormat: 'cn', showWeekday: false, weekdayLang: 'cn' };
+    var DEFAULT_TIME_CFG = { showTime: true, showDate: true, hour24: true, showSeconds: false, blinkColon: false, fontSize: 'md', fontWeight: '500', showYear: true, dateFormat: 'cn', showWeekday: false, weekdayLang: 'cn' };
     function getTimeCfg() {
       try {
         return {
+          showTime: localStorage.getItem('cfg_timeShow') !== '0',
+          showDate: localStorage.getItem('cfg_dateShow') !== '0',
           hour24: localStorage.getItem('cfg_time24h') !== '0',
           showSeconds: localStorage.getItem('cfg_timeShowSeconds') === '1',
           blinkColon: localStorage.getItem('cfg_timeBlinkColon') === '1',
@@ -2027,9 +2178,14 @@ function __updateBgPreview() {
           s = (s < 10) ? ("0" + s) : s;
           var colon = cfg.blinkColon ? '<span class="time-colon">:</span>' : ':';
           var timePart = h + colon + m + (cfg.showSeconds ? (colon + s) : '');
-          var dateText = getDateText(y, mt, day, cfg.dateFormat, cfg.showYear);
-          var weekdayText = cfg.showWeekday ? (' ' + getWeekdayText(dow, cfg.weekdayLang)) : '';
-          el.innerHTML = dateText + '&nbsp;&nbsp;&nbsp;&nbsp;' + weekdayText.trim() + '&nbsp;&nbsp;&nbsp;' + timePart + suffix;
+          var parts = [];
+          if (cfg.showDate) {
+            var dateText = getDateText(y, mt, day, cfg.dateFormat, cfg.showYear);
+            var weekdayText = cfg.showWeekday ? getWeekdayText(dow, cfg.weekdayLang) : '';
+            parts.push(dateText + (weekdayText ? '&nbsp;&nbsp;&nbsp;' + weekdayText : ''));
+          }
+          if (cfg.showTime) parts.push(timePart + suffix);
+          el.innerHTML = parts.join('&nbsp;&nbsp;&nbsp;&nbsp;');
           // 闪烁: 隐藏冒号
           if (cfg.blinkColon) {
             var visible = (dt.getSeconds() % 2 === 0);
@@ -2042,6 +2198,7 @@ function __updateBgPreview() {
         }
         t = setTimeout(time, 1000);
     }
+    window.updateTime = time;
     var h = document.getElementById(count_days);
 			timeDifference(`2023/4/18 00:00:00`, ``, count_days);
 			function a() {
@@ -2072,6 +2229,7 @@ const point = document.querySelector('select');
 const texts = document.querySelector('#input_text');
 const arr = ['wd', 'q', 'keyword','q'];
 let _searching = false;
+let _isSearchComposing = false;
 btn.onclick = function() {
     if (_searching) return;
     _searching = true;
@@ -2091,6 +2249,9 @@ btn.onclick = function() {
     if (p.includes('metaso')) {
     str =  arr[3] + '=' + encodeURIComponent(text);
     }
+    if (p.includes('github.com')) {
+    str = '?q=' + encodeURIComponent(text);
+    }
     console.log('[search]', p + str);
     // 用 a[target=_blank] + 模拟点击的方式, 避免 window.open 触发的双标签问题
     const a = document.createElement('a');
@@ -2101,8 +2262,14 @@ btn.onclick = function() {
     a.click();
     document.body.removeChild(a);
 }
+texts.addEventListener('compositionstart', function() {
+    _isSearchComposing = true;
+});
+texts.addEventListener('compositionend', function() {
+    _isSearchComposing = false;
+});
 texts.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !_isSearchComposing && !e.isComposing && e.keyCode !== 229) {
         e.preventDefault();
         btn.click();
     }
@@ -2402,6 +2569,7 @@ texts.addEventListener('keydown', function(e) {
                 var tile = img.closest('.bg_choice_small');
                 if (tile) tile.classList.add('is-selected');
                 document.body.style.background = 'url(' + img.src + ') center / cover no-repeat fixed';
+                applyHomepageTextTone(img.src);
                 try {
                   localStorage.setItem('bg', 'body{background:url(' + img.src + ') center / cover no-repeat fixed;}');
                   // 互斥: 点预设就清掉自定义壁纸, 避免下次 reload 两个 key 同时在
@@ -2536,16 +2704,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeof onChange === 'function') onChange(el.value);
       });
     }
+    bindToggle('timeShow', 'cfg_timeShow', function () { time(); });
     bindToggle('time24h', 'cfg_time24h');
     bindToggle('timeShowSeconds', 'cfg_timeShowSeconds');
     bindToggle('timeBlinkColon', 'cfg_timeBlinkColon');
     bindSelect('timeFontSize', 'cfg_timeFontSize');
     bindSelect('timeFontWeight', 'cfg_timeFontWeight');
+    bindToggle('dateShow', 'cfg_dateShow', function () { time(); });
     bindToggle('dateShowYear', 'cfg_dateShowYear');
     bindSelect('dateFormat', 'cfg_dateFormat');
     bindToggle('dateShowWeekday', 'cfg_dateShowWeekday');
     bindSelect('dateWeekdayLang', 'cfg_dateWeekdayLang');
     bindToggle('autofocusSearch', 'cfg_autofocusSearch');
+    bindSelect('homeTextTone', 'cfg_homeTextTone', function () { applyHomepageTextTone(); });
 
     // 页脚备案号显示开关 (云端同步, cfg 风格)
     (function(){
@@ -2602,9 +2773,9 @@ var API_BASE = (function () {
 var AUTH_TOKEN_KEY = 'ls_auth_token';
 var AUTH_USER_KEY = 'ls_auth_user';
 var ALLOWED_PREF_KEYS = ['defaultSearchEngine',
-  'cfg_time24h', 'cfg_timeShowSeconds', 'cfg_timeBlinkColon', 'cfg_timeFontSize', 'cfg_timeFontWeight',
-  'cfg_dateShowYear', 'cfg_dateFormat', 'cfg_dateShowWeekday', 'cfg_dateWeekdayLang',
-  'cfg_autofocusSearch', 'footer_icp_show'];
+  'cfg_timeShow', 'cfg_time24h', 'cfg_timeShowSeconds', 'cfg_timeBlinkColon', 'cfg_timeFontSize', 'cfg_timeFontWeight',
+  'cfg_dateShow', 'cfg_dateShowYear', 'cfg_dateFormat', 'cfg_dateShowWeekday', 'cfg_dateWeekdayLang',
+  'cfg_autofocusSearch', 'cfg_homeTextTone', 'footer_icp_show'];
 
 function getToken() { try { return localStorage.getItem(AUTH_TOKEN_KEY); } catch (e) { return null; } }
 function setToken(t) { try { localStorage.setItem(AUTH_TOKEN_KEY, t); } catch (e) {} }
@@ -3162,11 +3333,13 @@ async function onAuthStateChanged() {
 // 把云端 prefs 覆盖到 localStorage, 并同步到 UI 控件
 // 9 个设置控件的 ID 与 localStorage key 是固定的, 在这里直接同步
 var SETTINGS_UI_BINDINGS = [
+  { id: 'timeShow', key: 'cfg_timeShow', type: 'toggle' },
   { id: 'time24h', key: 'cfg_time24h', type: 'toggle' },
   { id: 'timeShowSeconds', key: 'cfg_timeShowSeconds', type: 'toggle' },
   { id: 'timeBlinkColon', key: 'cfg_timeBlinkColon', type: 'toggle' },
   { id: 'timeFontSize', key: 'cfg_timeFontSize', type: 'select' },
   { id: 'timeFontWeight', key: 'cfg_timeFontWeight', type: 'select' },
+  { id: 'dateShow', key: 'cfg_dateShow', type: 'toggle' },
   { id: 'dateShowYear', key: 'cfg_dateShowYear', type: 'toggle' },
   { id: 'dateFormat', key: 'cfg_dateFormat', type: 'select' },
   { id: 'dateShowWeekday', key: 'cfg_dateShowWeekday', type: 'toggle' },

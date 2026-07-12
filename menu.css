@@ -66,7 +66,7 @@
   right: 12px;
   display: block;
   height: 1.5px;
-  background: #1d1d1f;
+  background: var(--home-text-color, #1d1d1f);
   content: '';
   transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1),
               top 0.35s cubic-bezier(0.19, 1, 0.22, 1),
@@ -123,7 +123,7 @@ nav {
   overflow-y: auto;
   overflow-x: hidden;
   font-family: var(--font-text, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif);
-  color: var(--color-ink);
+  color: var(--home-text-color);
 }
 
 main {
@@ -215,7 +215,7 @@ main .content {
   letter-spacing: 0.36px;
   text-transform: uppercase;
   /* 在浅色玻璃底上加深到 80%, 保证可读 */
-  color: var(--color-ink-muted-80, #333);
+  color: var(--home-text-muted, #333);
   padding: 0 4px;
 }
 
@@ -238,7 +238,7 @@ main .content {
   font-weight: 600;
   line-height: 1.24;
   letter-spacing: -0.374px;
-  color: var(--color-ink);
+  color: var(--home-text-color);
   text-decoration: none;
   border-radius: 8px;
   white-space: nowrap;
@@ -262,7 +262,7 @@ main .content {
   letter-spacing: -0.374px;
   padding: 6px 0;
   margin: 0;
-  color: var(--color-ink);
+  color: var(--home-text-color);
 }
 
 .nav_mega_item--big:hover,
@@ -273,7 +273,7 @@ main .content {
 .nav_mega_item:hover,
 .nav_mega_item:focus-visible {
   background-color: rgba(0, 0, 0, 0.05);
-  color: var(--color-ink);
+  color: var(--home-text-color);
   outline: none;
 }
 
@@ -313,7 +313,7 @@ main .content {
   font-weight: 600;
   letter-spacing: 0.36px;
   text-transform: uppercase;
-  color: var(--color-ink-muted-48);
+  color: var(--home-text-muted);
 }
 .nav_footer_hint {
   margin: 0;
@@ -321,7 +321,7 @@ main .content {
   font-size: 12px;
   font-weight: 400;
   letter-spacing: -0.12px;
-  color: var(--color-ink-muted-48);
+  color: var(--home-text-muted);
   opacity: 0.7;
 }
 

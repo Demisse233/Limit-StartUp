@@ -104,6 +104,18 @@
   --font-text: "SF Pro Text", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* 首页文字只跟随壁纸明暗切换，设置与弹窗仍保持自身的浅色界面。 */
+body {
+  --home-text-color: var(--color-body);
+  --home-text-muted: rgba(29, 29, 31, 0.68);
+  --home-glass-border: rgba(255, 255, 255, 0.35);
+}
+body.home-text-light {
+  --home-text-color: #ffffff;
+  --home-text-muted: rgba(255, 255, 255, 0.78);
+  --home-glass-border: rgba(255, 255, 255, 0.5);
+}
+
 
 /* ========== Reset / base ========== */
 * {
@@ -197,13 +209,13 @@ img { max-width: 100%; display: block; }
   background-color: var(--glass-bg-strong);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
   backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
-  color: var(--color-ink);
+  color: var(--home-text-color);
   font-size: var(--fs-body);
   font-weight: 400;
   letter-spacing: -0.374px;
   padding: 12px 22px;
   border-radius: var(--r-pill);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--home-glass-border);
   box-shadow: var(--glass-shadow);
   transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1),
               opacity 0.3s ease;
@@ -225,9 +237,9 @@ img { max-width: 100%; display: block; }
   font-weight: 400;
   letter-spacing: 0.196px;
   line-height: var(--lh-lead);
-  color: var(--color-body);
+  color: var(--home-text-color);
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  text-shadow: none;
   width: 100%;
 }
 
@@ -298,10 +310,10 @@ img { max-width: 100%; display: block; }
   box-shadow: var(--glass-shadow), 0 0 0 3px rgba(0, 102, 204, 0.18);
 }
 .engine_picker.is-open .engine_popover {
-  height: 168px;
-  /* 展开态: 4 角 22 (与关闭态完全相同, 高度从 44 长到 168, 圆角像素值不变)
+  height: 196px;
+  /* 展开态: 5 角 22 (与关闭态完全相同, 高度从 44 长到 196, 圆角像素值不变)
      视觉: 胶囊被"纵向拉长" — 顶角和底角弧度都是 22px 像素, 看起来像"水球拉高"
-     高度 168 = 4 行 × 36 + list 上下 padding 8 + list 上下 padding 8 = 168 */
+     高度 196 = 5 行 × 36 + list 上下 padding 8 + list 上下 padding 8 = 196 */
   border-radius: 22px;
   box-shadow: var(--glass-shadow), 0 12px 32px rgba(0, 0, 0, 0.18);
 }
@@ -322,7 +334,7 @@ img { max-width: 100%; display: block; }
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.224px;
-  color: var(--color-ink);
+  color: var(--home-text-color);
   opacity: 1;
   transition: opacity 0.18s ease;
 }
@@ -331,7 +343,7 @@ img { max-width: 100%; display: block; }
 .engine_face_chev {
   width: 14px;
   height: 14px;
-  color: var(--color-ink-muted-48);
+  color: var(--home-text-muted);
   transition: transform 0.32s cubic-bezier(0.19, 1, 0.22, 1);
 }
 .engine_picker.is-open .engine_face_chev { transform: rotate(180deg); }
@@ -369,7 +381,7 @@ img { max-width: 100%; display: block; }
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.224px;
-  color: var(--color-ink);
+  color: var(--home-text-color);
   cursor: pointer;
   outline: none;
   transition: background-color 0.12s ease, color 0.12s ease;
@@ -391,6 +403,7 @@ img { max-width: 100%; display: block; }
 .engine_picker.is-open .engine_row:nth-child(2) { transition-delay: 0.12s, 0.12s, 0.16s, 0.16s; }
 .engine_picker.is-open .engine_row:nth-child(3) { transition-delay: 0.12s, 0.12s, 0.20s, 0.20s; }
 .engine_picker.is-open .engine_row:nth-child(4) { transition-delay: 0.12s, 0.12s, 0.24s, 0.24s; }
+.engine_picker.is-open .engine_row:nth-child(5) { transition-delay: 0.12s, 0.12s, 0.28s, 0.28s; }
 
 .engine_row:hover,
 .engine_row:focus-visible {
@@ -472,7 +485,7 @@ img { max-width: 100%; display: block; }
   background: transparent;
   border-radius: 0;
   outline: none;
-  color: var(--color-ink);
+  color: var(--home-text-color);
   font-family: var(--font-text);
   font-size: var(--fs-body);
   font-weight: 400;
@@ -497,7 +510,7 @@ img { max-width: 100%; display: block; }
   pointer-events: none;
   font-family: var(--font-text);
   font-size: var(--fs-body);
-  color: var(--color-ink-muted-48);
+  color: var(--home-text-muted);
   letter-spacing: -0.374px;
   text-transform: uppercase;
   transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease,
@@ -516,7 +529,7 @@ img { max-width: 100%; display: block; }
   height: 14px;
   line-height: 14px;
   font-size: 11px;
-  color: var(--color-ink-muted-48);
+  color: var(--home-text-muted);
   letter-spacing: 0.6px;
   background-color: transparent;
   padding: 0;
@@ -579,7 +592,7 @@ img { max-width: 100%; display: block; }
   align-items: center;
   height: 36px;
   padding: 0 14px;
-  color: var(--color-ink);
+  color: var(--home-text-color);
   font-family: var(--font-text);
   font-size: 14px;
   letter-spacing: -0.224px;
@@ -1687,10 +1700,10 @@ img { max-width: 100%; display: block; }
 }
 .settings_section_body > .settings_subsection_title:first-child { margin-top: 0; }
 /* 最后子元素去 padding-bottom: .set_notice 自身有 margin-bottom 14px, 不需要再补 */
-.settings_section_body > *:last-child:not(.set_notice) { padding-bottom: 0; }
+.settings_section_body > *:last-child:not(.set_notice):not(.settings_field) { padding-bottom: 0; }
 /* row group 形式 section (时间/日期/初始化/页脚) 的最后 field 底部留 18px 呼吸,
    跟下张 section 卡片 (18px gap) 拉开距离, 不再贴得紧紧的 */
-.settings_section_body > .settings_field:last-child { padding-bottom: 18px; }
+.settings_section_body > .settings_field:last-child { padding-bottom: 20px; }
 /* iOS 设置分组标签: 灰色 13px, 上下留呼吸空间, 不画竖线 (跟 Apple 现代设置一致) */
 /* section_body 内的 subsection_title: group label, 14px 粗体灰字, 上下 padding 撑出间距 */
 .settings_section_body > .settings_subsection_title {
@@ -1781,7 +1794,7 @@ img { max-width: 100%; display: block; }
 /* 字段之间: 1px 白色细分隔线 (iOS 列表风格), 只在同 section_body 内紧邻的 field 之间 */
 /* field 间 1px 分隔线已合并到 .settings_field 基础规则 */
 
-.settings_section_body > *:last-child:not(.set_notice) { padding-bottom: 0; }
+.settings_section_body > *:last-child:not(.set_notice):not(.settings_field) { padding-bottom: 0; }
 .settings_field_control {
   flex: 0 0 auto;
   display: inline-flex;
@@ -2206,12 +2219,11 @@ img { max-width: 100%; display: block; }
 .avatar_cropper_handle--sw { bottom: 6%; left: 6%; cursor: sw-resize; }
 .avatar_cropper_handle--se { right: 6%; bottom: 6%; cursor: se-resize; }
 .avatar_cropper_hint { color: rgba(29, 29, 31, 0.5); font-size: 12px; text-align: center; }
-}
 /* 壁纸 tab 自定义上传: 左 16:9 大预览 + 右标题/副标题/主按钮 (Apple 设置风)
    水平 margin 14px 跟下方的 set_notice 对齐 */
 #customBgUpload {
   flex-direction: row !important;
-  align-items: stretch;
+  align-items: flex-start;
   gap: 24px;
   padding: 22px !important;
   margin: 12px 14px 14px;     /* 跟 .set_notice 的 14px 水平 margin 对齐, 垂直 12/14 */
@@ -2257,7 +2269,7 @@ img { max-width: 100%; display: block; }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-self: center;            /* 控件列垂直居中对齐预览图 */
+  align-self: flex-start;
 }
 .bg_upload_header {
   display: flex;
@@ -2461,12 +2473,43 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.18), var(--glass-shadow);
 }
 
+.search_engine_section {
+  width: auto;
+  margin: 0;
+}
+.search_engine_section .settings_section_body { padding: 14px 16px 16px; }
+.search_engine_panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 2px;
+}
+.search_engine_panel_head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.search_engine_panel_label {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+}
+.search_engine_current {
+  border-radius: 9999px;
+  background-color: rgba(0, 102, 204, 0.1);
+  color: var(--color-primary);
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 9px;
+}
 /* 设置中搜索引擎选择 */
-/* 引擎 chip (radiogroup) */
 .engine-chip-group {
-  display: flex !important;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
 }
 .engine-chip,
 .engine-chip.glass {
@@ -2474,9 +2517,10 @@ img { max-width: 100%; display: block; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 32px;
-  padding: 0 14px;
-  border-radius: 9999px;
+  justify-content: flex-start;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 10px;
   border: 1px solid var(--glass-border);
   background-color: var(--glass-bg-strong);
   -webkit-backdrop-filter: url(#liquid-glass-strong) blur(0.5px) brightness(1.05) saturate(1.08);
@@ -2489,10 +2533,11 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.224px;
   line-height: 1.0;
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
   outline: none;
 }
 /* chip: default + active(pressed) 两种态, 中间过渡用 transition 实现 */
+.engine-chip:hover { background-color: rgba(0, 102, 204, 0.06); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
 .engine-chip:active { transform: scale(0.98); }
 .engine-chip:focus-visible {
   outline: 2px solid var(--color-primary-focus);
@@ -2517,6 +2562,9 @@ img { max-width: 100%; display: block; }
 .engine-chip.is-active .chip-dot {
   background-color: var(--color-on-primary);
   box-shadow: 0 0 0 2px var(--color-primary);
+}
+@media (max-width: 640px) {
+  .engine-chip-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* 警示框: 使用单色 Action Blue 替代原金色, 保持"single interactive color"原则 */
@@ -3057,7 +3105,7 @@ img { max-width: 100%; display: block; }
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--home-glass-border);
   background-color: var(--glass-bg);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
   backdrop-filter: blur(20px) saturate(1.4);
@@ -3066,11 +3114,11 @@ img { max-width: 100%; display: block; }
   z-index: 100;
   padding: 0;
   transition: transform 0.15s ease, box-shadow 0.2s ease;
-  color: var(--color-ink);
+  color: var(--home-text-color);
 }
 .account_entry:hover { transform: scale(1.04); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
 .account_entry:active { transform: scale(0.96); }
-.account_entry .icon { width: 20px; height: 20px; color: var(--color-ink); }
+.account_entry .icon { width: 20px; height: 20px; color: var(--home-text-color); }
 
 .account_entry--avatar { padding: 0; overflow: hidden; }
 .account_entry_avatar {
@@ -3349,7 +3397,7 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.1px;
 }
 .nav_footer_icp a {
-  color: var(--color-ink);
+  color: var(--home-text-color);
   text-decoration: none;
   transition: color 0.15s;
 }
@@ -3396,7 +3444,7 @@ img { max-width: 100%; display: block; }
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.1px;
-  color: var(--color-ink-muted-48);
+  color: var(--home-text-muted);
   background-color: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 999px;
