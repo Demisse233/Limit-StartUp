@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
   avatar_b64 TEXT,            -- 256x256 压缩后的 jpeg/png/webp, base64 编码
   avatar_content_type TEXT,   -- 'image/jpeg' / 'image/png' / 'image/webp'
   avatar_size INTEGER,        -- 原始字节数 (前端压缩后通常 < 30KB)
+  token_version INTEGER NOT NULL DEFAULT 1,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL,
   last_login_at INTEGER
@@ -18,7 +19,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
--- 旧版本 (V4.0.6) 没有 nickname 字段, 迁移时补 + 用 email 前缀兜底
+-- 旧版本迁移时按需补充 token_version / nickname 字段
+-- ALTER TABLE users ADD COLUMN token_version INTEGER NOT NULL DEFAULT 1;
 -- ALTER TABLE users ADD COLUMN nickname TEXT;
 -- UPDATE users SET nickname = SUBSTR(email, 1, INSTR(email, '@') - 1) WHERE nickname IS NULL;
 

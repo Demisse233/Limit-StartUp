@@ -99,6 +99,9 @@ export const ALLOWED_PREF_KEYS = new Set([
   'cfg_dateShowWeekday',
   'cfg_dateWeekdayLang',
   'cfg_autofocusSearch',
+  'cfg_homeTextTone',
+  'cfg_customSearchEngines',
+  'cfg_searchEngineOrder',
   'footer_icp_show'
 ]);
 
@@ -108,7 +111,8 @@ export function sanitizePrefs(input) {
   for (const k of Object.keys(input)) {
     if (ALLOWED_PREF_KEYS.has(k)) {
       const v = input[k];
-      if (typeof v === 'string' && v.length > 1024) continue;
+      const maxLength = (k === 'cfg_customSearchEngines' || k === 'cfg_searchEngineOrder') ? 8192 : 1024;
+      if (typeof v === 'string' && v.length > maxLength) continue;
       out[k] = v;
     }
   }

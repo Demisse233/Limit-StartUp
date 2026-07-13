@@ -180,7 +180,7 @@
 </svg>
 <div class="main">
     <div class="success" id="success_box">Welcome Back, <span id="display-text">User</span>!</div>
-    <div class="setsuccess" id="setsuccess_box"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1889"><path d="M512 85.333333c235.648 0 426.666667 191.018667 426.666667 426.666667s-191.018667 426.666667-426.666667 426.666667S85.333333 747.648 85.333333 512 276.352 85.333333 512 85.333333z m-74.965333 550.4L346.453333 545.152a42.666667 42.666667 0 1 0-60.330666 60.330667l120.704 120.704a42.666667 42.666667 0 0 0 60.330666 0l301.653334-301.696a42.666667 42.666667 0 1 0-60.288-60.330667l-271.530667 271.488z" fill="#00A74A" p-id="1890"></path></svg> 设置成功</div>
+    <div class="setsuccess" id="setsuccess_box" role="status" aria-live="polite"><svg class="icon" viewBox="0 0 1024 1024" aria-hidden="true"><path d="M512 85.333c235.648 0 426.667 191.019 426.667 426.667S747.648 938.667 512 938.667 85.333 747.648 85.333 512 276.352 85.333 512 85.333zm-74.965 550.4-90.582-90.581a42.667 42.667 0 1 0-60.33 60.331l120.704 120.704a42.667 42.667 0 0 0 60.33 0L768.81 424.49a42.667 42.667 0 1 0-60.288-60.33L436.992 635.648z" fill="currentColor"></path></svg> 设置成功</div>
 <!-- //////////////////// -->
     <input type="checkbox" id="navcheck" role="button" title="menu">
     <!-- 账号入口 (未登录: 登录链接, 已登录: 圆形头像) -->
@@ -370,6 +370,15 @@
                                 <span class="changelog_version_date">2026.7.12</span>
                             </header>
                             <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--add"><span class="changelog_tag changelog_tag--add">新增</span><span class="changelog_msg">搜索引擎支持自定义添加、编辑、删除和设为默认，可通过胶囊尾部手柄排序并随账号同步，自定义项会加入首页下拉，较多时可滚动查看，填写规则也以提示框展示</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">GitHub 搜索现在会显示仓库、代码和 Issues 等有效联想，不再出现空白选项</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">自动明暗模式会分别判断时间、搜索栏、菜单和提示所在区域，复杂壁纸下更易读</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">账号同步会显示同步中、成功和失败状态，失败后可直接重试</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">移动端长设置页增加分区快速导航，查找设置项更方便</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">自定义壁纸改用更大容量的浏览器本地存储，旧壁纸会自动迁移，并明确提示壁纸仅保存在当前浏览器</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索设置中的引擎选项和添加按钮统一为胶囊圆角样式</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">错误类提示统一使用红色叉号，与绿色成功提示清晰区分</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">预设壁纸缩略图加载和切换恢复正常，切换后不再重复显示其他操作的提示内容</span></li>
                             </ul>
                         </article>
 <article class="changelog_version">
@@ -940,40 +949,40 @@
                             <div class="settings_section_body">
                                 <div class="settings_subsection_title">预设壁纸</div>
                                 <div class="bg_choice_main" id="bg_choice">
-                                    <div class="bg_choice_small" id="bg1" onclick="set_effect ()" aria-label="壁纸 1">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/1.png" alt="壁纸 1">
+                                    <div class="bg_choice_small" id="bg1" aria-label="壁纸 1">
+                                    <img class="bg_pic" decoding="async" src="./src/1.png" alt="壁纸 1">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
-                                    <div class="bg_choice_small" id="bg2" onclick="set_effect ()" aria-label="壁纸 2">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/2.jpg" alt="壁纸 2">
+                                    <div class="bg_choice_small" id="bg2" aria-label="壁纸 2">
+                                    <img class="bg_pic" decoding="async" src="./src/2.jpg" alt="壁纸 2">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
-                                    <div class="bg_choice_small" id="bg3" onclick="set_effect ()" aria-label="壁纸 3">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/3.JPG" alt="壁纸 3">
+                                    <div class="bg_choice_small" id="bg3" aria-label="壁纸 3">
+                                    <img class="bg_pic" decoding="async" src="./src/3.JPG" alt="壁纸 3">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
-                                    <div class="bg_choice_small" id="bg4" onclick="set_effect ()" aria-label="壁纸 4">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/4.JPG" alt="壁纸 4">
+                                    <div class="bg_choice_small" id="bg4" aria-label="壁纸 4">
+                                    <img class="bg_pic" decoding="async" src="./src/4.JPG" alt="壁纸 4">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
-                                    <div class="bg_choice_small" id="bg5" onclick="set_effect ()" aria-label="壁纸 5">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/5.JPG" alt="壁纸 5">
+                                    <div class="bg_choice_small" id="bg5" aria-label="壁纸 5">
+                                    <img class="bg_pic" decoding="async" src="./src/5.JPG" alt="壁纸 5">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
-                                    <div class="bg_choice_small" id="bg6" onclick="set_effect ()" aria-label="壁纸 6">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/6.JPG" alt="壁纸 6">
+                                    <div class="bg_choice_small" id="bg6" aria-label="壁纸 6">
+                                    <img class="bg_pic" decoding="async" src="./src/6.JPG" alt="壁纸 6">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
-                                    <div class="bg_choice_small" id="bg7" onclick="set_effect ()" aria-label="壁纸 7">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/7.jpg" alt="壁纸 7">
+                                    <div class="bg_choice_small" id="bg7" aria-label="壁纸 7">
+                                    <img class="bg_pic" decoding="async" src="./src/7.jpg" alt="壁纸 7">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
-                                    <div class="bg_choice_small" id="bg8" onclick="set_effect ()" aria-label="壁纸 8">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/8.jpg" alt="壁纸 8">
+                                    <div class="bg_choice_small" id="bg8" aria-label="壁纸 8">
+                                    <img class="bg_pic" decoding="async" src="./src/8.jpg" alt="壁纸 8">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
-                                    <div class="bg_choice_small" id="bg9" onclick="set_effect ()" aria-label="壁纸 9">
-                                    <img class="bg_pic" loading="lazy" decoding="async" src="./src/9.jpg" alt="壁纸 9">
+                                    <div class="bg_choice_small" id="bg9" aria-label="壁纸 9">
+                                    <img class="bg_pic" decoding="async" src="./src/9.jpg" alt="壁纸 9">
                                     <span class="check_badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg></span>
                                     </div>
                                 </div>
@@ -1027,15 +1036,15 @@
                                     </div>
                                     </div>
                                 </div>
-                                <div class="set_notice" role="note">
-                                    <span class="set_notice_icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                <div class="set_notice wallpaper_storage_notice" role="note">
+                                    <span class="set_notice_icon wallpaper_storage_notice_icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                                     </span>
                                     <div class="set_notice_body">
-                                    <div class="set_notice_title">请注意</div>
-                                    <ol class="set_notice_list">
-                                        <li>请不要上传超过 4MB 的图片，否则将无法保存。</li>
-                                    </ol>
+                                        <div class="set_notice_title">提示</div>
+                                        <ol class="set_notice_list">
+                                            <li>自定义壁纸仅保存在本地，不会上传到云端；更换浏览器后需要重新设置。</li>
+                                        </ol>
                                     </div>
                                 </div>
                             </div>
@@ -1262,7 +1271,10 @@
                                     </div>
                                     <div class="account_user_meta">
                                         <div class="account_email" id="accountEmail">—</div>
-                                        <div class="account_sync_state" id="accountSyncState">已登录</div>
+                                        <div class="account_sync_row">
+                                            <div class="account_sync_state" id="accountSyncState" role="status" aria-live="polite">已登录</div>
+                                            <button type="button" class="account_sync_retry" id="accountSyncRetry" hidden>重试</button>
+                                        </div>
                                     </div>
                                     <div class="account_user_actions">
                                         <button type="button" class="diy_bg_but2 glass account_action_btn" onclick="openAuthModal('auth_reset_box')">修改密码</button>
@@ -1359,6 +1371,58 @@
                                 <option value="https://search.bilibili.com/all">BiliBili</option>
                                 <option value="https://metaso.cn/?s=alolk&referrer_s=alolk&">秘塔 AI</option>
                             </select>
+                            <div class="set_notice search_order_notice" role="note">
+                                <span class="set_notice_icon search_order_notice_icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                </span>
+                                <div class="set_notice_body">
+                                    <div class="set_notice_title">提示</div>
+                                    <ol class="set_notice_list">
+                                        <li>左右拖动可以更改搜索引擎在首页下拉框中的顺序。</li>
+                                        <li>新增的自定义搜索引擎会自动加入默认搜索引擎列表和首页下拉框。</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="settings_section custom_engine_section">
+                        <div class="settings_section_head">
+                            <span class="settings_section_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6M8 11h6"/></svg>
+                            </span>
+                            <div class="settings_section_titles">
+                                <div class="settings_section_title">自定义搜索引擎</div>
+                            </div>
+                        </div>
+                        <div class="settings_section_body">
+                            <div class="custom_engine_panel">
+                                <div class="custom_engine_form">
+                                    <label class="custom_engine_field">
+                                        <span>名称</span>
+                                        <input type="text" id="customEngineName" maxlength="20" placeholder="例如：MDN">
+                                    </label>
+                                    <label class="custom_engine_field custom_engine_field--url">
+                                        <span>搜索地址</span>
+                                        <input type="url" id="customEngineUrl" placeholder="https://example.com/search?q={query}">
+                                    </label>
+                                    <div class="custom_engine_form_actions">
+                                        <button type="button" class="custom_engine_cancel" id="customEngineCancel" hidden>取消</button>
+                                        <button type="button" class="diy_bg_but glass-strong custom_engine_add" id="customEngineAdd">添加</button>
+                                    </div>
+                                </div>
+                                <div class="set_notice custom_engine_notice" role="note">
+                                    <span class="set_notice_icon custom_engine_notice_icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                    </span>
+                                    <div class="set_notice_body">
+                                        <div class="set_notice_title">提示</div>
+                                        <ol class="set_notice_list">
+                                            <li>用 {query} 表示搜索内容，最多添加 8 个。</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <div class="custom_engine_list" id="customEngineList" aria-live="polite"></div>
+                            </div>
                         </div>
                     </section>
                         </div>
@@ -1403,81 +1467,14 @@
 		<script type="text/javascript">
 // v4.0.12 自定义壁纸: 选文件 -> 预览 -> 16:9 框选裁切 -> 导出
 var __uploadState = { img: null, naturalW: 0, naturalH: 0, scale: 1, box: null };
-var __homeTextToneRequest = 0;
 
-function __setHomepageTextTone(tone) {
-  document.body.classList.toggle('home-text-light', tone === 'light');
+async function __saveCustomWallpaper(dataUrl) {
+  if (!window.LimitWallpaperStorage) throw new Error('壁纸存储尚未准备好');
+  await window.LimitWallpaperStorage.saveDataUrl(dataUrl);
+  localStorage.removeItem('bg');
 }
 
-function __getHomepageWallpaperSource() {
-  try {
-    var custom = localStorage.getItem('backgroundImage');
-    if (custom) return custom;
-  } catch (e) {}
-  var selected = document.querySelector('.bg_choice_small.is-selected img');
-  if (selected && selected.src) return selected.src;
-  var background = getComputedStyle(document.body).backgroundImage;
-  var matched = background && background.match(/^url\(["']?(.*?)["']?\)$/);
-  return matched ? matched[1] : '';
-}
-
-function applyHomepageTextTone(source) {
-  var tone = 'auto';
-  try { tone = localStorage.getItem('cfg_homeTextTone') || 'auto'; } catch (e) {}
-  var request = ++__homeTextToneRequest;
-  if (tone !== 'auto') {
-    __setHomepageTextTone(tone);
-    return;
-  }
-  source = source || __getHomepageWallpaperSource();
-  if (!source) {
-    __setHomepageTextTone('dark');
-    return;
-  }
-  var image = new Image();
-  image.onload = function () {
-    if (request !== __homeTextToneRequest) return;
-    try {
-      var canvas = document.createElement('canvas');
-      canvas.width = 64;
-      canvas.height = 36;
-      var context = canvas.getContext('2d', { willReadFrequently: true });
-      var imageRatio = image.naturalWidth / image.naturalHeight;
-      var canvasRatio = canvas.width / canvas.height;
-      var sx = 0;
-      var sy = 0;
-      var sw = image.naturalWidth;
-      var sh = image.naturalHeight;
-      if (imageRatio > canvasRatio) {
-        sw = image.naturalHeight * canvasRatio;
-        sx = (image.naturalWidth - sw) / 2;
-      } else {
-        sh = image.naturalWidth / canvasRatio;
-        sy = (image.naturalHeight - sh) / 2;
-      }
-      context.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-      var pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
-      var total = 0;
-      var count = 0;
-      for (var y = 3; y < 23; y++) {
-        for (var x = 10; x < 54; x++) {
-          var index = (y * canvas.width + x) * 4;
-          total += pixels[index] * 0.2126 + pixels[index + 1] * 0.7152 + pixels[index + 2] * 0.0722;
-          count++;
-        }
-      }
-      __setHomepageTextTone(total / count < 150 ? 'light' : 'dark');
-    } catch (e) {
-      __setHomepageTextTone('dark');
-    }
-  };
-  image.onerror = function () {
-    if (request === __homeTextToneRequest) __setHomepageTextTone('dark');
-  };
-  image.src = source;
-}
-
-function uploadImage() {
+async function uploadImage() {
   var fileInput = document.getElementById('imageFile');
   if (!fileInput.files || !fileInput.files[0]) {
     // 没有文件也没有裁切结果, 直接走原逻辑 (兼容老流程)
@@ -1487,32 +1484,26 @@ function uploadImage() {
   if (__uploadState.img && __uploadState.box) {
     var cropped = __exportCroppedImage();
     if (cropped) {
-      document.body.style.backgroundImage = 'url(' + cropped + ')';
-      applyHomepageTextTone(cropped);
       try {
-        localStorage.setItem('backgroundImage', cropped);
-        // 清除预设壁纸记录: 两个 key 必须互斥, 否则页面解析时
-        // 注入的 <style> 标签 (body{background:url('src/3.JPG')...}) 会盖掉内联 backgroundImage
-        // 导致上传后 reload, 壁纸闪一下就回原
-        localStorage.removeItem('bg');
-      } catch (e) {}
+        await __saveCustomWallpaper(cropped);
+      } catch (e) {
+        showSetsuccess('壁纸保存失败，请检查浏览器存储空间', 'error');
+        return;
+      }
     }
-    __updateCustomBgStatus();
     location.reload();
     return;
   }
   // 否则用原图 (没经过裁切)
   if (fileInput.files && fileInput.files[0]) {
     var reader = new FileReader();
-    reader.onload = function (e) {
-      document.body.style.backgroundImage = 'url(' + e.target.result + ')';
-      applyHomepageTextTone(e.target.result);
+    reader.onload = async function (e) {
       try {
-        localStorage.setItem('backgroundImage', e.target.result);
-        // 同上: 清除预设记录, 避免 reload 后被 <style> 标签拉回
-        localStorage.removeItem('bg');
-      } catch (e) {}
-      __updateCustomBgStatus();
+        await __saveCustomWallpaper(e.target.result);
+      } catch (error) {
+        showSetsuccess('壁纸保存失败，请检查浏览器存储空间', 'error');
+        return;
+      }
       location.reload();
     };
     reader.readAsDataURL(fileInput.files[0]);
@@ -1813,8 +1804,11 @@ var __imgFileEl = document.getElementById('imageFile');
 if (__imgFileEl) {
   __imgFileEl.addEventListener('change', __onUploadFileChange);
 }
-        function resetBackground() {
+        async function resetBackground() {
             document.body.style.backgroundImage = '';
+            if (window.LimitWallpaperStorage) {
+              try { await window.LimitWallpaperStorage.remove(); } catch (e) {}
+            }
             localStorage.removeItem('backgroundImage');
             localStorage.removeItem('bg');
             __updateCustomBgStatus();
@@ -1822,25 +1816,25 @@ if (__imgFileEl) {
             location.reload();
         }
 
-// 当前自定义壁纸状态指示: 仅当 localStorage.backgroundImage 存在时显示绿色 "正在使用" chip
+// 当前自定义壁纸状态指示
 function __updateCustomBgStatus() {
   var chip = document.getElementById('customBgStatus');
   if (!chip) return;
-  try {
-    var isCustom = !!localStorage.getItem('backgroundImage');
-    chip.hidden = !isCustom;
-  } catch (e) { chip.hidden = true; }
+  try { chip.hidden = !(window.LimitWallpaperStorage && window.LimitWallpaperStorage.isActive()); }
+  catch (e) { chip.hidden = true; }
 }
-// 当前自定义壁纸预览: 从 localStorage.backgroundImage 读 dataURL 写到预览框
+// 当前自定义壁纸预览: 从 IndexedDB 读取图片并生成临时 URL
 // 没设自定义壁纸时保持占位 SVG (灰色 16:9 矩形 + 山形图标)
-function __updateBgPreview() {
+async function __updateBgPreview() {
   var preview = document.getElementById('bgUploadPreview');
   if (!preview) return;
   try {
-    var dataUrl = localStorage.getItem('backgroundImage');
-    if (dataUrl) {
+    var wallpaperUrl = window.LimitWallpaperStorage && window.LimitWallpaperStorage.isActive()
+      ? await window.LimitWallpaperStorage.getUrl()
+      : '';
+    if (wallpaperUrl) {
       preview.classList.add('has-bg');
-      preview.style.backgroundImage = 'url("' + dataUrl + '")';
+      preview.style.backgroundImage = 'url("' + wallpaperUrl + '")';
     } else {
       preview.classList.remove('has-bg');
       preview.style.backgroundImage = '';
@@ -2036,14 +2030,11 @@ function __updateBgPreview() {
         })();
 // 加载
         window.addEventListener('load', function() {
-            const backgroundImageUrl = localStorage.getItem('backgroundImage');
             const selector1 = document.getElementById('searchEngineSelector1');
             const selector2 = document.getElementById('searchEngineSelector2');
             const defaultSearchEngine = localStorage.getItem('defaultSearchEngine');
-            if (backgroundImageUrl) {
-                document.body.style.backgroundImage = `url(${backgroundImageUrl})`;
-            }
-            applyHomepageTextTone(backgroundImageUrl);
+            if (window.LimitWallpaperStorage) window.LimitWallpaperStorage.loadActive();
+            else applyHomepageTextTone();
             Movein();
             setTimeout(Moveout, 5000);
             if (defaultSearchEngine) {
@@ -2073,7 +2064,7 @@ function __updateBgPreview() {
                     if (ipt) ipt.focus();
                 }, 200);
             }
-            // 同步自定义壁纸状态 chip + 预览框 (页面加载时根据 localStorage 决定)
+            // 同步自定义壁纸状态 chip + 预览框
             if (typeof __updateCustomBgStatus === 'function') __updateCustomBgStatus();
             if (typeof __updateBgPreview === 'function') __updateBgPreview();
         });
@@ -2252,7 +2243,6 @@ btn.onclick = function() {
     if (p.includes('github.com')) {
     str = '?q=' + encodeURIComponent(text);
     }
-    console.log('[search]', p + str);
     // 用 a[target=_blank] + 模拟点击的方式, 避免 window.open 触发的双标签问题
     const a = document.createElement('a');
     a.href = p + str;
@@ -2448,7 +2438,6 @@ texts.addEventListener('keydown', function(e) {
         }
         root.scrollTop = 0;
       }
-      console.log('[Limit Startup] settings_jump V4.0.8, state=', root.getAttribute('data-state'));
       openModal('settings_box');
     }
     function close_settings_box (){ closeModal("settings_box"); }
@@ -2560,21 +2549,33 @@ texts.addEventListener('keydown', function(e) {
             var bgMain = document.querySelector('.bg_choice_main');
             if (bgMain) {
               bgMain.addEventListener('click', function (e) {
-                var img = e.target.closest('img');
+                var tile = e.target.closest('.bg_choice_small');
+                if (!tile || !bgMain.contains(tile)) return;
+                var img = tile.querySelector('img');
                 if (!img || !img.src) return;
-                // 同步高亮: 先清掉所有 is-selected, 再给当前卡片加上
-                // (之前漏了, 点别的预设后, 高亮还停在初始加载时那张上)
-                var tiles = bgMain.querySelectorAll('.bg_choice_small');
-                tiles.forEach(function (t) { t.classList.remove('is-selected'); });
-                var tile = img.closest('.bg_choice_small');
-                if (tile) tile.classList.add('is-selected');
-                document.body.style.background = 'url(' + img.src + ') center / cover no-repeat fixed';
-                applyHomepageTextTone(img.src);
-                try {
-                  localStorage.setItem('bg', 'body{background:url(' + img.src + ') center / cover no-repeat fixed;}');
-                  // 互斥: 点预设就清掉自定义壁纸, 避免下次 reload 两个 key 同时在
-                  localStorage.removeItem('backgroundImage');
-                } catch (_) {}
+                var wallpaperUrl = img.currentSrc || img.src;
+                var applyWallpaper = function () {
+                  var tiles = bgMain.querySelectorAll('.bg_choice_small');
+                  tiles.forEach(function (item) { item.classList.remove('is-selected'); });
+                  tile.classList.add('is-selected');
+                  document.body.style.background = 'url("' + wallpaperUrl + '") center / cover no-repeat fixed';
+                  applyHomepageTextTone(wallpaperUrl);
+                  try {
+                    localStorage.setItem('bg', 'body{background:url("' + wallpaperUrl + '") center / cover no-repeat fixed;}');
+                    localStorage.removeItem('backgroundImage');
+                    localStorage.removeItem('customWallpaperActive');
+                    if (window.LimitWallpaperStorage) window.LimitWallpaperStorage.remove().catch(function () {});
+                  } catch (_) {}
+                  showSetsuccess('壁纸已切换');
+                };
+                if (img.complete && img.naturalWidth > 0) {
+                  applyWallpaper();
+                  return;
+                }
+                var loader = new Image();
+                loader.onload = applyWallpaper;
+                loader.onerror = function () { showSetsuccess('壁纸加载失败，请刷新后重试', 'error'); };
+                loader.src = wallpaperUrl;
               });
             }
         var setsuccessTimer = null;
@@ -2597,10 +2598,6 @@ texts.addEventListener('keydown', function(e) {
                 setsuccessTimer = null;
             }, delay);
         }
-        function set_effect(){
-                Movein2();
-                scheduleSetSuccessDismiss(2000);
-            }
 // 抽屉过渡时长, 与 menu.css 里 nav 的 transform 过渡保持一致
 var DRAWER_TRANSITION_MS = 280;
 var drawerCloseTimer = null;
@@ -2775,7 +2772,7 @@ var AUTH_USER_KEY = 'ls_auth_user';
 var ALLOWED_PREF_KEYS = ['defaultSearchEngine',
   'cfg_timeShow', 'cfg_time24h', 'cfg_timeShowSeconds', 'cfg_timeBlinkColon', 'cfg_timeFontSize', 'cfg_timeFontWeight',
   'cfg_dateShow', 'cfg_dateShowYear', 'cfg_dateFormat', 'cfg_dateShowWeekday', 'cfg_dateWeekdayLang',
-  'cfg_autofocusSearch', 'cfg_homeTextTone', 'footer_icp_show'];
+  'cfg_autofocusSearch', 'cfg_homeTextTone', 'cfg_customSearchEngines', 'cfg_searchEngineOrder', 'footer_icp_show'];
 
 function getToken() { try { return localStorage.getItem(AUTH_TOKEN_KEY); } catch (e) { return null; } }
 function setToken(t) { try { localStorage.setItem(AUTH_TOKEN_KEY, t); } catch (e) {} }
@@ -2863,12 +2860,12 @@ function openAuthModal(id) {
   if (!m) return;
   // 防御: 已登录时不允许打开 login / register 弹窗 (改密弹窗允许)
   if (getToken() && (id === 'auth_login_box' || id === 'auth_register_box')) {
-    if (typeof showSetsuccess === 'function') showSetsuccess('已登录');
+    if (typeof showSetsuccess === 'function') showSetsuccess('已登录', 'error');
     return;
   }
   // 防御: 未登录时不允许打开改密弹窗
   if (!getToken() && id === 'auth_reset_box') {
-    if (typeof showSetsuccess === 'function') showSetsuccess('请先登录');
+    if (typeof showSetsuccess === 'function') showSetsuccess('请先登录', 'error');
     // 改弹到登录
     id = 'auth_login_box';
     m = document.getElementById(id);
@@ -3192,8 +3189,8 @@ async function saveAccountNickname() {
   var btn = document.getElementById('accountNicknameSave');
   if (!input || !btn) return;
   var nickname = input.value.trim();
-  if (!nickname) { showSetsuccess('昵称不能为空'); return; }
-  if (nickname.length > 24) { showSetsuccess('昵称不能超过 24 位'); return; }
+  if (!nickname) { showSetsuccess('昵称不能为空', 'error'); return; }
+  if (nickname.length > 24) { showSetsuccess('昵称不能超过 24 位', 'error'); return; }
   var oldText = btn.textContent;
   btn.disabled = true;
   btn.textContent = '保存中...';
@@ -3205,7 +3202,7 @@ async function saveAccountNickname() {
     applyNicknameToUI(nickname);
     showSetsuccess('昵称已更新');
   } catch (e) {
-    showSetsuccess('保存失败: ' + (e.message || e));
+    showSetsuccess('保存失败: ' + (e.message || e), 'error');
   } finally {
     btn.disabled = false;
     btn.textContent = oldText;
@@ -3394,6 +3391,7 @@ function applyCloudPrefs(prefs) {
   if (typeof window.updateTime === 'function') { try { window.updateTime(); } catch (e) {} }
   // 页脚备案号显示: 同步云端值
   if (typeof window.__syncFooterIcp__ === 'function') { try { window.__syncFooterIcp__(); } catch (e) {} }
+  if (typeof window.renderCustomSearchEngines === 'function') { try { window.renderCustomSearchEngines(); } catch (e) {} }
   // 只有云端覆盖了本地时才提示 (避免每次刷新都弹)
   if (changed) showSetsuccess('云端偏好已同步');
   return changed;
@@ -3408,6 +3406,7 @@ function queueCloudSync(key) {
   var v = localStorage.getItem(key);
   if (v === null) return;
   _cloudSyncPending[key] = v;
+  updateCloudSyncState('syncing', '同步中…');
   if (_cloudSyncTimer) clearTimeout(_cloudSyncTimer);
   _cloudSyncTimer = setTimeout(flushCloudSync, 800);
 }
@@ -3419,13 +3418,31 @@ async function flushCloudSync() {
   if (Object.keys(payload).length === 0) return;
   try {
     await apiFetch('/api/prefs', { method: 'PUT', body: { prefs: payload } });
-    var s = document.getElementById('accountSyncState');
-    if (s) s.textContent = '已同步 · ' + new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-    var s2 = document.getElementById('accountMenuSync');
-    if (s2) s2.textContent = '已同步 · ' + new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    updateCloudSyncState('synced', '已同步 · ' + new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }));
   } catch (e) {
+    Object.assign(_cloudSyncPending, payload);
+    updateCloudSyncState('error', '同步失败');
     console.warn('[sync] put prefs failed', e);
   }
+}
+
+function updateCloudSyncState(state, text) {
+  var status = document.getElementById('accountSyncState');
+  var menuStatus = document.getElementById('accountMenuSync');
+  var retry = document.getElementById('accountSyncRetry');
+  if (status) {
+    status.textContent = text;
+    status.setAttribute('data-sync-state', state);
+  }
+  if (menuStatus) menuStatus.textContent = text;
+  if (retry) retry.hidden = state !== 'error';
+}
+
+function retryCloudSync() {
+  if (_cloudSyncTimer) clearTimeout(_cloudSyncTimer);
+  _cloudSyncTimer = null;
+  updateCloudSyncState('syncing', '正在重试…');
+  flushCloudSync();
 }
 
 // ============== 头像裁切与上传 ==============
@@ -3591,14 +3608,14 @@ function __resetAvatarCropper() {
 async function uploadAccountAvatar() {
   var input = document.getElementById('accountAvatarFile');
   var file = input && input.files && input.files[0];
-  if (!file) { showSetsuccess('请先选择图片'); return; }
-  if (file.size > 4 * 1024 * 1024) { showSetsuccess('图片不能超过 4MB'); return; }
+  if (!file) { showSetsuccess('请先选择图片', 'error'); return; }
+  if (file.size > 4 * 1024 * 1024) { showSetsuccess('图片不能超过 4MB', 'error'); return; }
   // 优先上传圆形预览对应的正方形裁切结果。
   var dataUrl;
   try {
     dataUrl = __exportAvatarCrop(256) || await compressImageToDataUrl(file, 256, 0.85);
   } catch (e) {
-    showSetsuccess('图片处理失败: ' + e.message);
+    showSetsuccess('图片处理失败: ' + e.message, 'error');
     return;
   }
   try {
@@ -3614,7 +3631,7 @@ async function uploadAccountAvatar() {
     __resetAvatarCropper();
     showSetsuccess('头像已更新');
   } catch (e) {
-    showSetsuccess('上传失败: ' + (e.message || ''));
+    showSetsuccess('上传失败: ' + (e.message || ''), 'error');
   }
 }
 
@@ -3641,7 +3658,7 @@ async function deleteAccountAvatar() {
     __resetAvatarCropper();
     showSetsuccess('头像已删除');
   } catch (e) {
-    showSetsuccess('删除失败: ' + (e.message || ''));
+    showSetsuccess('删除失败: ' + (e.message || ''), 'error');
   }
 }
 
@@ -3690,10 +3707,18 @@ function closeAccountMenu() {
 }
 
 // ============== 简易 toast (兼容老版) ==============
-function showSetsuccess(text) {
+function showSetsuccess(text, type) {
   // 复用 setsuccess_box, 临时改文字
   var el = document.getElementById('setsuccess_box');
   if (!el) return;
+  var isError = type === 'error';
+  el.classList.toggle('is-error', isError);
+  var icon = el.querySelector('svg.icon');
+  if (icon) {
+    icon.innerHTML = isError
+      ? '<circle cx="512" cy="512" r="426.667" fill="currentColor"></circle><path d="M352 352l320 320M672 352 352 672" fill="none" stroke="#fff" stroke-width="72" stroke-linecap="round"></path>'
+      : '<path d="M512 85.333c235.648 0 426.667 191.019 426.667 426.667S747.648 938.667 512 938.667 85.333 747.648 85.333 512 276.352 85.333 512 85.333zm-74.965 550.4-90.582-90.581a42.667 42.667 0 1 0-60.33 60.331l120.704 120.704a42.667 42.667 0 0 0 60.33 0L768.81 424.49a42.667 42.667 0 1 0-60.288-60.33L436.992 635.648z" fill="currentColor"></path>';
+  }
   // 提取 svg 后的文本节点
   var textNode = null;
   for (var i = 0; i < el.childNodes.length; i++) {
@@ -3729,6 +3754,8 @@ function bindAuthUI() {
   if (sub2) sub2.addEventListener('click', doRegister);
   var sub3 = document.getElementById('auth_reset_submit');
   if (sub3) sub3.addEventListener('click', doReset);
+  var syncRetry = document.getElementById('accountSyncRetry');
+  if (syncRetry) syncRetry.addEventListener('click', retryCloudSync);
   // Enter 提交
   ['auth_login_box', 'auth_register_box', 'auth_reset_box'].forEach(function (id) {
     var m = document.getElementById(id);
@@ -3904,14 +3931,12 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       ro.observe(el);
 
-      console.log('[liquid-glass] ok', id, el.tagName, el.className.slice(0, 40));
     }
 
     function init() {
       // 液态玻璃 (shuding 凸透镜): 只用在菜单抽屉 + 引擎下拉 + 搜索框 + toast
       // 3 个弹窗 (关于/设置/声明) 走普通高斯模糊 (CSS 端 url(#liquid-glass) + feGaussianBlur)
       var targets = document.querySelectorAll('nav#menu, #enginePopover, #inputBox, .search_btn.glass-strong, .burger.glass, #success_box, #setsuccess_box');
-      console.log('[liquid-glass] found', targets.length, 'targets');
       targets.forEach(function (el) {
         if (el.dataset.liquidGlassInit) return;
         el.dataset.liquidGlassInit = '1';
@@ -3925,6 +3950,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   })();
 </script>
+<script src="scripts/wallpaper-storage.js"></script>
+<script src="scripts/theme-regions.js"></script>
+<script src="scripts/search-engines.js"></script>
+<script src="scripts/settings-mobile.js"></script>
 
 <!-- 页面底部 ICP 备案号 (固定小按钮, 参考 limestart.cn 风格) -->
 <div class="page_footer_icp">
