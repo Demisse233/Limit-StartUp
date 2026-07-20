@@ -323,6 +323,91 @@
             </button>
         </div>
     </div>
+    <button type="button" class="bookmark_launcher glass-strong" id="bookmarkLauncher" aria-label="打开书签" aria-expanded="false" aria-controls="bookmarkPanel">
+        <svg class="bookmark_launcher_icon bookmark_launcher_icon--normal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
+        <svg class="bookmark_launcher_icon bookmark_launcher_icon--restore" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/><path d="m4 4 16 16"/></svg>
+    </button>
+    <section class="bookmark_panel" id="bookmarkPanel" aria-label="书签管理" aria-hidden="true">
+        <header class="bookmark_panel_header">
+            <div class="bookmark_panel_title_group">
+                <span class="bookmark_panel_icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
+                </span>
+                <h2 class="bookmark_panel_title">书签</h2>
+            </div>
+            <div class="bookmark_panel_actions">
+                <button type="button" class="bookmark_move_done glass" id="bookmarkMoveDone" hidden>完成</button>
+                <button type="button" class="bookmark_icon_button bookmark_panel_settings glass" id="bookmarkSettingsButton" aria-label="打开书签设置" title="书签设置">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.12.37.34.7.64.95.3.25.68.39 1.07.4H21a2 2 0 1 1 0 4h-.09c-.39.01-.77.15-1.07.4-.3.25-.52.58-.64.95z"/></svg>
+                </button>
+            </div>
+        </header>
+        <div class="bookmark_panel_body">
+            <div class="bookmark_empty" id="bookmarkPanelEmpty">
+                <span class="bookmark_empty_icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
+                </span>
+                <strong>还没有书签</strong>
+                <span>可在设置 → 书签中添加或导入</span>
+            </div>
+            <div class="bookmark_grid" id="bookmarkPanelGrid" aria-live="polite"></div>
+        </div>
+        <footer class="bookmark_categories" id="bookmarkPanelCategories" aria-label="书签分类"></footer>
+    </section>
+    <div class="bookmark_context_menu glass-strong" id="bookmarkContextMenu" role="menu" aria-label="书签管理" hidden>
+        <div class="bookmark_context_menu_title">管理</div>
+        <button type="button" class="bookmark_context_menu_item" id="bookmarkMoveButton" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 12h20"/><path d="m8 6 4-4 4 4M8 18l4 4 4-4M6 8l-4 4 4 4M18 8l4 4-4 4"/></svg>
+            <span>移动</span>
+        </button>
+        <button type="button" class="bookmark_context_menu_item" id="bookmarkSizeButton" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/><path d="m3 8 6-6M21 8l-6-6M3 16l6 6M21 16l-6 6"/></svg>
+            <span>编辑大小</span>
+        </button>
+        <button type="button" class="bookmark_context_menu_item" id="bookmarkEditButton" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
+            <span>编辑书签</span>
+        </button>
+    </div>
+    <div class="bookmark_size_menu glass-strong" id="bookmarkSizeMenu" role="menu" aria-label="选择书签大小" hidden>
+        <div class="bookmark_context_menu_title">选择大小</div>
+        <button type="button" class="bookmark_size_menu_item" data-bookmark-size="small" role="menuitemradio">
+            <strong>S</strong><span>圆形</span>
+        </button>
+        <button type="button" class="bookmark_size_menu_item" data-bookmark-size="large" role="menuitemradio">
+            <strong>M</strong><span>胶囊</span>
+        </button>
+        <button type="button" class="bookmark_size_menu_item" data-bookmark-size="xlarge" role="menuitemradio">
+            <strong>L</strong><span>大胶囊</span>
+        </button>
+    </div>
+    <div class="bookmark_quick_editor" id="bookmarkQuickEditor" hidden>
+        <section class="bookmark_quick_editor_card glass-strong" role="dialog" aria-modal="true" aria-labelledby="bookmarkQuickEditorTitle">
+            <header class="bookmark_quick_editor_head">
+                <h3 id="bookmarkQuickEditorTitle">编辑书签</h3>
+                <button type="button" class="bookmark_quick_close glass" id="bookmarkQuickClose" aria-label="关闭编辑面板">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
+            </header>
+            <form class="bookmark_quick_form" id="bookmarkQuickForm">
+                <input type="hidden" id="bookmarkQuickId">
+                <label><span>名称</span><input type="text" id="bookmarkQuickName" maxlength="120" required></label>
+                <label><span>链接</span><input type="url" id="bookmarkQuickUrl" maxlength="2048" required></label>
+                <label><span>分类</span><select id="bookmarkQuickCategory"></select></label>
+                <fieldset class="bookmark_quick_size">
+                    <legend>大小</legend>
+                    <label><input type="radio" name="bookmarkQuickSize" value="small"><span>S · 圆形</span></label>
+                    <label><input type="radio" name="bookmarkQuickSize" value="large"><span>M · 胶囊</span></label>
+                    <label><input type="radio" name="bookmarkQuickSize" value="xlarge"><span>L · 大胶囊</span></label>
+                </fieldset>
+                <footer class="bookmark_quick_actions">
+                    <button type="button" class="bookmark_quick_delete" id="bookmarkQuickDelete">删除</button>
+                    <button type="button" class="bookmark_quick_cancel" id="bookmarkQuickCancel">取消</button>
+                    <button type="submit" class="bookmark_quick_save">保存</button>
+                </footer>
+            </form>
+        </section>
+    </div>
         <div id="about" class="about glass-strong">
             <div class="setting_btn_box">
                 <div class="settings_box_heading">
@@ -339,7 +424,7 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge glass-strong">Version 4.0.15</span>
+                        <span class="about_version_badge glass-strong">Version 4.1.0</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
@@ -366,6 +451,18 @@
                     <div class="changelog">
 <article class="changelog_version">
                             <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.1.0</span>
+                                <span class="changelog_version_date">2026.7.13</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">欢迎提示会在首屏阶段及时显示，搜索框也不再于页面加载后延迟抢占焦点</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">更新日志中的“新增”类型标识恢复为清晰的绿色胶囊样式</span></li>
+                                <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">优化移动端首页和设置页面布局，搜索按钮始终固定在输入框右侧，输入框聚焦时会隐藏下方的引擎选择，设置内容也会随窄屏自动重排</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增书签管理功能，支持手动创建与浏览器文件导入、分类整理、S/M/L 三档显示、拖拽排序、首页快捷编辑及账号云同步</span></li>
+                            </ul>
+                        </article>
+<article class="changelog_version">
+                            <header class="changelog_version_head">
                                 <span class="changelog_version_tag">V4.0.15</span>
                                 <span class="changelog_version_date">2026.7.12</span>
                             </header>
@@ -379,6 +476,7 @@
                                 <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">搜索设置中的引擎选项和添加按钮统一为胶囊圆角样式</span></li>
                                 <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">错误类提示统一使用红色叉号，与绿色成功提示清晰区分</span></li>
                                 <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">预设壁纸缩略图加载和切换恢复正常，切换后不再重复显示其他操作的提示内容</span></li>
+                                <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">移动端首页的时间与搜索区不再错位溢出，设置页面也能从顶部正常显示和滚动</span></li>
                             </ul>
                         </article>
 <article class="changelog_version">
@@ -928,6 +1026,17 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
                             </span>
                         </a>
+                        <a href="javascript:void(0)" class="settings_menu_item glass" data-page="bookmarks" onclick="enterSettingsPage('bookmarks')">
+                            <span class="settings_menu_icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
+                            </span>
+                            <span class="settings_menu_text">
+                                <span class="settings_menu_title">书签</span>
+                            </span>
+                            <span class="settings_menu_chev" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                            </span>
+                        </a>
                     </div>
                     <!-- Page: 个性化 (push 进入) -->
                                         <div class="settings_page" data-page="personalize" id="settingsPagePersonalize" data-title="个性化">
@@ -1426,8 +1535,101 @@
                         </div>
                     </section>
                         </div>
+                    <!-- Page: 书签 -->
+                    <div class="settings_page" data-page="bookmarks" id="settingsPageBookmarks" data-title="书签" hidden>
+                        <section class="settings_section bookmark_settings_section">
+                            <div class="settings_section_head">
+                                <span class="settings_section_icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
+                                </span>
+                                <div class="settings_section_titles">
+                                    <div class="settings_section_title">书签管理</div>
+                                </div>
+                            </div>
+                            <div class="settings_section_body">
+                                <div class="bookmark_settings_manager" id="bookmarkSettingsManager">
+                                    <div class="bookmark_settings_toolbar">
+                                        <div class="bookmark_settings_status">
+                                            <span>同步状态</span>
+                                            <strong class="bookmark_sync_status" id="bookmarkSyncStatus" role="status" aria-live="polite">本地保存</strong>
+                                        </div>
+                                        <div class="bookmark_settings_actions">
+                                            <button type="button" class="bookmark_settings_action glass" id="bookmarkAddButton">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                                                <span>新建</span>
+                                            </button>
+                                            <label class="bookmark_settings_action glass" for="bookmarkImportFile">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+                                                <span>导入</span>
+                                            </label>
+                                            <input type="file" id="bookmarkImportFile" accept=".html,.htm,text/html" hidden>
+                                        </div>
+                                    </div>
+                                    <div class="bookmark_category_manager">
+                                        <div class="bookmark_category_manager_head">
+                                            <div>
+                                                <strong>分类管理</strong>
+                                                <span>删除分类后，其中的书签会移至未分类</span>
+                                            </div>
+                                            <form class="bookmark_category_form" id="bookmarkCategoryForm">
+                                                <input type="text" id="bookmarkCategoryName" maxlength="60" placeholder="输入分类名称" autocomplete="off" required>
+                                                <button type="submit">新增</button>
+                                            </form>
+                                        </div>
+                                        <div class="bookmark_category_manager_list" id="bookmarkCategoryManagerList" aria-live="polite"></div>
+                                    </div>
+                                    <div class="bookmark_editor glass" id="bookmarkEditor" hidden>
+                                        <form class="bookmark_editor_form" id="bookmarkEditorForm">
+                                            <input type="hidden" id="bookmarkEditingId">
+                                            <label class="bookmark_field">
+                                                <span>名称</span>
+                                                <input type="text" id="bookmarkName" maxlength="120" placeholder="输入网址后自动获取">
+                                            </label>
+                                            <label class="bookmark_field bookmark_field--url">
+                                                <span>网址</span>
+                                                <input type="url" id="bookmarkUrl" maxlength="2048" placeholder="https://example.com" required>
+                                                <span class="bookmark_metadata_status" id="bookmarkMetadataStatus" role="status" aria-live="polite"></span>
+                                            </label>
+                                            <input type="hidden" id="bookmarkIconUrl">
+                                            <label class="bookmark_field">
+                                                <span>分类</span>
+                                                <input type="text" id="bookmarkCategory" maxlength="60" list="bookmarkCategoryList" placeholder="未分类">
+                                                <datalist id="bookmarkCategoryList"></datalist>
+                                            </label>
+                                            <fieldset class="bookmark_size_field">
+                                                <legend>大小</legend>
+                                                <label><input type="radio" name="bookmarkSize" value="small"><span>S</span></label>
+                                                <label><input type="radio" name="bookmarkSize" value="large" checked><span>M</span></label>
+                                                <label><input type="radio" name="bookmarkSize" value="xlarge"><span>L</span></label>
+                                            </fieldset>
+                                            <div class="bookmark_editor_actions">
+                                                <button type="button" class="bookmark_text_button" id="bookmarkEditorCancel">取消</button>
+                                                <button type="submit" class="bookmark_primary_button glass-strong" id="bookmarkEditorSave">添加</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="bookmark_settings_list">
+                                        <div class="bookmark_settings_list_head" aria-hidden="true">
+                                            <span>图标</span>
+                                            <span>名称</span>
+                                            <span>链接</span>
+                                            <span>操作</span>
+                                        </div>
+                                        <div class="bookmark_empty" id="bookmarkEmpty">
+                                            <span class="bookmark_empty_icon" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
+                                            </span>
+                                            <strong>还没有书签</strong>
+                                            <span>手动新建，或导入浏览器导出的 HTML 书签文件</span>
+                                        </div>
+                                        <div class="bookmark_settings_rows" id="bookmarkGrid" role="list" aria-live="polite"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
-                    <!-- /.settings_pages 关闭: search page 也在内部 -->
+                    </div>
+                    <!-- /.settings_pages -->
             </div>
         </div>
     </div>
@@ -1854,11 +2056,13 @@ async function __updateBgPreview() {
 // 欢迎语
         function Movein() {
             var el = document.getElementById("success_box");
+            if (!el) return;
             el.style.opacity = "1";
             el.style.transform = "translate(-50%, 0)";
         }
         function Moveout() {
             var el = document.getElementById("success_box");
+            if (!el) return;
             el.style.opacity = "0";
             el.style.transform = "translate(-50%, -160%)";
         }
@@ -1984,6 +2188,9 @@ async function __updateBgPreview() {
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' && isOpen()) close();
             });
+            document.addEventListener('limit:close-engine-picker', function () {
+                if (isOpen()) close();
+            });
             // 暴露 syncHomeEnginePicker 给 setDefault / onload
             window.syncHomeEnginePicker = syncHomeEnginePicker;
         })();
@@ -2028,46 +2235,102 @@ async function __updateBgPreview() {
                 else out.textContent = '未选择文件';
             });
         })();
-// 加载
-        window.addEventListener('load', function() {
-            const selector1 = document.getElementById('searchEngineSelector1');
-            const selector2 = document.getElementById('searchEngineSelector2');
-            const defaultSearchEngine = localStorage.getItem('defaultSearchEngine');
-            if (window.LimitWallpaperStorage) window.LimitWallpaperStorage.loadActive();
-            else applyHomepageTextTone();
+// 首屏交互不等待图片、书签图标等慢资源加载完成
+        (function initStartupExperience() {
+            var startupAt = performance.now();
+            var userHasInteracted = false;
+            var interactionEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel'];
+
+            function clearStartupInteractionListeners() {
+                interactionEvents.forEach(function (eventName) {
+                    window.removeEventListener(eventName, markStartupInteraction, true);
+                });
+            }
+
+            function markStartupInteraction() {
+                userHasInteracted = true;
+                clearStartupInteractionListeners();
+            }
+
+            interactionEvents.forEach(function (eventName) {
+                window.addEventListener(eventName, markStartupInteraction, {
+                    capture: true,
+                    passive: eventName !== 'keydown'
+                });
+            });
+
+            // Toast 立即显示，避免被后续资源和初始化工作阻塞。
             Movein();
             setTimeout(Moveout, 5000);
-            if (defaultSearchEngine) {
-                for (let i = 0; i < selector1.options.length; i++) {
-                    if (selector1.options[i].value === defaultSearchEngine) {
-                        selector1.selectedIndex = i;
-                        break;
-                    }
+
+            function focusSearchEarly() {
+                if (localStorage.getItem('cfg_autofocusSearch') === '0') {
+                    clearStartupInteractionListeners();
+                    return;
                 }
-                for (let i = 0; i < selector2.options.length; i++) {
-                    if (selector2.options[i].value === defaultSearchEngine) {
-                        selector2.selectedIndex = i;
-                        break;
-                    }
-                }
-                syncEngineChips(defaultSearchEngine);
-                if (typeof window.syncHomeEnginePicker === 'function') {
-                    window.syncHomeEnginePicker(defaultSearchEngine);
-                }
-            }
-            // 应用时间字体设置
-            if (typeof applyTimeFont === 'function') applyTimeFont();
-            // 自动聚焦搜索栏 (可在设置 → 通用 → 初始化中关闭)
-            if (localStorage.getItem('cfg_autofocusSearch') !== '0') {
                 setTimeout(function () {
-                    var ipt = document.getElementById('input_text');
-                    if (ipt) ipt.focus();
-                }, 200);
+                    var input = document.getElementById('input_text');
+                    var bookmarkPanel = document.getElementById('bookmarkPanel');
+                    var activeElement = document.activeElement;
+                    var pageIsStillIdle = !userHasInteracted
+                        && performance.now() - startupAt < 1500
+                        && document.visibilityState === 'visible'
+                        && (!activeElement || activeElement === document.body)
+                        && (!bookmarkPanel || bookmarkPanel.getAttribute('aria-hidden') !== 'false');
+                    if (input && pageIsStillIdle) {
+                        try { input.focus({ preventScroll: true }); }
+                        catch (e) { input.focus(); }
+                    }
+                    clearStartupInteractionListeners();
+                }, 120);
             }
-            // 同步自定义壁纸状态 chip + 预览框
-            if (typeof __updateCustomBgStatus === 'function') __updateCustomBgStatus();
-            if (typeof __updateBgPreview === 'function') __updateBgPreview();
-        });
+
+            function initializePage() {
+                const selector1 = document.getElementById('searchEngineSelector1');
+                const selector2 = document.getElementById('searchEngineSelector2');
+                const defaultSearchEngine = localStorage.getItem('defaultSearchEngine');
+                if (window.LimitWallpaperStorage) window.LimitWallpaperStorage.loadActive();
+                else applyHomepageTextTone();
+                if (defaultSearchEngine && selector1 && selector2) {
+                    for (let i = 0; i < selector1.options.length; i++) {
+                        if (selector1.options[i].value === defaultSearchEngine) {
+                            selector1.selectedIndex = i;
+                            break;
+                        }
+                    }
+                    for (let i = 0; i < selector2.options.length; i++) {
+                        if (selector2.options[i].value === defaultSearchEngine) {
+                            selector2.selectedIndex = i;
+                            break;
+                        }
+                    }
+                    syncEngineChips(defaultSearchEngine);
+                    if (typeof window.syncHomeEnginePicker === 'function') {
+                        window.syncHomeEnginePicker(defaultSearchEngine);
+                    }
+                }
+                // 应用时间字体设置
+                if (typeof applyTimeFont === 'function') applyTimeFont();
+                focusSearchEarly();
+
+                // 设置页的壁纸状态和预览不影响首屏，放到空闲阶段处理。
+                var updateWallpaperSettings = function () {
+                    if (typeof __updateCustomBgStatus === 'function') __updateCustomBgStatus();
+                    if (typeof __updateBgPreview === 'function') __updateBgPreview();
+                };
+                if ('requestIdleCallback' in window) {
+                    window.requestIdleCallback(updateWallpaperSettings, { timeout: 1200 });
+                } else {
+                    setTimeout(updateWallpaperSettings, 300);
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializePage, { once: true });
+            } else {
+                initializePage();
+            }
+        })();
 // 预设壁纸
         if (localStorage.bg) {
           var style = document.createElement('style');
@@ -2112,7 +2375,10 @@ async function __updateBgPreview() {
       var cfg = getTimeCfg();
       var el = document.querySelector('.showTime');
       if (!el) return;
-      var sizeMap = { sm: '32px', md: '40px', lg: '52px' };
+      var isMobile = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+      var sizeMap = isMobile
+        ? { sm: '22px', md: '26px', lg: '30px' }
+        : { sm: '32px', md: '40px', lg: '52px' };
       el.style.fontSize = sizeMap[cfg.fontSize] || '40px';
       el.style.fontWeight = cfg.fontWeight;
     }
@@ -2173,9 +2439,9 @@ async function __updateBgPreview() {
           if (cfg.showDate) {
             var dateText = getDateText(y, mt, day, cfg.dateFormat, cfg.showYear);
             var weekdayText = cfg.showWeekday ? getWeekdayText(dow, cfg.weekdayLang) : '';
-            parts.push(dateText + (weekdayText ? '&nbsp;&nbsp;&nbsp;' + weekdayText : ''));
+            parts.push('<span class="showTime_part showTime_date">' + dateText + (weekdayText ? '&nbsp;&nbsp;&nbsp;' + weekdayText : '') + '</span>');
           }
-          if (cfg.showTime) parts.push(timePart + suffix);
+          if (cfg.showTime) parts.push('<span class="showTime_part showTime_clock">' + timePart + suffix + '</span>');
           el.innerHTML = parts.join('&nbsp;&nbsp;&nbsp;&nbsp;');
           // 闪烁: 隐藏冒号
           if (cfg.blinkColon) {
@@ -2183,9 +2449,8 @@ async function __updateBgPreview() {
             var cs = el.querySelectorAll('.time-colon');
             for (var i = 0; i < cs.length; i++) cs[i].style.opacity = visible ? '1' : '0.15';
           }
-          // 每次都重设字体 (可能被其他代码改过)
-          el.style.fontSize = ({ sm: '32px', md: '40px', lg: '52px' })[cfg.fontSize] || '40px';
-          el.style.fontWeight = cfg.fontWeight;
+          // 每次按当前视口重设字体，旋转设备后也能采用对应尺寸。
+          applyTimeFont();
         }
         t = setTimeout(time, 1000);
     }
@@ -2267,7 +2532,7 @@ texts.addEventListener('keydown', function(e) {
 // 关于界面
     function about_jump(){ openModal("about"); }
     function close_about (){ closeModal("about"); }
-    // 设置弹窗两级导航: 一级菜单 (menu) -> 二级 page (personalize/search/account)
+    // 设置弹窗两级导航: 一级菜单 (menu) -> 二级 page
     // iOS 系统设置风格: 顶部 < 返回 + 大标题, push/pop 切换 transform slide + fade
     // 切换策略: 始终只有一个页面在显示 (menu 或 page), 另一个 display: none
     //   - push: menu 立即 display:none, page 从 translateX(100%) -> 0
@@ -2289,7 +2554,7 @@ texts.addEventListener('keydown', function(e) {
     }
 
     function setSettingsState(state) {
-      // state: 'menu' | 'page-personalize' | 'page-search' | 'page-account'
+      // state: 'menu' | 'page-personalize' | 'page-search' | 'page-account' | 'page-bookmarks'
       var root = __settingsRoot();
       if (root) root.setAttribute('data-state', state);
       // 同步弹窗顶栏: macOS Finder 风格
@@ -2351,7 +2616,7 @@ texts.addEventListener('keydown', function(e) {
 
     // push: 一级菜单 -> 二级 page
     function enterSettingsPage(page) {
-      var valid = ['personalize', 'search', 'account'];
+      var valid = ['personalize', 'search', 'account', 'bookmarks'];
       if (valid.indexOf(page) < 0) return;
       var root = __settingsRoot();
       if (!root) return;
@@ -2725,7 +2990,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var on = (stored === null) ? true : (stored !== '0');
         if (el.checked !== on) el.checked = on;
         var btn = document.querySelector('.page_footer_icp');
-        if (btn) btn.style.display = on ? '' : 'none';
+        var bookmarkLauncher = document.getElementById('bookmarkLauncher');
+        var bookmarkOpen = bookmarkLauncher && bookmarkLauncher.getAttribute('aria-expanded') === 'true';
+        if (btn) btn.style.display = on && !bookmarkOpen ? '' : 'none';
       };
       window.__syncFooterIcp__();
       el.addEventListener('change', function(){
@@ -3325,6 +3592,9 @@ async function onAuthStateChanged() {
   }
   // 设置弹窗一级菜单的"账户卡" (圆头像 + 大字名字 + 副标题)
   applyAccountMenuCard(signedIn ? user : null);
+  if (window.LimitBookmarks && typeof window.LimitBookmarks.handleAuthStateChanged === 'function') {
+    window.LimitBookmarks.handleAuthStateChanged(signedIn);
+  }
 }
 
 // 把云端 prefs 覆盖到 localStorage, 并同步到 UI 控件
@@ -3934,7 +4204,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function init() {
-      // 液态玻璃 (shuding 凸透镜): 只用在菜单抽屉 + 引擎下拉 + 搜索框 + toast
+      // 液态玻璃 (shuding 凸透镜): 用在菜单抽屉、搜索控件与 toast
       // 3 个弹窗 (关于/设置/声明) 走普通高斯模糊 (CSS 端 url(#liquid-glass) + feGaussianBlur)
       var targets = document.querySelectorAll('nav#menu, #enginePopover, #inputBox, .search_btn.glass-strong, .burger.glass, #success_box, #setsuccess_box');
       targets.forEach(function (el) {
@@ -3954,6 +4224,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <script src="scripts/theme-regions.js"></script>
 <script src="scripts/search-engines.js"></script>
 <script src="scripts/settings-mobile.js"></script>
+<script src="scripts/smooth-scroll.js?v=4.1.0-20260719-2"></script>
+<script src="scripts/bookmarks.js?v=4.1.0-20260719-5"></script>
 
 <!-- 页面底部 ICP 备案号 (固定小按钮, 参考 limestart.cn 风格) -->
 <div class="page_footer_icp">

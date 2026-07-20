@@ -6,8 +6,9 @@
     if (old) old.remove();
     var sections = Array.from(page.querySelectorAll(':scope > .settings_section'));
     if (sections.length < 2) return;
-    var nav = document.createElement('nav');
+    var nav = document.createElement('div');
     nav.className = 'settings_mobile_nav';
+    nav.setAttribute('role', 'navigation');
     nav.setAttribute('aria-label', '当前设置页分区');
     sections.forEach(function (section, index) {
       var title = section.querySelector('.settings_section_title');

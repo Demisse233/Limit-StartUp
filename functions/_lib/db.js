@@ -30,6 +30,13 @@ CREATE TABLE IF NOT EXISTS jwt_revocations (
   expires_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_jwt_revocations_expires ON jwt_revocations(expires_at);
+
+CREATE TABLE IF NOT EXISTS user_bookmarks (
+  user_id TEXT PRIMARY KEY,
+  data_json TEXT NOT NULL DEFAULT '{}',
+  updated_at INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 `;
 
 // 同步获取 JWT payload (从 request)

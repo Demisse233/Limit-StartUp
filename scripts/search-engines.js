@@ -488,6 +488,20 @@
     var input = document.getElementById('input_text');
     var select = document.getElementById('searchEngineSelector2');
     if (!input || !select) return;
+    var searchBox = input.closest('.box');
+    input.addEventListener('focus', function () {
+      if (searchBox) searchBox.classList.add('is-search-focused');
+    });
+    input.addEventListener('blur', function () {
+      if (searchBox) searchBox.classList.remove('is-search-focused');
+    });
+    if (button) {
+      button.addEventListener('pointerdown', function (event) {
+        if (window.matchMedia('(max-width: 640px)').matches && document.activeElement === input) {
+          event.preventDefault();
+        }
+      });
+    }
     input.onkeyup = null;
     input.addEventListener('input', function () {
       var query = input.value.trim();
