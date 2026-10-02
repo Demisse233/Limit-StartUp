@@ -1363,6 +1363,89 @@ section[id] { scroll-margin-top: 61px; }
   font-size: 16px;
 }
 
+/* 鸿蒙卡片的 CTA 行：只有一个「申请内测」，容器内居中（其余靠右） */
+.download-cta-bar--center {
+  justify-content: center;
+}
+
+/* ---------- 内测邀请码 ---------- */
+.invite {
+  position: relative;
+}
+
+.invite-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  transition: background 0.2s var(--t), border-color 0.2s var(--t);
+}
+
+.invite-summary::-webkit-details-marker {
+  display: none;
+}
+
+.invite-summary:hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.invite[open] .invite-summary {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.invite-caret {
+  transition: transform 0.25s var(--t);
+}
+
+.invite[open] .invite-caret {
+  transform: rotate(180deg);
+}
+
+/* 展开后：卡片内的一整行，展示邀请码（不撑开卡片之外）。
+   必须显式写 :not([open]) 隐藏 —— 浏览器默认的
+   `details:not([open]) > *:not(summary) { display: none }` 会被本文件的
+   类选择器覆盖，实测收起时该元素仍是 flex、占着布局。 */
+.invite:not([open]) .invite-body {
+  display: none;
+}
+
+.invite-body {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.invite-label {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.invite-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  user-select: all;
+  -webkit-user-select: all;
+}
+
 /* ---------- 芯片选择器 ---------- */
 .chip-picker {
   position: relative;
@@ -1408,6 +1491,11 @@ section[id] { scroll-margin-top: 61px; }
 }
 
 /* 选项面板：向上弹出，避免撑高卡片或把下方卡片顶开 */
+/* 同样显式收起：默认规则会被覆盖，实测收起时它仍是 flex */
+.chip-picker:not([open]) .chip-options {
+  display: none;
+}
+
 .chip-options {
   position: absolute;
   right: 0;
