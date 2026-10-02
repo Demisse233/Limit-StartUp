@@ -334,6 +334,24 @@
     if (featuredSlot) featuredSlot.appendChild(matchedCard);
   }
 
+  // macOS 的芯片选择器只在它位于推荐位时才有意义。
+  // 若访客不是 macOS（例如 Windows），macOS 卡片会留在下方网格里：
+  // 那时它没有 .download-featured 的 overflow:visible（弹层会被裁掉），
+  // 芯片探测也没有意义（会停在「选择芯片」这种空状态）。
+  // 因此把这种情况下的选择器换回普通的「下载 →」，与其它平台卡片一致。
+  const macCardEl = document.querySelector('.download-card[data-os="mac"]');
+  const macIsFeatured = !!(macCardEl && featuredSlot && macCardEl.parentElement === featuredSlot);
+  if (macCardEl && !macIsFeatured) {
+    const picker = macCardEl.querySelector(".chip-picker");
+    if (picker) {
+      picker.closest(".download-cta--split").remove();
+      const plainCta = document.createElement("span");
+      plainCta.className = "download-cta download-cta-bar";
+      plainCta.textContent = "下载 →";
+      macCardEl.appendChild(plainCta);
+    }
+  }
+
   // 渲染芯片选择器（选项由检测结果预选）
   renderChipPicker();
   const chipPicker = document.querySelector(".chip-picker");

@@ -605,7 +605,14 @@ html.is-paging .hero::after {
   border-radius: 50%;
   background: color-mix(in srgb, var(--accent) 38%, transparent);
   opacity: 0.3;
-  will-change: transform;
+  /* 这里曾有 will-change: transform —— 但点阵按 48px 网格铺满整个 hero，
+     大屏上约 450 个点，等于一次性创建几百个合成层，纯内存与合成开销
+     （Windows 上尤其明显）。
+     点的位移本来就用 translate3d()（见 script.js），浏览器会自动把正在动的
+     那几个提升为图层，不需要预先声明。
+     也试过 backface-visibility: hidden，实测同样会把每个点提升为图层：
+     保留时 40.3fps / 卡顿帧 43+49，去掉后 49.9fps / 12+27，所以一并去掉——
+     这个元素本质上没有任何 3D 变换。 */
   transition:
     opacity 0.45s var(--t),
     background 0.45s var(--t),
@@ -636,22 +643,28 @@ html.is-paging .hero::after {
   height: 3200px;
   margin: -1600px 0 0 -1600px;
   border-radius: 50%;
-  background: radial-gradient(circle,
+  /* 性能关键：这里曾用 filter: blur(6px) + box-shadow + mask-image。
+     元素是 3200×3200 且每帧做 transform: scale() —— 带模糊滤镜的元素被缩放时
+     Chrome 必须逐帧重新栅格化这块巨幅图层，波越扩散越贵（实测在 Windows
+     大屏上扩散到中后段就明显掉帧）。
+     现在把「柔」直接写进渐变的色标过渡里：没有任何滤镜/遮罩，
+     缩放只做纯粹的图层变换，不再触发重栅格化。 */
+  background: radial-gradient(
+    circle,
     transparent 0%,
-    transparent 48%,
-    color-mix(in srgb, var(--accent) 3%, transparent) 56%,
-    color-mix(in srgb, var(--accent) 10%, transparent) 66%,
-    color-mix(in srgb, var(--accent) 22%, transparent) 78%,
-    color-mix(in srgb, var(--accent) 38%, transparent) 86%,
-    color-mix(in srgb, var(--accent) 32%, transparent) 91%,
-    color-mix(in srgb, var(--accent) 16%, transparent) 96%,
-    transparent 100%);
-  filter: blur(6px);
-  box-shadow:
-    0 0 60px color-mix(in srgb, var(--accent) 12%, transparent);
-  /* 关键：裁掉外缘外溢的柔光，让波环只能在原元素圆形范围内可见 */
-  mask-image: radial-gradient(circle, black 60%, transparent 92%);
-  -webkit-mask-image: radial-gradient(circle, black 60%, transparent 92%);
+    transparent 50%,
+    color-mix(in srgb, var(--accent) 0%, transparent) 58%,
+    color-mix(in srgb, var(--accent) 2%, transparent) 64%,
+    color-mix(in srgb, var(--accent) 6%, transparent) 70%,
+    color-mix(in srgb, var(--accent) 13%, transparent) 76%,
+    color-mix(in srgb, var(--accent) 21%, transparent) 81%,
+    color-mix(in srgb, var(--accent) 29%, transparent) 85%,
+    color-mix(in srgb, var(--accent) 34%, transparent) 88%,
+    color-mix(in srgb, var(--accent) 28%, transparent) 91%,
+    color-mix(in srgb, var(--accent) 18%, transparent) 94%,
+    color-mix(in srgb, var(--accent) 8%, transparent) 97%,
+    color-mix(in srgb, var(--accent) 0%, transparent) 100%
+  );
   pointer-events: none;
   z-index: 2;
   opacity: 0;
@@ -690,10 +703,14 @@ html.is-paging .hero::after {
   top: 50%;
   margin: -95px 0 0 -95px;
   border-radius: 50%;
+  /* 同上：去掉 filter: blur(14px)。该元素一直在做 opacity+scale 动画，
+     带模糊滤镜时每帧都要重栅格化；把柔化写进渐变最内圈即可。 */
   background: radial-gradient(circle,
-    color-mix(in srgb, var(--accent) 40%, transparent) 0%,
-    transparent 62%);
-  filter: blur(14px);
+    color-mix(in srgb, var(--accent) 26%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 20%, transparent) 18%,
+    color-mix(in srgb, var(--accent) 12%, transparent) 34%,
+    color-mix(in srgb, var(--accent) 5%, transparent) 48%,
+    color-mix(in srgb, var(--accent) 0%, transparent) 62%);
   opacity: 0.55;
   animation: logoGlow 3.4s ease-in-out infinite;
 }
@@ -858,7 +875,6 @@ html.is-paging .hero::after {
   transform: translateY(24px);
   transition: opacity 0.6s var(--t), transform 0.6s var(--t);
   transition-delay: var(--rd, 0s);
-  will-change: opacity, transform;
 }
 
 .reveal.is-visible {
