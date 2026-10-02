@@ -13,3 +13,27 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Cache-Control: no-store
+
+# ── LimitRSS 子站（挂载在 /limitrss/）─────────────────────────────
+# 子站是"运行时读 markdown 再渲染"的，所以下面两类 MIME 必须正确，
+# 否则 ES 模块会被浏览器拒绝加载，更新日志页面会整页空白。
+/limitrss/notes/changelog.md
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=0, must-revalidate
+
+/limitrss/src/changelog/*
+  Content-Type: text/javascript; charset=utf-8
+  Cache-Control: public, max-age=0, must-revalidate
+
+/limitrss/data/changelog.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=0, must-revalidate
+
+/limitrss/assets/*
+  Cache-Control: public, max-age=86400
+
+/limitrss/styles.css
+  Cache-Control: public, max-age=0, must-revalidate
+
+/limitrss/script.js
+  Cache-Control: public, max-age=0, must-revalidate

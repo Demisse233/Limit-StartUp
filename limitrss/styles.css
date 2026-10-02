@@ -1,0 +1,2022 @@
+/* ===========================================================
+ * LimitRSS 官网 · Liquid Glass 风格
+ * 纯静态，无构建依赖
+ * =========================================================== */
+
+/* ---------- Design Tokens ---------- */
+:root {
+  --bg: #ffffff;
+  --bg-elev: #fafafa;
+  --bg-glass: rgba(255, 255, 255, 0.65);
+  --bg-glass-strong: rgba(255, 255, 255, 0.85);
+  --border: rgba(15, 15, 15, 0.08);
+  --border-strong: rgba(15, 15, 15, 0.14);
+  --text: #0a0a0a;
+  --text-2: #4a4a4a;
+  --text-3: #767676;
+  --muted: #9a9a9a;
+
+  --accent: #2e7cf6;
+  --accent-2: #1869e8;
+  --accent-grad: linear-gradient(135deg, #3c8aff 0%, #1869e8 100%);
+  /* 变更标签的三色语义：新增=绿 / 修复=橙 / 优化=蓝。
+     文字色都压深到与自身 10% 浅底对比度 ≥4.5:1（WCAG AA）。 */
+  --success: #0f7a37;
+  --fix: #9a4a08;
+  --fix-blue: #1667d6;
+  --warn: #9a4a08;
+  --danger: #ef4444;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  --shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.04), 0 0 0 1px rgba(15, 15, 15, 0.04);
+  --shadow-md: 0 6px 20px -8px rgba(15, 15, 15, 0.18), 0 0 0 1px rgba(15, 15, 15, 0.06);
+  --shadow-lg: 0 24px 60px -20px rgba(15, 15, 15, 0.25), 0 0 0 1px rgba(15, 15, 15, 0.06);
+
+  --t: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Changelog 视觉层：卡片高光 / 顶部提亮（暗色主题单独覆盖） */
+  --ch-card-sheen: rgba(255, 255, 255, 0.6);
+  --ch-card-top: rgba(255, 255, 255, 0.55);
+
+  --container: 1180px;
+  --container-narrow: 880px;
+
+  /* sticky 导航实际高度：整屏高度与翻页对齐都以此为准 */
+  --nav-h: 61px;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, "Cascadia Code",
+    Menlo, Consolas, monospace;
+  /* 版本号专用 display 字体：几何无衬线，数字辨识度高、比等宽更有"产品感"。
+     走系统字体，不引外部 webfont（离线可用、无网络依赖）。 */
+  --font-display: "Avenir Next", "Avenir", "Futura", "Helvetica Neue",
+    -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --bg-elev: #111111;
+  --bg-glass: rgba(20, 20, 20, 0.55);
+  --bg-glass-strong: rgba(20, 20, 20, 0.78);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #f5f5f5;
+  --text-2: #c2c2c2;
+  --text-3: #8a8a8a;
+  --muted: #6a6a6a;
+
+  --accent: #5b9bff;
+  --accent-2: #3c8aff;
+  --accent-grad: linear-gradient(135deg, #5b9bff 0%, #2e7cf6 100%);
+
+  /* 变更标签三色（深色主题用亮色，配深底对比度 5.9~7.7:1） */
+  --success: #4ade80;
+  --fix: #fb923c;
+  --fix-blue: #7aa8ff;
+  --warn: #fb923c;
+
+  --ch-card-sheen: rgba(255, 255, 255, 0.05);
+  --ch-card-top: rgba(255, 255, 255, 0.045);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-md: 0 6px 24px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a0a0a;
+    --bg-elev: #111111;
+    --bg-glass: rgba(20, 20, 20, 0.55);
+    --bg-glass-strong: rgba(20, 20, 20, 0.78);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --text: #f5f5f5;
+    --text-2: #c2c2c2;
+    --text-3: #8a8a8a;
+    --muted: #6a6a6a;
+
+    --accent: #5b9bff;
+    --accent-2: #3c8aff;
+    --accent-grad: linear-gradient(135deg, #5b9bff 0%, #2e7cf6 100%);
+
+    /* 变更标签三色（与 [data-theme="dark"] 保持一致） */
+    --success: #4ade80;
+    --fix: #fb923c;
+    --fix-blue: #7aa8ff;
+    --warn: #fb923c;
+
+    --ch-card-sheen: rgba(255, 255, 255, 0.05);
+    --ch-card-top: rgba(255, 255, 255, 0.045);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    --shadow-md: 0 6px 24px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  /* 翻页动画由 JS 逐帧驱动，必须关掉 CSS 平滑滚动，否则两者会互相打断 */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background-color 0.3s var(--t), color 0.3s var(--t);
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s var(--t);
+}
+
+a:hover { color: var(--accent); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+}
+
+::selection {
+  background: var(--accent);
+  color: white;
+}
+
+/* ---------- Layout ---------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 96px 0;
+  position: relative;
+}
+
+.section-alt {
+  background: var(--bg-elev);
+}
+
+.section-head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 56px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.section-head h2 {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+
+.section-sub {
+  font-size: 17px;
+  color: var(--text-2);
+  margin: 0;
+}
+
+/* ---------- Glass surface ---------- */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--border);
+}
+
+/* ---------- Navigation ---------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-radius: 0;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.brand img { border-radius: 7px; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.nav-links a {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  transition: color 0.2s var(--t), background-color 0.2s var(--t);
+}
+
+.nav-links a:hover {
+  background: var(--bg-elev);
+  color: var(--text);
+}
+
+.nav-links a.is-current {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.nav-links a.ext {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-glass-strong);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.2s var(--t);
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
+
+/* ---------- Hero ---------- */
+/* .snap-screen：只负责把段落撑到"至少一屏高"，让每屏铺满、视觉整齐。
+   滚动行为不由 CSS 管 —— script.js 的 PagePager 只在
+   「首屏 hero ↔ 核心能力 features」之间做整屏切换，之后恢复原生滚动。 */
+.snap-screen {
+  /* 整屏高度（含导航）。这样 hero.bottom === features.top === ... === faq.top + faq.h，
+     整页文档 = n × 100svh，每一段的"顶部对齐到视口顶"位置是确定的整屏倍数（100svh、200svh…），
+     翻页器和 CSS 都能算出准确位置，不再受导航栏高度影响。 */
+  min-height: 100svh;
+}
+
+/* 各屏保持自然流（顶部对齐），所有屏的标题才会落在同一视口位置。 */
+
+/* ---------- 翻页动效降级 ----------
+   滚动时全页重绘开销最大的就是毛玻璃 backdrop-filter，
+   翻页这几帧临时关掉，肉眼几乎无感但掉帧明显减少。 */
+html.is-paging .glass,
+html.is-paging .glass-nav,
+html.is-paging .badge,
+html.is-paging .feature,
+html.is-paging .dl-card,
+html.is-paging .cta-card,
+html.is-paging .faq-item,
+html.is-paging header {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.is-paging .wave-ring,
+html.is-paging .dot-field,
+html.is-paging .ico-layer {
+  will-change: auto;
+}
+/* 翻页时 hero 的背景光斑停止模糊计算 */
+html.is-paging .hero::before,
+html.is-paging .hero::after {
+  filter: none;
+}
+
+.hero {
+  --cx: 72%;
+  --cy: 50%;        /* 宽屏默认两栏居中 */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;  /* 宽屏默认垂直居中 */
+  /* 高度 = 整屏（包含导航）。
+     之前用 100svh-61px 是想让"导航只占自身高度、hero 占可视区剩下的部分"，
+     但这就人为把 hero 与 features 的衔接处往下移了 61px，
+     翻页后 features 顶部仍被导航盖住，用户感觉"标题没正对着"。
+
+     现在用整屏：hero 自上而下占满 100svh，sticky 导航浮在最顶部自然盖住 hero 上沿 61px；
+     滚到 hero.bottom（= 100svh）时，features 顶部恰好对齐到视口顶，
+     标题在 nav 下沿下方一段距离，位置"正对着"。 */
+  height: 100svh;
+  padding: 0 0 0 0;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(closest-side, var(--accent) 0%, transparent 70%);
+  opacity: 0.22;
+  filter: blur(50px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: -300px;
+  left: -150px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(closest-side, var(--accent-2) 0%, transparent 70%);
+  opacity: 0.16;
+  filter: blur(50px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 左侧渐变遮罩：让文字区域不被动画背景影响可读性 */
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    var(--bg) 0%,
+    color-mix(in srgb, var(--bg) 92%, transparent) 35%,
+    color-mix(in srgb, var(--bg) 60%, transparent) 55%,
+    transparent 80%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .hero-veil {
+  background: linear-gradient(90deg,
+    var(--bg) 0%,
+    color-mix(in srgb, var(--bg) 90%, transparent) 38%,
+    color-mix(in srgb, var(--bg) 55%, transparent) 58%,
+    transparent 82%);
+}
+
+.hero .container {
+  position: relative;
+  z-index: 2;
+  /* 文字块的视觉顶部 padding（不撑高 hero，避免滚动"卡一段"） */
+  padding-top: 60px;
+  /* 与全站 container（1180px）同宽，文字左缘和导航 logo 对齐；
+     文案宽度由 h1/lede 自身 max-width 控制，不再整体居中收窄 */
+  max-width: var(--container);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--bg-glass-strong);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.badge .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--success) 20%, transparent);
+  animation: pulse 2.4s var(--t) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+.hero h1 {
+  /* 精确公式：字号 = (可用宽度 - 余量) / 9字总宽系数，确保首行恒定不换行
+     适用于所有宽度段，不只依赖媒体查询 */
+  font-size: clamp(22px, calc((100vw - 56px) / 8.72), 72px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin: 24px 0 20px;
+  max-width: 680px;
+}
+
+.grad {
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lede {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-2);
+  max-width: 560px;
+  margin: 0 0 32px;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s var(--t);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--accent) 92%, white),
+    color-mix(in srgb, var(--accent-2) 85%, var(--accent)));
+  color: #fff;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent),
+    0 6px 20px -6px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent),
+    0 10px 28px -8px color-mix(in srgb, var(--accent) 80%, transparent);
+  color: #fff;
+  filter: brightness(1.05);
+}
+
+.btn-ghost {
+  background: var(--bg-glass-strong);
+  color: var(--text);
+  border-color: var(--border-strong);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.btn-ghost:hover {
+  background: var(--bg-elev);
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border-strong));
+  color: var(--text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-3);
+  align-items: center;
+}
+
+.hero-meta .sep { color: var(--muted); }
+
+/* hero visual */
+/* （旧的 .hero-visual 卡片已废弃，动画直接铺满 .hero 背景层） */
+
+/* ---------- Typewriter（标题动态词 · 每个词不同色） ---------- */
+.typewriter {
+  display: inline-block;
+  position: relative;
+  color: var(--tw-color, var(--accent));
+  -webkit-text-fill-color: currentColor;
+  min-width: 1.2em;
+  vertical-align: baseline;
+  text-align: left;
+  transition: color 0.25s var(--t);
+}
+
+.typewriter::after {
+  content: "";
+  display: inline-block;
+  width: 0.08em;
+  height: 0.8em;
+  background: currentColor;
+  vertical-align: -0.08em;
+  margin-left: 4px;
+  animation: caret 0.8s steps(1) infinite;
+  border-radius: 1px;
+  opacity: 0.7;
+}
+
+@keyframes caret {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.15; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter::after { animation: none; opacity: 1; }
+}
+
+/* ---------- Hero 右侧 · logo 吸收订阅源动画 ---------- */
+.feed-viz {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 功能性点阵（JS 生成真实 DOM 点，可被光波点亮、被图标推开） */
+.dot-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.dot {
+  position: absolute;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 38%, transparent);
+  opacity: 0.3;
+  will-change: transform;
+  transition:
+    opacity 0.45s var(--t),
+    background 0.45s var(--t),
+    box-shadow 0.45s var(--t),
+    transform 0.45s var(--t);
+}
+
+/* 波前扫过：亮一下再熄灭 */
+.dot.is-lit {
+  opacity: 0.75 !important;
+  background: color-mix(in srgb, var(--accent) 65%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 45%, transparent);
+  transform: scale(1.7);
+}
+
+/* 点被图标"占用"后暂时消失，吸收完成后淡回 */
+.dot.is-taken {
+  opacity: 0;
+  transition: opacity 0.25s var(--t);
+}
+
+/* 光波（一次一道）：粗渐变环，外缘最深向内渐浅，缓慢扩散，JS 驱动缩放 */
+.wave-ring {
+  position: absolute;
+  top: var(--cy, 50%);
+  left: var(--cx, 50%);
+  width: 3200px;
+  height: 3200px;
+  margin: -1600px 0 0 -1600px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    transparent 0%,
+    transparent 48%,
+    color-mix(in srgb, var(--accent) 3%, transparent) 56%,
+    color-mix(in srgb, var(--accent) 10%, transparent) 66%,
+    color-mix(in srgb, var(--accent) 22%, transparent) 78%,
+    color-mix(in srgb, var(--accent) 38%, transparent) 86%,
+    color-mix(in srgb, var(--accent) 32%, transparent) 91%,
+    color-mix(in srgb, var(--accent) 16%, transparent) 96%,
+    transparent 100%);
+  filter: blur(6px);
+  box-shadow:
+    0 0 60px color-mix(in srgb, var(--accent) 12%, transparent);
+  /* 关键：裁掉外缘外溢的柔光，让波环只能在原元素圆形范围内可见 */
+  mask-image: radial-gradient(circle, black 60%, transparent 92%);
+  -webkit-mask-image: radial-gradient(circle, black 60%, transparent 92%);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(0.12);
+  will-change: transform, opacity;
+}
+
+/* 中央软件 logo（无圆形外边框，只有柔和光晕） */
+.orbit-logo {
+  position: absolute;
+  top: var(--cy, 50%);
+  left: var(--cx, 50%);
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.orbit-logo img {
+  width: 92px;
+  height: 92px;
+  border-radius: 22px;
+  filter: drop-shadow(0 6px 18px color-mix(in srgb, var(--accent) 45%, transparent));
+  z-index: 2;
+  position: relative;
+}
+
+.logo-glow {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  left: 50%;
+  top: 50%;
+  margin: -95px 0 0 -95px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--accent) 40%, transparent) 0%,
+    transparent 62%);
+  filter: blur(14px);
+  opacity: 0.55;
+  animation: logoGlow 3.4s ease-in-out infinite;
+}
+
+[data-theme="dark"] .logo-glow { opacity: 0.75; }
+
+@keyframes logoGlow {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.12); }
+}
+
+/* 光波发射时 logo 放大再回缩 */
+.orbit-logo.is-pulsing {
+  animation: wavePulse 0.9s var(--t);
+}
+
+@keyframes wavePulse {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  30% { transform: translate(-50%, -50%) scale(1.14); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* 吸收脉冲（每次图标飞入后触发） */
+.orbit-logo.is-absorbing {
+  animation: absorbPulse 0.55s var(--t);
+}
+
+@keyframes absorbPulse {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  35% { transform: translate(-50%, -50%) scale(1.08); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* 一次性吸收波纹（JS 动态创建） */
+.absorb-ring {
+  position: absolute;
+  top: var(--cy, 50%);
+  left: var(--cx, 50%);
+  width: 132px;
+  height: 132px;
+  margin: -66px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  pointer-events: none;
+  animation: absorbRing 0.7s ease-out forwards;
+  z-index: 4;
+}
+
+@keyframes absorbRing {
+  0% { transform: scale(1); opacity: 0.85; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* 订阅源图标飞行层（点 → 图标 → 飞入 logo，JS 逐帧驱动位置） */
+.ico-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.feed-ico {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+/* 把胶囊中心对齐到 JS 给定的锚点坐标 */
+.feed-ico-anchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.feed-ico-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+  transform: scale(0);
+  opacity: 0;
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.35s var(--t);
+  will-change: transform, opacity;
+}
+
+/* 真实订阅源：直接显示原图（保留所有原始颜色，无边框、无背景），加圆角 */
+.feed-ico.is-img .feed-ico-inner {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.feed-ico-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 胶囊订阅源：emoji + 文字 + 边框 */
+.feed-ico.is-chip .feed-ico-inner {
+  gap: 6px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  background: var(--bg-glass-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent),
+    0 6px 16px -8px color-mix(in srgb, var(--accent) 35%, transparent),
+    var(--shadow-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.feed-ico.is-chip .feed-ico-emoji { font-size: 18px; line-height: 1; }
+.feed-ico.is-chip .feed-ico-text { font-size: 14px; }
+
+/* 亮起：从点"长出" */
+.feed-ico.is-in .feed-ico-inner {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 飞行中：JS 关闭 transition 直接驱动；缩小淡出交给 is-out */
+.feed-ico.is-flying .feed-ico-inner {
+  transition: none;
+}
+
+.feed-ico.is-out .feed-ico-inner {
+  transform: scale(0.1) !important;
+  opacity: 0;
+  filter: blur(2px);
+  transition: transform 0.22s ease-in, opacity 0.22s ease-in, filter 0.22s ease-in;
+}
+
+/* 减弱动效 */
+@media (prefers-reduced-motion: reduce) {
+  .logo-glow, .orbit-logo, .absorb-ring {
+    animation: none !important;
+  }
+  .wave-ring, .ico-layer { display: none; }
+}
+
+
+/* ---------- 滚动入场动效 ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s var(--t), transform 0.6s var(--t);
+  transition-delay: var(--rd, 0s);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 无 JS 或减少动效时直接显示 */
+.no-js .reveal { opacity: 1; transform: none; transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* 所有锚点 section 都让出 sticky nav 61px ——
+   这样 features.scrollIntoView() 滚到 features 顶时，正好让 nav 不挡住标题 */
+section[id] { scroll-margin-top: 61px; }
+
+/* ---------- Features ---------- */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.feature {
+  padding: 28px;
+  border-radius: var(--radius-md);
+  transition: transform 0.3s var(--t), box-shadow 0.3s var(--t), border-color 0.3s var(--t);
+  position: relative;
+}
+
+.feature::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--accent) 5%, transparent),
+    transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s var(--t);
+  pointer-events: none;
+}
+
+.feature:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  box-shadow:
+    0 12px 32px -12px color-mix(in srgb, var(--accent) 25%, transparent),
+    var(--shadow-md);
+}
+
+.feature:hover::before { opacity: 1; }
+
+.feature-icon {
+  margin-bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--accent) 16%, var(--bg-elev)),
+    color-mix(in srgb, var(--accent-2) 10%, var(--bg-elev)));
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
+  color: var(--accent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent),
+    0 4px 12px -4px color-mix(in srgb, var(--accent) 30%, transparent);
+  transition: transform 0.3s var(--t), box-shadow 0.3s var(--t);
+}
+
+.feature:hover .feature-icon {
+  transform: scale(1.06) rotate(-3deg);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent),
+    0 6px 18px -4px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.feature-icon svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.feature h3 {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+
+.feature p {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* ---------- Platforms ---------- */
+.platforms-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+/* 左栏：平台卡片列表 */
+.platforms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.platform-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: var(--bg-glass-strong);
+  border: 1px solid var(--border);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  transition: transform 0.2s var(--t), border-color 0.2s var(--t),
+    box-shadow 0.2s var(--t), background-color 0.2s var(--t);
+}
+
+.platform-card:hover {
+  border-color: var(--border-strong);
+  transform: translateX(2px);
+}
+
+.platform-card.is-active {
+  border-color: var(--accent);
+  background: var(--bg-glass-strong);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent),
+    var(--shadow-sm);
+}
+
+.platform-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.platform-logo {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: transparent;
+  border: 0;
+  overflow: hidden;
+}
+
+.platform-logo img {
+  width: 36px;
+  height: 36px;
+  display: block;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.platform-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.platform-name {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+/* 右栏：手机相框 + 截图轮播 */
+.platforms-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px 24px;
+  border-radius: var(--radius-lg);
+  min-height: 0;
+  gap: 12px;
+}
+
+.phone-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex: 1;
+  width: 100%;
+  padding: 12px 0;
+}
+
+/* 桌面双栏：锁定设备槽位高度。
+   手机相框是 9:19.5（280px 宽 → 607px 高），笔记本只有 339px 高；
+   不锁高度的话，悬停 iOS/Android/鸿蒙时整段会从 839 长到 1036，
+   比一屏多出 199px —— 手机底部被永久切掉，翻页停靠点也会失效。
+   锁定后两种相框占同一槽位，切换平台不再引起任何重排。 */
+@media (min-width: 961px) {
+  .platforms-preview {
+    /* 476px = 该段里除设备槽位外的全部固定开销（段落上下留白 + 标题块 +
+       预览区 padding + 底部信息块 + 间距），实测得出 */
+    --stage-h: clamp(280px, calc(100svh - var(--nav-h, 61px) - 476px), 460px);
+  }
+  /* 带上 .phone-stage 前缀提高优先级：下面的 .device-* 基础规则在文件里更靠后，
+     同优先级会被它们覆盖，导致手机相框仍是固定 280px 宽并撑破槽位 */
+  .phone-stage { flex: none; height: var(--stage-h); }
+  .phone-stage > .device-frame { height: 100%; justify-content: center; }
+  .phone-stage .device-phone { height: 100%; width: auto; }
+  .phone-stage .device-laptop { width: min(520px, calc(var(--stage-h) * 1.6), 100%); }
+}
+
+/* 设备相框（手机 / 笔记本自动切换） */
+.device-frame {
+  flex-shrink: 0;
+  transition: transform 0.4s var(--t), opacity 0.3s var(--t);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.platform-card:hover ~ .platforms-preview .device-frame,
+.platforms-preview:hover .device-frame {
+  transform: translateY(-4px);
+}
+
+/* 通过 data-device 切换显隐 */
+[data-device="phone"] .device-laptop { display: none; }
+[data-device="laptop"] .device-phone { display: none; }
+
+/* ---------- 手机相框 ---------- */
+.device-phone {
+  width: 280px;
+  aspect-ratio: 9 / 19.5;
+  background: transparent;
+  border: 2px solid #1a1a1a;
+  border-radius: 36px;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  max-height: min(620px, 70vh);
+  position: relative;
+}
+
+/* ---------- 笔记本相框（MacBook 风） ---------- */
+.device-laptop {
+  width: 520px;
+  max-width: 100%;
+  gap: 0;
+  position: relative;
+}
+
+.device-laptop .device-screen {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 2px solid #1a1a1a;
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+
+.device-laptop .device-base {
+  width: 108%;
+  height: 14px;
+  background: linear-gradient(180deg, #1f1f1f 0%, #0a0a0a 100%);
+  border: 2px solid #1a1a1a;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.35);
+}
+
+.device-laptop .device-base::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%);
+  border-radius: 0 0 12px 12px;
+  pointer-events: none;
+}
+
+.device-laptop .device-base-notch {
+  display: block;
+  width: 70px;
+  height: 4px;
+  background: #050505;
+  border-radius: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- 暗色模式边框适配 ---------- */
+[data-theme="dark"] .device-phone {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+[data-theme="dark"] .device-laptop .device-screen,
+[data-theme="dark"] .device-laptop .device-base {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- 屏幕 + 图片 ---------- */
+.device-screen {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.device-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transition: opacity 0.3s var(--t);
+}
+
+/* 左右导航按钮 */
+.phone-nav {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.2s var(--t);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-nav svg { width: 18px; height: 18px; }
+
+.phone-nav:hover {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+  transform: scale(1.05);
+}
+
+.phone-nav:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 进度点 */
+.phone-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  height: 8px;
+  min-height: 8px;
+}
+
+.phone-dots:empty { display: none; }
+
+.phone-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s var(--t);
+}
+
+.phone-dot.is-active {
+  width: 22px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.preview-image-fallback {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--accent) 10%, transparent),
+    color-mix(in srgb, var(--accent-2) 10%, transparent));
+  pointer-events: none;
+}
+
+.preview-image.is-missing + .preview-image-fallback {
+  display: flex;
+}
+
+.preview-fallback-msg {
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: var(--bg-glass-strong);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.muted { color: var(--text-3); }
+
+/* ---------- Download ---------- */
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.download-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: var(--radius-md);
+  transition: transform 0.3s var(--t), box-shadow 0.3s var(--t), border-color 0.3s var(--t);
+  position: relative;
+  overflow: hidden;
+}
+
+.download-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
+  color: inherit;
+}
+
+.download-card.highlight {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.download-logo {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.download-logo img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  display: block;
+}
+
+.download-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.os-name {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.download-version {
+  font-size: 12px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge-tag {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.badge-tag-warn {
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+  border-color: color-mix(in srgb, var(--warn) 25%, transparent);
+  color: var(--warn);
+}
+
+.download-cta {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.os-banner {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-2);
+  margin-bottom: 28px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--bg-glass-strong);
+  border: 1px solid var(--border);
+  display: inline-block;
+}
+
+.os-banner-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.download-note {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.download-note a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ---------- FAQ ---------- */
+.faq {
+  max-width: var(--container-narrow);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  border-radius: var(--radius-md);
+  padding: 0;
+  overflow: hidden;
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 20px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::after {
+  content: "+";
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--text-3);
+  transition: transform 0.3s var(--t);
+  flex-shrink: 0;
+}
+
+.faq-item[open] summary::after {
+  transform: rotate(45deg);
+  color: var(--accent);
+}
+
+.faq-item p {
+  margin: 0;
+  padding: 0 24px 22px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+/* ---------- CTA ---------- */
+.cta-section { padding-bottom: 120px; }
+
+.cta-card {
+  text-align: center;
+  padding: 72px 40px;
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(ellipse at 50% 0%,
+      color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+      transparent 60%),
+    var(--bg-glass-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 15%, transparent),
+    0 30px 60px -20px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.cta-card::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    transparent);
+  pointer-events: none;
+}
+
+.cta-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 40%),
+    radial-gradient(circle at 85% 80%, color-mix(in srgb, var(--accent-2) 8%, transparent), transparent 40%);
+  pointer-events: none;
+}
+
+.cta-card > * { position: relative; }
+
+.cta-card h2 {
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0 0 12px;
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.cta-card p {
+  color: var(--text-2);
+  font-size: 17px;
+  margin: 0 0 32px;
+}
+
+.cta-card .cta-row {
+  justify-content: center;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.footer-brand img { border-radius: 5px; }
+
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+.footer-meta {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- Changelog ---------- */
+.changelog-section {
+  padding-top: clamp(56px, 9vh, 120px);
+  min-height: 100svh;
+  /* 顶部一层极淡的品牌色光晕，把视线引到第一张版本卡片 */
+  background:
+    radial-gradient(
+      120% 60% at 50% 0%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 0%,
+      transparent 62%
+    );
+}
+
+.changelog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: var(--container-narrow);
+  margin: 0 auto;
+}
+
+/* 版本大卡片：玻璃层 + 顶部提亮 + 一行极淡的品牌/平台色光晕
+   用 no-repeat 的 radial-gradient 放在顶部 62% 高度处自然淡出，
+   既保留玻璃质感，又不参与 :has() 平台色（避免扰动徽章层） */
+.changelog-entry {
+  position: relative;
+  padding: 30px 34px 32px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background:
+    radial-gradient(
+      88% 46% at 4% 0%,
+      color-mix(in srgb, var(--platform-accent, var(--accent)) 11%, transparent) 0%,
+      transparent 64%
+    ),
+    linear-gradient(
+      180deg,
+      var(--ch-card-top) 0%,
+      transparent 46%
+    ),
+    var(--bg-glass);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.35s var(--t), transform 0.35s var(--t),
+    border-color 0.35s var(--t);
+}
+
+/* 顶部一道 1px 高光，模拟玻璃上沿受光 */
+.changelog-entry::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ch-card-sheen) 22%,
+    var(--ch-card-sheen) 78%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.changelog-entry:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+/* 版本头：版本号左侧一段竖向 accent 短条 + 版本号 / 日期两端对齐 + 渐隐分隔线
+   短条用伪元素而非 border-left —— border 会从卡片顶部一直拉到卡片底边，
+   在 22px 圆角上形成一条贯穿的硬边，看起来像卡片"开裂" */
+.changelog-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0 0 18px 0;
+  padding: 0 0 15px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+/* 分隔线向右渐隐，替代生硬的等宽实线 */
+.changelog-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 38%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 14%, transparent) 30%,
+    transparent 62%
+  );
+  pointer-events: none;
+}
+
+/* 版本号（卡片大标题）：V0.2.0 / V0.1.0 等 */
+.changelog-version {
+  font-size: 29px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.15;
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* 日期（右侧小字）：低调 pill，弱化到不与版本号抢注意力 */
+.changelog-date {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
+  white-space: nowrap;
+}
+
+/* 一个平台内的一段变更。
+   刻意不加任何装饰：没有左侧分隔线、没有左边框、没有伪元素 ——
+   平台段里只有「徽章 + 条目列表」。之前那条 2px 竖线会在胶囊左侧露出一截，
+   看起来像"胶囊背后还有个方形边框"。 */
+.changelog-platform {
+  position: relative;
+  padding: 20px 0 22px 18px;
+}
+
+.changelog-platform:last-of-type {
+  padding-bottom: 0;
+}
+
+.changelog-platform:first-of-type {
+  padding-top: 6px;
+  padding-left: 18px;
+}
+
+/* 平台色回传给平台段（Chrome 105+/Safari 15.4+ 支持 :has()；
+   不支持时竖条退回中性描边，不影响可读性） */
+.changelog-platform:has(.platform-badge--mac) { --platform-accent: #c08f0a; }
+.changelog-platform:has(.platform-badge--windows) { --platform-accent: #4a9ee8; }
+.changelog-platform:has(.platform-badge--ios) { --platform-accent: #5b5b60; }
+.changelog-platform:has(.platform-badge--android) { --platform-accent: #17793a; }
+.changelog-platform:has(.platform-badge--harmony) { --platform-accent: #0a7fc9; }
+
+/* 平台徽章：含图标 + 名称 + 平台色背景（贴合 logo 视觉）
+   徽章与左侧竖条共用 --platform-accent，平台色只定义一次 */
+.platform-badge {
+  --platform-accent: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+  margin-bottom: 14px;
+  border: 1px solid transparent;
+  color: white;
+  /* 刻意不加 box-shadow / 描边 / 伪元素：
+     徽章只应该是「圆角胶囊 + 图标 + 名字」。
+     之前的投影在胶囊最左（圆角最陡）处会被压成一条紧贴边缘的窄暗带，
+     看起来就像胶囊左边多了一条竖线。 */
+  transition: transform 0.25s var(--t);
+}
+
+/* hover 只做轻微上浮，不加阴影（保持"纯胶囊"） */
+.platform-badge:hover {
+  transform: translateY(-1px);
+}
+
+/* 图标内衬。
+   关键点：
+   1) 内衬必须是**圆形**（border-radius:50%）。原来用 rx=7px 的圆角方块，
+      而胶囊本身是大圆角（999px），两者半径差距太大，看起来像"方形套了一层胶囊"。
+   2) 不能有 padding。原来 padding:2px 把内容区压到 20×20，圆形图标显得比胶囊小一圈，
+      同时把方形内衬的直角暴露得更明显。去掉后图标铺满 24px，贴齐胶囊。
+   3) 内衬透明度调淡（.16 → .10），弱化这一层，让图标本身成为主体。 */
+.platform-badge img {
+  width: 24px;
+  height: 24px;
+  display: block;
+  object-fit: contain;
+  /* 图标底衬：圆角方形 + 半透明白底 + 一圈内描边。
+     这是原本的设计（与 macOS/iOS/Android 等官方 logo 的"圆角方形图标"观感一致），
+     之前被我误删过一轮，现已复原。 */
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.16);
+  padding: 2px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+/* 各平台主色（贴合 logo 视觉）
+   - macOS 金色（macOS Big Sur 的 aurora 色调）
+   - Windows 白色徽章：浅色主题用近白底 + 深色字，暗色主题用半透明白 + 白字
+   - iOS / Android 保持原色
+   - HarmonyOS NEXT 天蓝色（淡化原红橙） */
+.platform-badge--mac {
+  --platform-accent: #8a6208;
+  /* 纯色金。文字用深色保证对比度（7.4:1）。
+     不用渐变的原因：渐变在胶囊圆角最陡处会让边缘像素与邻列产生落差，
+     看起来像胶囊左边多了一条竖线。 */
+  background: #dcae35;
+  border-color: transparent;
+  color: #2b1d00;
+}
+.platform-badge--windows {
+  --platform-accent: #4a9ee8;
+  /* 实白纯色，不用半透明 + blur：与其他平台徽章保持同一套结构
+     （纯色背景 + 图标 + 名字），深色字对比度 15.6:1。 */
+  background: #f2f2f2;
+  border-color: transparent;
+  color: #1a1a1a;
+}
+/* 暗色下不能用"半透明白 + 白字"：与深色卡片合成后几乎无对比（实测 1.09:1）。
+   Windows 徽章在两种主题下都保持白色实底 + 深色字。 */
+[data-theme="dark"] .platform-badge--windows {
+  background: #ffffff;
+}
+.platform-badge--ios {
+  --platform-accent: #5b5b60;
+  background: #58585d;
+  border-color: transparent;
+}
+.platform-badge--android {
+  --platform-accent: #1f9e52;
+  /* 浅一档的 Android 绿（原 #17843f 偏深）。
+     注意：白字在这个绿上只有 3.46:1 —— 达到 WCAG「大号粗体文字」的 3:1，
+     但不到正文的 4.5:1。要更高的可读性可以让绿色再深一点，或文字改深色。 */
+  background: #1f9e52;
+  border-color: transparent;
+  color: #ffffff;
+}
+.platform-badge--harmony {
+  --platform-accent: #0a7fc9;
+  background: #0d76b8;
+  border-color: transparent;
+}
+/* 通用更新：樱花粉（左浅樱 → 右深樱）。
+   注意 135° 斜向渐变：白字在右端偏上，那个位置还没走到渐变端点，
+   实测比端点亮约 0.7:1。所以端点取 #b52e6c（端点 5.88:1）留出余量，
+   保证文字背后的真实颜色仍 ≥ 4.5:1（WCAG AA 正文标准）。 */
+/* 通用更新：樱花粉（纯色）。
+   之前用渐变时，胶囊最左端（圆角最陡处）那一列是"渐变起点色被抗锯齿混合"的结果，
+   会与紧邻的一列形成一圈可见的窄带，看起来像胶囊左边多了一条竖线。
+   纯色把这个变量彻底去掉：整块填充只有一个颜色，边缘就是单纯的抗锯齿过渡。
+   若以后想恢复渐变，记得同时检查胶囊最左端的观感。 */
+.platform-badge--general {
+  --platform-accent: #c9457f;
+  background: #c9457f;
+  border-color: transparent;
+}
+/* 暗色下浅端略微压暗，避免深色卡片上过亮 */
+[data-theme="dark"] .platform-badge--general {
+  background: #bb3a73;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .platform-badge--general {
+    background: #bb3a73;
+  }
+}
+
+/* 变更列表：两列 Grid，标签列按内容自适应，文本列 minmax(0,1fr) 可自由收缩。
+   关键：li 上**不能**设 display:grid —— 那会把子元素块级化，inline 的 <code>
+   会变成网格项、自动落到第 1 列，把标签列的 max-content 从 42px 撑到 96px
+   （实测：V0.2.0 有 code 的卡标签被撑宽，V0.1.0 没有 code 的卡正常）。
+   因此 li 用普通块级流：strong 用 float 占出可变宽度的标签列，
+   正文与 <code> 在右侧形成 BFC 正常行内换行，两行以上自动悬挂缩进。 */
+.changelog-changes {
+  margin: 0 0 0 2px;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+.changelog-changes li {
+  padding: 4px 12px 4px 0;
+  border-radius: 8px;
+  transition: color 0.2s var(--t);
+}
+
+/* 行悬停：整行轻微提亮，标签列左移 1px 制造"被拾起"的手感 */
+/* 悬停只提亮文字，不铺背景 */
+.changelog-changes li:hover {
+  color: var(--text);
+}
+
+.changelog-changes li strong.kind-new,
+.changelog-changes li strong.kind-fix,
+.changelog-changes li strong.kind-change {
+  /* 标签列用 float 撑出：宽度完全由内容决定（"新增"/"修复"各自真实宽度），
+     不再被任何列宽拉伸。正文形成 BFC 后在右侧换行，多行自动悬挂缩进。 */
+  float: left;
+  clear: left;
+  /* 垂直居中：胶囊高 22.5px、正文行高 24px。
+     居中所需上外边距 = (24 - 22.5) / 2 = 0.75px。
+     实测：4px 时胶囊中心比文字低 3.25px，2px 时低 1.25px，0.75px 时居中。 */
+  margin: 0.75px 12px 0 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  transition: transform 0.25s var(--t);
+}
+
+.changelog-changes li:hover strong.kind-new,
+.changelog-changes li:hover strong.kind-fix,
+.changelog-changes li:hover strong.kind-change {
+  transform: translateX(1px);
+}
+
+.changelog-changes li strong.kind-new {
+  background: color-mix(in srgb, var(--success) 10%, transparent);
+  color: var(--success);
+  border: 1px solid color-mix(in srgb, var(--success) 22%, transparent);
+}
+
+/* 修复 = 橙色（原来跟优化一样是蓝色，现按需求对调） */
+.changelog-changes li strong.kind-fix {
+  background: color-mix(in srgb, var(--fix) 10%, transparent);
+  color: var(--fix);
+  border: 1px solid color-mix(in srgb, var(--fix) 22%, transparent);
+}
+
+/* 优化 = 蓝色。用 --fix-blue 变量（浅色 #1667d6 / 深色 #7aa8ff），
+   浅色下与自身 10% 浅底对比度 4.64:1，深色下 5.98:1。 */
+.changelog-changes li strong.kind-change {
+  background: color-mix(in srgb, var(--fix-blue) 10%, transparent);
+  color: var(--fix-blue);
+  border: 1px solid color-mix(in srgb, var(--fix-blue) 22%, transparent);
+}
+
+/* 模板变量 chip：淡底 + 等宽字体，正文里不抢眼但可辨识 */
+.changelog-changes li code {
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-elev));
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 12.5px;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--text);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.changelog-back {
+  margin-top: 56px;
+  text-align: center;
+}
+
+/* ---------- 按视口高度自适应紧凑 ----------
+   整屏翻页要求每屏内容高度 ≤ 视口可视高度（100svh − 导航 63px）；
+   一旦超出，该屏就会多出一个"补到底部"的停靠点，翻页时会多走一小步。
+   矮窗口下按比例压缩纵向留白和设备相框，保证常见桌面尺寸每屏恰好一页。
+   （放在 max-width 规则之前：手机上仍由 @media (max-width:640px) 接管。） */
+@media (max-height: 980px) {
+  .section { padding: clamp(52px, 6.2vh, 96px) 0; }
+  .section-head { margin-bottom: clamp(28px, 3.6vh, 56px); }
+  .features { gap: clamp(14px, 1.6vh, 20px); }
+  .platforms-preview { padding: clamp(16px, 2.2vh, 28px) 20px clamp(12px, 1.8vh, 24px); }
+}
+@media (max-height: 880px) {
+  .feature { padding: clamp(20px, 2.4vh, 28px); }
+  .faq-item summary { padding: clamp(14px, 1.8vh, 20px) 24px; }
+  .faq-item p { padding-bottom: clamp(16px, 1.8vh, 22px); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  /* 窄屏/平板：文字贴顶，logo 下移避让按钮 */
+  .hero { --cx: 50%; --cy: 85%; align-items: flex-start; padding: 20px 0 40px; }
+  .hero .container { max-width: 100%; }
+  .hero-veil {
+    background: linear-gradient(180deg,
+      var(--bg) 0%,
+      color-mix(in srgb, var(--bg) 88%, transparent) 30%,
+      transparent 55%);
+  }
+  [data-theme="dark"] .hero-veil {
+    background: linear-gradient(180deg,
+      var(--bg) 0%,
+      color-mix(in srgb, var(--bg) 85%, transparent) 32%,
+      transparent 58%);
+  }
+  .features { grid-template-columns: repeat(2, 1fr); }
+  .platforms-layout { grid-template-columns: 280px 1fr; gap: 20px; }
+  .download-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav-links a:not(.ext) { display: none; }
+}
+
+@media (max-width: 640px) {
+  .section { padding: 64px 0; }
+  /* ≤640px 更小屏：logo 再缩一圈 */
+  .orbit-logo { width: 84px; height: 84px; }
+  .orbit-logo img { width: 64px; height: 64px; border-radius: 16px; }
+  .logo-glow { width: 140px; height: 140px; margin: -70px 0 0 -70px; }
+  /* 标题随屏宽精确缩放：首行"轻松订阅您感兴趣的"9 字恒定一行不折行
+     公式：字号 = (100vw - 48px 容器内边距 - 8px 余量) / 8.72em（9 字 + letter-spacing 总宽）
+     纯 vw 系数在窄屏会被固定 padding 吃掉余量导致换行，必须用 calc 精确计算 */
+  .hero h1 { font-size: clamp(22px, calc((100vw - 56px) / 8.72), 44px); }
+  .lede { font-size: 16px; }
+  .features { grid-template-columns: 1fr; }
+  .platforms-layout { grid-template-columns: 1fr; }
+  .platforms-list { flex-direction: row; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+  .platform-card { flex-shrink: 0; min-width: 240px; }
+  .platforms-preview { order: -1; }
+  .download-grid { grid-template-columns: 1fr; }
+  .footer-meta { margin-left: 0; width: 100%; }
+  .theme-toggle { width: 32px; height: 32px; }
+  .nav-inner { padding: 10px 16px; }
+
+  /* Changelog 窄屏：卡片收窄留白，左侧竖条与标签列改为更紧凑的两档 */
+  .changelog-entry { padding: 22px 18px 24px; border-radius: var(--radius-lg); }
+  .changelog-list { gap: 20px; }
+  .changelog-head { margin: 0 0 15px 0; padding: 0 0 13px; gap: 6px 10px; }
+  .changelog-version { font-size: 21px; }
+  .changelog-date { font-size: 12px; padding: 2px 9px; }
+  .changelog-platform { padding-left: 12px; }
+  .changelog-platform:first-of-type { padding-left: 12px; }
+  /* 窄屏：列间距与行内右边距同步收紧，避免每行额外吃掉 24px 宽度 */
+  .changelog-changes { column-gap: 10px; row-gap: 1px; }
+  .changelog-changes li { padding: 4px 6px 4px 0; font-size: 14.5px; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

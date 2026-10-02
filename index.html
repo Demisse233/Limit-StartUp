@@ -333,9 +333,13 @@
                 <span class="bookmark_panel_icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
                 </span>
-                <h2 class="bookmark_panel_title">书签</h2>
+                <h2 class="bookmark_panel_title" id="bookmarkPanelTitle">快捷书签</h2>
             </div>
             <div class="bookmark_panel_actions">
+                <button type="button" class="bookmark_view_toggle glass" id="bookmarkViewToggle" aria-label="查看全部书签">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r=".5" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r=".5" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r=".5" fill="currentColor" stroke="none"/></svg>
+                    <span>查看全部</span>
+                </button>
                 <button type="button" class="bookmark_move_done glass" id="bookmarkMoveDone" hidden>完成</button>
                 <button type="button" class="bookmark_icon_button bookmark_panel_settings glass" id="bookmarkSettingsButton" aria-label="打开书签设置" title="书签设置">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.12.37.34.7.64.95.3.25.68.39 1.07.4H21a2 2 0 1 1 0 4h-.09c-.39.01-.77.15-1.07.4-.3.25-.52.58-.64.95z"/></svg>
@@ -347,8 +351,8 @@
                 <span class="bookmark_empty_icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
                 </span>
-                <strong>还没有书签</strong>
-                <span>可在设置 → 书签中添加或导入</span>
+                <strong id="bookmarkPanelEmptyTitle">还没有快捷书签</strong>
+                <span id="bookmarkPanelEmptyHint">可在全部书签或设置中置顶</span>
             </div>
             <div class="bookmark_grid" id="bookmarkPanelGrid" aria-live="polite"></div>
         </div>
@@ -400,6 +404,7 @@
                     <label><input type="radio" name="bookmarkQuickSize" value="large"><span>M · 胶囊</span></label>
                     <label><input type="radio" name="bookmarkQuickSize" value="xlarge"><span>L · 大胶囊</span></label>
                 </fieldset>
+                <label class="bookmark_pin_field"><input type="checkbox" id="bookmarkQuickPinned"><span>在首页快捷书签中显示</span></label>
                 <footer class="bookmark_quick_actions">
                     <button type="button" class="bookmark_quick_delete" id="bookmarkQuickDelete">删除</button>
                     <button type="button" class="bookmark_quick_cancel" id="bookmarkQuickCancel">取消</button>
@@ -424,7 +429,7 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge glass-strong">Version 4.1.0</span>
+                        <span class="about_version_badge glass-strong">Version 4.2.0</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
@@ -451,6 +456,15 @@
                     <div class="changelog">
 <article class="changelog_version">
                             <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.2.0</span>
+                                <span class="changelog_version_date">2026.10.2</span>
+                            </header>
+                            <ul class="changelog_items">
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">上线 LimitRSS 官网子站，可通过 www.demisse.cn/limitrss 访问，包含产品介绍、多端下载与更新日志</span></li>
+                            </ul>
+                        </article>
+                        <article class="changelog_version">
+                            <header class="changelog_version_head">
                                 <span class="changelog_version_tag">V4.1.0</span>
                                 <span class="changelog_version_date">2026.7.13</span>
                             </header>
@@ -458,7 +472,7 @@
                                 <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">欢迎提示会在首屏阶段及时显示，搜索框也不再于页面加载后延迟抢占焦点</span></li>
                                 <li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">更新日志中的“新增”类型标识恢复为清晰的绿色胶囊样式</span></li>
                                 <li class="changelog_item changelog_item--improve"><span class="changelog_tag changelog_tag--improve">改进</span><span class="changelog_msg">优化移动端首页和设置页面布局，搜索按钮始终固定在输入框右侧，输入框聚焦时会隐藏下方的引擎选择，设置内容也会随窄屏自动重排</span></li>
-                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增书签管理功能，支持手动创建与浏览器文件导入、分类整理、S/M/L 三档显示、拖拽排序、首页快捷编辑及账号云同步</span></li>
+                                <li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">新增书签管理功能，支持手动创建与浏览器文件导入、分类整理、首页置顶快捷书签与完整书签面板、S/M/L 三档显示、拖拽排序、快捷编辑及账号云同步</span></li>
                             </ul>
                         </article>
 <article class="changelog_version">
@@ -1602,6 +1616,7 @@
                                                 <label><input type="radio" name="bookmarkSize" value="large" checked><span>M</span></label>
                                                 <label><input type="radio" name="bookmarkSize" value="xlarge"><span>L</span></label>
                                             </fieldset>
+                                            <label class="bookmark_pin_field"><input type="checkbox" id="bookmarkPinned"><span>在首页快捷书签中显示</span></label>
                                             <div class="bookmark_editor_actions">
                                                 <button type="button" class="bookmark_text_button" id="bookmarkEditorCancel">取消</button>
                                                 <button type="submit" class="bookmark_primary_button glass-strong" id="bookmarkEditorSave">添加</button>

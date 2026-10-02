@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+
+  <title>LimitRSS · 用 AI 收敛信息噪音的跨端 RSS 阅读器</title>
+  <meta name="description" content="LimitRSS 是一款跨平台的 AI RSS 阅读器，支持 macOS、Windows、iOS、Android 和 HarmonyOS NEXT。本地存储、OpenAI 兼容多提供商、Liquid Glass 设计语言。" />
+  <meta name="keywords" content="LimitRSS, RSS, AI, 阅读器, RSSHub, Flutter, Liquid Glass, macOS, Windows, iOS, Android, HarmonyOS" />
+  <meta name="author" content="demisse" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="LimitRSS · 用 AI 收敛信息噪音的跨端 RSS 阅读器" />
+  <meta property="og:description" content="订阅、阅读、用 AI 总结翻译。本地优先，跨端一致。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/preview.png" />
+
+  <link rel="icon" type="image/png" href="./assets/icon.png" />
+  <link rel="apple-touch-icon" href="./assets/icon.png" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- ========== Navigation ========== -->
+  <header class="nav glass">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="LimitRSS">
+        <img src="./assets/icon.png" alt="" width="28" height="28" />
+        <span>LimitRSS</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#features">特性</a>
+        <a href="#platforms">平台</a>
+        <a href="#download">下载</a>
+        <a href="#faq">FAQ</a>
+        <a href="changelog.html" class="ext">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <line x1="10" y1="9" x2="8" y2="9"/>
+          </svg>
+          更新日志
+        </a>
+      </nav>
+      <button class="theme-toggle" aria-label="切换主题" type="button">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ========== Hero ========== -->
+    <section class="hero snap-screen">
+      <div class="feed-viz" id="feed-viz" aria-hidden="true">
+        <!-- 背景点阵 -->
+        <!-- 功能性点阵：JS 生成，光波扫过时点会变成订阅源图标、被推开 -->
+        <div class="dot-field" id="dot-field"></div>
+        <!-- 左侧渐变遮罩：保证文字可读性 -->
+        <div class="hero-veil"></div>
+
+        <!-- 光波（一次一道，从 logo 背后出发，JS 驱动） -->
+        <div class="wave-ring" id="wave-ring"></div>
+
+        <!-- 订阅源图标飞行层（点变图标 → 飞入 logo） -->
+        <div class="ico-layer" id="ico-layer"></div>
+
+        <!-- 中央软件 logo -->
+        <div class="orbit-logo" id="orbit-logo">
+          <span class="logo-glow"></span>
+          <img src="./assets/icon.png" alt="LimitRSS Logo" />
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="hero-text">
+          <h1>
+            轻松订阅您感兴趣的<br />
+            <span class="typewriter grad" id="typewriter" data-words="社交媒体,新媒体,传统媒体,论坛,博客,编程,设计,直播,音视频,图片,二次元,程序更新,大学通知,预报预警,出行旅游,购物,游戏,阅读,政务消息,学习,科学期刊,金融,体育" aria-label="动态展示订阅分类"></span> RSS源
+          </h1>
+          <p class="lede">
+            LimitRSS 是一款简洁高效的 RSS 阅读器，帮助你集中订阅、整理和阅读来自不同网站的内容。它支持 RSS、Atom 与 RSSHub 订阅源，可按分类管理文章，并提供未读、星标、稍后阅读、特别关注和多设备同步等功能。内置 AI 总结、AI 翻译、智能分类及 AI 日报，帮助你快速掌握重点信息，在减少信息噪音的同时，打造更专注、更个性化的阅读体验。
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#download">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+              </svg>
+              下载 LimitRSS
+            </a>
+            <a class="btn btn-ghost" href="changelog.html">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <line x1="10" y1="9" x2="8" y2="9"/>
+              </svg>
+              更新日志
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Features ========== -->
+    <section id="features" class="section snap-screen">
+      <div class="container">
+        <div class="section-head reveal" style="--rd:0s">
+          <span class="eyebrow">核心能力</span>
+          <h2>为深度阅读而生的工具集</h2>
+          <p class="section-sub">不是再做一个 RSS 阅读器，而是把订阅、AI 总结、翻译和知识沉淀串成一条流。</p>
+        </div>
+
+        <div class="features">
+          <article class="feature glass reveal">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.5 8.5a11 11 0 0 1 15.5 0M7.5 12a7 7 0 0 1 9.5 0M10.5 15.5a3 3 0 0 1 3.5 0"/>
+                <circle cx="12" cy="19" r="1.4" fill="currentColor" stroke="none"/>
+              </svg>
+            </div>
+            <h3>完整 RSS / Atom 支持</h3>
+            <p>订阅、分类、自动刷新、ETag / Last-Modified 增量抓取、RSSHub 实例支持。</p>
+          </article>
+
+          <article class="feature glass reveal" style="--rd:0.08s">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3a4.5 4.5 0 0 0-4.5 4.5c0 1.2.5 2.3 1.2 3.1-.8.9-1.7 2.3-1.7 4.4 0 3 2.2 6 5 6s5-3 5-6c0-2.1-.9-3.5-1.7-4.4.7-.8 1.2-1.9 1.2-3.1A4.5 4.5 0 0 0 12 3z"/>
+                <path d="M12 3v5M12 21v-3"/>
+                <path d="M9 12.5c1 .6 2 .8 3 .8s2-.2 3-.8" opacity="0.6"/>
+              </svg>
+            </div>
+            <h3>多提供商 AI</h3>
+            <p>OpenAI / Anthropic / DeepSeek / 智谱 GLM / Ollama / 任意 OpenAI 兼容端点。流式响应，可中断。</p>
+          </article>
+
+          <article class="feature glass reveal" style="--rd:0.16s">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 4h10l4 4v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+                <path d="M15 4v4h4"/>
+                <path d="M8.5 12.5h7M8.5 15.5h7M8.5 18h4"/>
+              </svg>
+            </div>
+            <h3>一键 AI 总结 / 翻译</h3>
+            <p>把文章压成一段话，翻译保留原文结构，模板支持 <code>{{title}}</code> <code>{{content}}</code> 等变量。</p>
+          </article>
+
+          <article class="feature glass reveal" style="--rd:0.24s">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="6.5"/>
+                <path d="M20 20l-4.2-4.2"/>
+                <path d="M8.5 11h5M11 8.5v5"/>
+              </svg>
+            </div>
+            <h3>全文搜索 & 筛选</h3>
+            <p>本地全文索引，按已读、星标、来源、AI 状态多维筛选。OPML 导入导出，方便迁移。</p>
+          </article>
+
+          <article class="feature glass reveal" style="--rd:0.32s">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 11V8a5 5 0 0 1 10 0v3"/>
+                <rect x="5" y="11" width="14" height="9" rx="2"/>
+                <circle cx="12" cy="15.5" r="1.4" fill="currentColor" stroke="none"/>
+              </svg>
+            </div>
+            <h3>本地优先 & 隐私</h3>
+            <p>订阅、文章、AI Key 全在本地。AI 请求直连提供商，<strong>不过任何中间服务器</strong>。</p>
+          </article>
+
+          <article class="feature glass reveal" style="--rd:0.40s">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15.5l-1.9-4.6L5.5 9l4.6-1.4L12 3z"/>
+                <path d="M18.5 15l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9.9-2.1z"/>
+              </svg>
+            </div>
+            <h3>Liquid Glass 设计</h3>
+            <p>跨端共享设计 tokens，桌面三栏（订阅 / 列表 / 阅读器），移动端单栏自适应。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Platforms ========== -->
+    <section id="platforms" class="section section-alt snap-screen">
+      <div class="container">
+        <div class="section-head reveal" style="--rd:0s">
+          <span class="eyebrow">多端覆盖</span>
+          <h2>在哪个平台，LimitRSS 就在那里</h2>
+          <p class="section-sub">Flutter 一次开发，五端原生体验。HarmonyOS NEXT 通过原生宿主承载 Flutter UI。</p>
+        </div>
+
+        <div class="platforms-layout reveal">
+          <!-- 左栏：平台卡片列表 -->
+          <div class="platforms-list" role="tablist" aria-label="平台列表">
+            <button type="button" class="platform-card is-active glass" data-platform="mac" role="tab" aria-selected="true">
+              <span class="platform-logo" aria-hidden="true">
+                <img src="./assets/logo-macos.png" alt="" />
+              </span>
+              <span class="platform-info">
+                <span class="platform-name">macOS</span>
+              </span>
+            </button>
+
+            <button type="button" class="platform-card glass" data-platform="windows" role="tab" aria-selected="false">
+              <span class="platform-logo" aria-hidden="true">
+                <img src="./assets/logo-windows.png" alt="" />
+              </span>
+              <span class="platform-info">
+                <span class="platform-name">Windows</span>
+              </span>
+            </button>
+
+            <button type="button" class="platform-card glass" data-platform="ios" role="tab" aria-selected="false">
+              <span class="platform-logo" aria-hidden="true">
+                <img src="./assets/logo-ios.png" alt="" />
+              </span>
+              <span class="platform-info">
+                <span class="platform-name">iOS</span>
+              </span>
+            </button>
+
+            <button type="button" class="platform-card glass" data-platform="android" role="tab" aria-selected="false">
+              <span class="platform-logo" aria-hidden="true">
+                <img src="./assets/logo-android.png" alt="" />
+              </span>
+              <span class="platform-info">
+                <span class="platform-name">Android</span>
+              </span>
+            </button>
+
+            <button type="button" class="platform-card glass" data-platform="harmony" role="tab" aria-selected="false">
+              <span class="platform-logo" aria-hidden="true">
+                <img src="./assets/logo-harmony.png" alt="" />
+              </span>
+              <span class="platform-info">
+                <span class="platform-name">HarmonyOS NEXT</span>
+              </span>
+            </button>
+          </div>
+
+          <!-- 右栏：手机相框 + 截图轮播 -->
+          <div class="platforms-preview glass">
+              <div class="phone-stage" data-device="laptop" id="phone-stage">
+                <button class="phone-nav phone-prev" id="phone-prev" type="button" aria-label="上一张截图">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 18l-6-6 6-6"/>
+                  </svg>
+                </button>
+
+                <!-- 笔记本相框（桌面端 macOS / Windows） -->
+                <div class="device-frame device-laptop" id="device-laptop">
+                  <div class="device-screen">
+                    <img id="platform-image-laptop" class="device-image"
+                      src="./assets/preview-mac.png"
+                      alt="LimitRSS 在 macOS 上的界面截图" />
+                  </div>
+                  <div class="device-base" aria-hidden="true">
+                    <span class="device-base-notch"></span>
+                  </div>
+                </div>
+
+                <!-- 手机相框（移动端 iOS / Android / HarmonyOS） -->
+                <div class="device-frame device-phone" id="device-phone">
+                  <div class="device-screen">
+                    <img id="platform-image-phone" class="device-image"
+                      src="./assets/preview-mac.png"
+                      alt="LimitRSS 在 macOS 上的界面截图" />
+                  </div>
+                </div>
+
+                <button class="phone-nav phone-next" id="phone-next" type="button" aria-label="下一张截图">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 18l6-6-6-6"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="phone-dots" id="phone-dots" aria-label="截图导航"></div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Download ========== -->
+    <section id="download" class="section snap-screen">
+      <div class="container">
+        <div class="section-head reveal" style="--rd:0s">
+          <span class="eyebrow">下载</span>
+          <h2>选择你的平台</h2>
+          <p class="section-sub" data-changelog-line>最新稳定版 <strong>v0.3.0</strong>。</p>
+        </div>
+
+        <div class="download-grid reveal">
+          <a class="download-card glass" href="#" data-os="mac">
+            <span class="download-logo" aria-hidden="true">
+              <img src="./assets/logo-macos.png" alt="" />
+            </span>
+            <span class="download-info">
+              <span class="os-name">macOS</span>
+              <span class="download-version">Apple Silicon & Intel</span>
+            </span>
+            <span class="badge-tag" data-changelog="mac">v0.3.0</span>
+            <span class="download-cta">下载 →</span>
+          </a>
+
+          <a class="download-card glass" href="#" data-os="windows">
+            <span class="download-logo" aria-hidden="true">
+              <img src="./assets/logo-windows.png" alt="" />
+            </span>
+            <span class="download-info">
+              <span class="os-name">Windows</span>
+              <span class="download-version">x64 · 从源码构建</span>
+            </span>
+            <span class="badge-tag badge-tag-warn">需自编译</span>
+            <span class="download-cta">查看 →</span>
+          </a>
+
+          <a class="download-card glass" href="#" data-os="ios">
+            <span class="download-logo" aria-hidden="true">
+              <img src="./assets/logo-ios.png" alt="" />
+            </span>
+            <span class="download-info">
+              <span class="os-name">iOS</span>
+              <span class="download-version">iPhone & iPad</span>
+            </span>
+            <span class="badge-tag" data-changelog="ios">v0.3.0</span>
+            <span class="download-cta">下载 →</span>
+          </a>
+
+          <a class="download-card glass" href="#" data-os="android">
+            <span class="download-logo" aria-hidden="true">
+              <img src="./assets/logo-android.png" alt="" />
+            </span>
+            <span class="download-info">
+              <span class="os-name">Android</span>
+              <span class="download-version">arm64-v8a</span>
+            </span>
+            <span class="badge-tag" data-changelog="android">v0.3.0</span>
+            <span class="download-cta">下载 →</span>
+          </a>
+
+          <a class="download-card glass" href="#" data-os="harmony">
+            <span class="download-logo" aria-hidden="true">
+              <img src="./assets/logo-harmony.png" alt="" />
+            </span>
+            <span class="download-info">
+              <span class="os-name">HarmonyOS NEXT</span>
+              <span class="download-version">HAP · Flutter + ArkTS</span>
+            </span>
+            <span class="badge-tag" data-changelog="harmony">v0.3.0</span>
+            <span class="download-cta">下载 →</span>
+          </a>
+        </div>
+
+        <p class="download-note">
+          点击下载按钮即开始获取最新版安装包。版本详情与校验值请查看
+          <a href="changelog.html">更新日志</a>。
+        </p>
+      </div>
+    </section>
+
+    <!-- ========== FAQ ========== -->
+    <section id="faq" class="section section-alt snap-screen">
+      <div class="container">
+        <div class="section-head reveal" style="--rd:0s">
+          <span class="eyebrow">常见问题</span>
+          <h2>关于 LimitRSS 的几件事</h2>
+        </div>
+
+        <div class="faq reveal">
+          <details class="faq-item glass">
+            <summary>LimitRSS 是思源笔记的插件吗？</summary>
+            <p>不是。当前主线产品是<strong>独立的跨端客户端</strong>（Flutter + HarmonyOS NEXT 宿主），与思源笔记没有任何 API、存储或协议层的耦合。仓库里的 <code>src/</code> 目录保留着早期思源插件形态的代码作为历史记录。</p>
+          </details>
+
+          <details class="faq-item glass">
+            <summary>API Key 存在哪里？AI 请求会经过服务器吗？</summary>
+            <p>API Key 仅存储在你本机的客户端（通过 <code>flutter_secure_storage</code>）。AI 请求从客户端直接发到对应提供商（OpenAI / Anthropic / DeepSeek / Ollama …），<strong>不经过任何中间服务器</strong>。</p>
+          </details>
+
+          <details class="faq-item glass">
+            <summary>支持哪些 AI 提供商？</summary>
+            <p>内置类型：OpenAI、Anthropic、DeepSeek、智谱 GLM、Groq、Ollama，以及任何 OpenAI 兼容的自定义端点。Anthropic 使用 SSE 流式，其他 OpenAI 兼容端使用标准 Chat Completions 接口。</p>
+          </details>
+
+          <details class="faq-item glass">
+            <summary>Windows 为什么没有现成包？</summary>
+            <p>当前发布资源主要面向 macOS 与移动端。Windows 用户可以从源码 <code>flutter build windows</code> 自编译，仓库的 <code>apps/limitrss_flutter</code> 已经包含 Windows 平台壳工程。</p>
+          </details>
+
+          <details class="faq-item glass">
+            <summary>如何从其他 RSS 阅读器导入订阅？</summary>
+            <p>在客户端内通过 OPML 导入 / 导出功能完成。从 Inoreader、Feedly、NetNewsWire、Reeder 等工具导出的 OPML 文件可直接导入。</p>
+          </details>
+
+          <details class="faq-item glass">
+            <summary>有 RSSHub 集成吗？</summary>
+            <p>支持。内置官方与若干公共 RSSHub 实例，可在设置里配置自定义实例地址或自建实例。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA ========== -->
+    <section class="section cta-section">
+      <div class="container">
+        <div class="cta-card glass reveal">
+          <h2>把你的信息流重新拿回来</h2>
+          <p>订阅、阅读、用 AI 收敛噪音。本地优先，跨端一致。</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#download">下载 LimitRSS</a>
+            <a class="btn btn-ghost" href="changelog.html">查看更新日志</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="./assets/icon.png" alt="" width="20" height="20" />
+        <span>LimitRSS</span>
+      </div>
+      <div class="footer-links">
+        <a href="changelog.html">更新日志</a>
+      </div>
+      <div class="footer-meta">
+        © 2026 demisse · Built with care
+      </div>
+    </div>
+  </footer>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>

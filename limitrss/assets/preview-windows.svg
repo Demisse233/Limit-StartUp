@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800">
+  <defs>
+    <linearGradient id="bg-win" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0078d4" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#005a9e" stop-opacity="0.06"/>
+    </linearGradient>
+    <linearGradient id="logo-win" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0078d4"/>
+      <stop offset="100%" stop-color="#005a9e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="800" fill="#fafafa"/>
+  <rect width="1280" height="800" fill="url(#bg-win)"/>
+
+  <!-- 占位应用界面轮廓：侧栏 + 列表 + 阅读区 -->
+  <g opacity="0.18">
+    <rect x="60" y="60" width="180" height="680" rx="8" fill="#0078d4"/>
+    <rect x="260" y="60" width="340" height="680" rx="8" fill="#0078d4"/>
+    <rect x="620" y="60" width="600" height="680" rx="8" fill="#0078d4"/>
+    <line x1="60" y1="100" x2="1200" y2="100" stroke="#0078d4" stroke-width="1"/>
+  </g>
+
+  <!-- Windows logo (4 格) -->
+  <g transform="translate(540 220)">
+    <path fill="url(#logo-win)" d="M0 0h90v90H0zM100 0h90v90h-90zM0 100h90v90H0zM100 100h90v90h-90z"/>
+  </g>
+
+  <text x="640" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="36" font-weight="700" fill="#1f1f1f" text-anchor="middle">
+    Windows 预览待补充
+  </text>
+  <text x="640" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18" font-weight="400" fill="#767676" text-anchor="middle">
+    应用界面与 macOS 版保持一致 · 数据同步通过 WebDAV v1
+  </text>
+
+  <!-- 底部状态条 -->
+  <rect x="0" y="760" width="1280" height="40" fill="#005a9e" opacity="0.08"/>
+  <text x="60" y="785" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="13" fill="#555" text-anchor="start">
+    LimitRSS v0.2.0 · Windows · 需 flutter build windows
+  </text>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!--
+    通用更新图标：实心圆 + 向上箭头（"更新/升级"）。
+    设计取舍：
+      - 2×2 圆角方格 + 蓝天底 == Windows 徽标，会撞车；
+      - 线框地球是描边风格，与平台图标的实心白图形不一致；
+      - 实心圆是一块整体，与 Android 的实心圆、macOS 的圆角方块同族。
+  -->
+  <circle cx="12" cy="12" r="8.2" fill="#ffffff" />
+  <path d="M12 16.6V8.2M8.5 11.4L12 7.9l3.5 3.5" fill="none" stroke="#b52e6c"
+        stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
