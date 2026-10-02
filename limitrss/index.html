@@ -317,7 +317,7 @@
                 </summary>
                 <div class="chip-options"></div>
               </details>
-              <button type="button" class="download-cta-link" data-download-trigger>下载 →</button>
+              <button type="button" class="download-cta-link" data-download-trigger data-download-for="mac">下载 →</button>
             </div>
           </div>
 
@@ -339,7 +339,9 @@
               <span class="os-name">iOS</span>
             </span>
             <span class="badge-tag" data-changelog="ios">v0.3.0</span>
-            <span class="download-cta download-cta-bar">下载 →</span>
+            <!-- 纯 IPA：下载后需自签或 TestFlight 才能安装，所以文案不用「下载」，
+                 避免用户以为下完就能装。地址在 script.js 的 DOWNLOAD_URLS 里配置。 -->
+            <a class="download-cta download-cta-bar download-cta-link" data-download-for="ios">获取安装包 →</a>
           </div>
 
           <div class="download-card glass" data-os="android">
@@ -350,7 +352,7 @@
               <span class="os-name">Android</span>
             </span>
             <span class="badge-tag" data-changelog="android">v0.3.0</span>
-            <span class="download-cta download-cta-bar">下载 →</span>
+            <a class="download-cta download-cta-bar download-cta-link" data-download-for="android">下载 →</a>
           </div>
 
           <div class="download-card glass" data-os="harmony">
@@ -380,7 +382,8 @@
         </div>
 
         <p class="download-note">
-          点击下载按钮即开始获取最新版安装包。版本详情与校验值请查看
+          点击下载按钮即开始获取最新版安装包。iOS 安装包为 IPA，需通过 TestFlight
+          或签名工具安装。版本详情与校验值请查看
           <a href="changelog.html">更新日志</a>。
         </p>
       </div>

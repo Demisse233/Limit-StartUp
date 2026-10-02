@@ -384,6 +384,34 @@
     }
   });
 
+  // ---------- 下载地址配置 ----------
+  // 只改这里就能换下载地址，不用动 HTML。
+  //   - 填了 URL：点击后在新标签打开（直链会直接触发下载；分享页会打开页面）
+  //   - 留空 "" ：按钮仍是占位，点击不跳转，只在控制台提示，便于逐步接入
+  // 注意：跨域时 <a download> 会被浏览器忽略，能否「直接下载」取决于
+  // 目标服务器是否返回 Content-Disposition: attachment，前端无法强制。
+  const DOWNLOAD_URLS = {
+    mac: "",       // 例如 "https://example.com/LimitRSS-0.3.0.dmg"
+    ios: "",       // 例如 "https://example.com/LimitRSS.ipa"
+    android: "",   // 例如 "https://example.com/LimitRSS-0.3.0.apk"
+    // windows 目前是「敬请期待」，没有 CTA；harmony 走内测邀请码，都不在这里配
+  };
+
+  // 给每张卡片的下载控件接上地址
+  document.querySelectorAll("[data-download-for]").forEach(function (el) {
+    const key = el.getAttribute("data-download-for");
+    const url = DOWNLOAD_URLS[key] || "";
+    if (url) {
+      // 用 <a> 承载，语义正确、可右键「另存为」、可在新标签打开
+      el.setAttribute("href", url);
+      el.setAttribute("target", "_blank");
+      el.setAttribute("rel", "noopener noreferrer");
+      el.removeAttribute("disabled");
+    } else {
+      el.setAttribute("aria-disabled", "true");
+    }
+  });
+
   // ---------- 下载点击埋点 ----------
   document.querySelectorAll(".download-card").forEach(function (card) {
     card.addEventListener("click", function (e) {
@@ -394,6 +422,17 @@
       // eslint-disable-next-line no-console
       console.info("[LimitRSS] download click:", osKey);
     });
+  });
+
+  // 未配置地址的下载按钮：阻止默认跳转（避免 href="#" 回顶），只做提示
+  document.addEventListener("click", function (e) {
+    const trigger = e.target.closest ? e.target.closest("[data-download-for]") : null;
+    if (!trigger) return;
+    const key = trigger.getAttribute("data-download-for");
+    if (DOWNLOAD_URLS[key]) return;         // 已配置：交给浏览器正常跳转
+    e.preventDefault();
+    // eslint-disable-next-line no-console
+    console.info("[LimitRSS] 下载地址尚未配置:", key);
   });
 
   // ---------- 平台预览切换（hover/focus） + 多图轮播 + 设备类型自动切换 ----------
