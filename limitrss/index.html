@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 
   <title>LimitRSS · 用 AI 收敛信息噪音的跨端 RSS 阅读器</title>
-  <meta name="description" content="LimitRSS 是一款跨平台的 AI RSS 阅读器，支持 macOS、Windows、iOS、Android 和 HarmonyOS NEXT。本地存储、OpenAI 兼容多提供商、Liquid Glass 设计语言。" />
+  <meta name="description" content="LimitRSS 是一款跨平台的 AI RSS 阅读器，支持 macOS、Windows、iOS、Android 和 HarmonyOS。本地存储、OpenAI 兼容多提供商、Liquid Glass 设计语言。" />
   <meta name="keywords" content="LimitRSS, RSS, AI, 阅读器, RSSHub, Flutter, Liquid Glass, macOS, Windows, iOS, Android, HarmonyOS" />
   <meta name="author" content="demisse" />
 
@@ -17,7 +17,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="./assets/preview.png" />
 
-  <link rel="icon" type="image/png" href="./assets/icon.png" />
+  <link rel="icon" type="image/png" href="./assets/favicon.png" />
   <link rel="apple-touch-icon" href="./assets/icon.png" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -33,17 +33,6 @@
         <a href="#features">特性</a>
         <a href="#platforms">平台</a>
         <a href="#download">下载</a>
-        <a href="#faq">FAQ</a>
-        <a href="changelog.html" class="ext">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-            <line x1="10" y1="9" x2="8" y2="9"/>
-          </svg>
-          更新日志
-        </a>
       </nav>
       <button class="theme-toggle" aria-label="切换主题" type="button">
         <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -199,7 +188,7 @@
         <div class="section-head reveal" style="--rd:0s">
           <span class="eyebrow">多端覆盖</span>
           <h2>在哪个平台，LimitRSS 就在那里</h2>
-          <p class="section-sub">Flutter 一次开发，五端原生体验。HarmonyOS NEXT 通过原生宿主承载 Flutter UI。</p>
+          <p class="section-sub">Flutter 一次开发，五端原生体验。HarmonyOS 通过原生宿主承载 Flutter UI。</p>
         </div>
 
         <div class="platforms-layout reveal">
@@ -246,7 +235,7 @@
                 <img src="./assets/logo-harmony.png" alt="" />
               </span>
               <span class="platform-info">
-                <span class="platform-name">HarmonyOS NEXT</span>
+                <span class="platform-name">HarmonyOS</span>
               </span>
             </button>
           </div>
@@ -303,114 +292,83 @@
           <p class="section-sub" data-changelog-line>最新稳定版 <strong>v0.3.0</strong>。</p>
         </div>
 
+        <!-- 自动检测到的平台会被 JS 移动到这里，单独占一行并放大。
+             没有命中任何平台（如 Linux）时该容器为空，由 :empty 隐藏，不会留白。 -->
+        <div class="download-featured reveal" data-download-featured></div>
+
         <div class="download-grid reveal">
-          <a class="download-card glass" href="#" data-os="mac">
+          <div class="download-card glass" data-os="mac">
             <span class="download-logo" aria-hidden="true">
               <img src="./assets/logo-macos.png" alt="" />
             </span>
             <span class="download-info">
               <span class="os-name">macOS</span>
-              <span class="download-version">Apple Silicon & Intel</span>
             </span>
             <span class="badge-tag" data-changelog="mac">v0.3.0</span>
-            <span class="download-cta">下载 →</span>
-          </a>
+            <!-- 芯片选择器：目前只提供 Apple 芯片包，Intel 机器需要能切过去看到状态。
+                 默认收起、摘要显示自动检测到的芯片；选项由 JS 生成，便于跟随检测结果。 -->
+            <div class="download-cta download-cta--split">
+              <details class="chip-picker">
+                <summary class="chip-picker-summary">
+                  <span data-chip-picked>Apple 芯片</span>
+                  <svg class="chip-picker-caret" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
+                       aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div class="chip-options"></div>
+              </details>
+              <button type="button" class="download-cta-link" data-download-trigger>下载 →</button>
+            </div>
+          </div>
 
-          <a class="download-card glass" href="#" data-os="windows">
+          <div class="download-card glass" data-os="windows">
             <span class="download-logo" aria-hidden="true">
               <img src="./assets/logo-windows.png" alt="" />
             </span>
             <span class="download-info">
               <span class="os-name">Windows</span>
-              <span class="download-version">x64 · 从源码构建</span>
             </span>
-            <span class="badge-tag badge-tag-warn">需自编译</span>
-            <span class="download-cta">查看 →</span>
-          </a>
+            <span class="badge-tag">敬请期待</span>
+          </div>
 
-          <a class="download-card glass" href="#" data-os="ios">
+          <div class="download-card glass" data-os="ios">
             <span class="download-logo" aria-hidden="true">
               <img src="./assets/logo-ios.png" alt="" />
             </span>
             <span class="download-info">
               <span class="os-name">iOS</span>
-              <span class="download-version">iPhone & iPad</span>
             </span>
             <span class="badge-tag" data-changelog="ios">v0.3.0</span>
-            <span class="download-cta">下载 →</span>
-          </a>
+            <span class="download-cta download-cta-bar">下载 →</span>
+          </div>
 
-          <a class="download-card glass" href="#" data-os="android">
+          <div class="download-card glass" data-os="android">
             <span class="download-logo" aria-hidden="true">
               <img src="./assets/logo-android.png" alt="" />
             </span>
             <span class="download-info">
               <span class="os-name">Android</span>
-              <span class="download-version">arm64-v8a</span>
             </span>
             <span class="badge-tag" data-changelog="android">v0.3.0</span>
-            <span class="download-cta">下载 →</span>
-          </a>
+            <span class="download-cta download-cta-bar">下载 →</span>
+          </div>
 
-          <a class="download-card glass" href="#" data-os="harmony">
+          <div class="download-card glass" data-os="harmony">
             <span class="download-logo" aria-hidden="true">
               <img src="./assets/logo-harmony.png" alt="" />
             </span>
             <span class="download-info">
-              <span class="os-name">HarmonyOS NEXT</span>
-              <span class="download-version">HAP · Flutter + ArkTS</span>
+              <span class="os-name">HarmonyOS</span>
             </span>
             <span class="badge-tag" data-changelog="harmony">v0.3.0</span>
-            <span class="download-cta">下载 →</span>
-          </a>
+            <span class="download-cta download-cta-bar">下载 →</span>
+          </div>
         </div>
 
         <p class="download-note">
           点击下载按钮即开始获取最新版安装包。版本详情与校验值请查看
           <a href="changelog.html">更新日志</a>。
         </p>
-      </div>
-    </section>
-
-    <!-- ========== FAQ ========== -->
-    <section id="faq" class="section section-alt snap-screen">
-      <div class="container">
-        <div class="section-head reveal" style="--rd:0s">
-          <span class="eyebrow">常见问题</span>
-          <h2>关于 LimitRSS 的几件事</h2>
-        </div>
-
-        <div class="faq reveal">
-          <details class="faq-item glass">
-            <summary>LimitRSS 是思源笔记的插件吗？</summary>
-            <p>不是。当前主线产品是<strong>独立的跨端客户端</strong>（Flutter + HarmonyOS NEXT 宿主），与思源笔记没有任何 API、存储或协议层的耦合。仓库里的 <code>src/</code> 目录保留着早期思源插件形态的代码作为历史记录。</p>
-          </details>
-
-          <details class="faq-item glass">
-            <summary>API Key 存在哪里？AI 请求会经过服务器吗？</summary>
-            <p>API Key 仅存储在你本机的客户端（通过 <code>flutter_secure_storage</code>）。AI 请求从客户端直接发到对应提供商（OpenAI / Anthropic / DeepSeek / Ollama …），<strong>不经过任何中间服务器</strong>。</p>
-          </details>
-
-          <details class="faq-item glass">
-            <summary>支持哪些 AI 提供商？</summary>
-            <p>内置类型：OpenAI、Anthropic、DeepSeek、智谱 GLM、Groq、Ollama，以及任何 OpenAI 兼容的自定义端点。Anthropic 使用 SSE 流式，其他 OpenAI 兼容端使用标准 Chat Completions 接口。</p>
-          </details>
-
-          <details class="faq-item glass">
-            <summary>Windows 为什么没有现成包？</summary>
-            <p>当前发布资源主要面向 macOS 与移动端。Windows 用户可以从源码 <code>flutter build windows</code> 自编译，仓库的 <code>apps/limitrss_flutter</code> 已经包含 Windows 平台壳工程。</p>
-          </details>
-
-          <details class="faq-item glass">
-            <summary>如何从其他 RSS 阅读器导入订阅？</summary>
-            <p>在客户端内通过 OPML 导入 / 导出功能完成。从 Inoreader、Feedly、NetNewsWire、Reeder 等工具导出的 OPML 文件可直接导入。</p>
-          </details>
-
-          <details class="faq-item glass">
-            <summary>有 RSSHub 集成吗？</summary>
-            <p>支持。内置官方与若干公共 RSSHub 实例，可在设置里配置自定义实例地址或自建实例。</p>
-          </details>
-        </div>
       </div>
     </section>
 

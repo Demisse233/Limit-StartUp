@@ -187,11 +187,17 @@
 
   // ---------- 检测 OS 并高亮下载卡 ----------
   function detectOS() {
-    const ua = navigator.userAgent || "";
+    // 必须先转小写：真实 UA 里是 iPhone / iPad / Android / HarmonyOS（首字母大写），
+    // 而下面用的是大小写敏感的正则。之前没转，导致安卓与鸿蒙设备匹配失败、
+    // 落到 platform 分支被当成 Linux（Android UA 里含 "Linux"）。
+    const ua = (navigator.userAgent || "").toLowerCase();
     const platform = (navigator.platform || "").toLowerCase();
+    // iPadOS 13+ 默认以桌面 UA 上报，platform 为 MacIntel，靠触点数区分
+    const iPadDesktop = platform === "macintel" && navigator.maxTouchPoints > 1;
     if (/iphone|ipad|ipod/.test(ua)) return "ios";
-    if (/android/.test(ua)) return "android";
     if (/harmony|openharmony/.test(ua)) return "harmony";
+    if (/android/.test(ua)) return "android";
+    if (iPadDesktop) return "ios";
     if (platform.indexOf("mac") === 0) return "mac";
     if (platform.indexOf("win") === 0) return "windows";
     if (platform.indexOf("linux") === 0) return "linux";
@@ -209,30 +215,163 @@
     unknown: "",
   };
 
-  // 在下载区块顶部展示推荐 OS 提示
-  const downloadGrid = document.querySelector(".download-grid");
-  if (downloadGrid && osLabels[os]) {
+  // 下载区里实际存在的平台卡片。检测结果必须命中其中之一才高亮/展示推荐位，
+  // 否则（例如 Linux 访客）会出现"已为你高亮对应下载"但页面上并没有该平台的矛盾提示。
+  const downloadCards = Array.from(
+    document.querySelectorAll(".download-card[data-os]")
+  );
+  const matchedCard = downloadCards.find(function (c) {
+    return c.getAttribute("data-os") === os;
+  });
+
+  // ---------- 区分 Apple Silicon / Intel（仅 macOS 需要）----------
+  // UA 与 platform 都拿不到芯片信息：Apple Silicon 机器的 UA 也写着
+  // "Intel Mac OS X 10_15_7"（冻结的 UA），platform 一律是 "MacIntel"。
+  // 唯一可靠的浏览器手段是 WebGL 的 UNMASKED_RENDERER_WEBGL，
+  // 实测 Apple M5 Pro 会返回：
+  //   "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Pro, Unspecified Version)"
+  // 返回 'apple' | 'intel' | 'unknown'。
+  function detectMacChip() {
+    try {
+      const canvas = document.createElement("canvas");
+      const gl =
+        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      if (!gl) return "unknown";
+      const dbg = gl.getExtension("WEBGL_debug_renderer_info");
+      const renderer = String(
+        dbg
+          ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)
+          : gl.getParameter(gl.RENDERER)
+      );
+      // 查完立即释放，避免长期占着一个 WebGL 上下文
+      const lose = gl.getExtension("WEBGL_lose_context");
+      if (lose) lose.loseContext();
+      if (/apple\s*m\d|apple\s*gpu/i.test(renderer)) return "apple";
+      if (/intel|amd|radeon|nvidia/i.test(renderer)) return "intel";
+      return "unknown";
+    } catch (e) {
+      return "unknown";
+    }
+  }
+
+  // macOS 芯片选择器：目前只提供 Apple 芯片包，Intel 版本「敬请期待」。
+  // 检测结果只用于「预选」——最终由用户自己选，避免指纹识别被屏蔽时误判。
+  const CHIP_LABELS = { apple: "Apple 芯片", intel: "Intel 芯片" };
+  const CHIP_DOWNLOADABLE = { apple: true, intel: false };
+  // 只在 macOS 上探测芯片（其它平台探测没有意义，还会白白建一个 WebGL 上下文）
+  const macChip = os === "mac" ? detectMacChip() : "unknown";
+  // 未识别出芯片（隐私设置屏蔽了 GPU 信息）时不预设，让用户明确选一次
+  let selectedChip = macChip === "apple" || macChip === "intel" ? macChip : null;
+
+  function renderChipPicker() {
+    const picker = document.querySelector(".chip-picker");
+    if (!picker) return;
+    const options = picker.querySelector(".chip-options");
+    const picked = picker.querySelector("[data-chip-picked]");
+    options.textContent = "";
+    Object.keys(CHIP_LABELS).forEach(function (chip) {
+      const downloadable = CHIP_DOWNLOADABLE[chip];
+      const el = document.createElement(downloadable ? "a" : "span");
+      el.className = "chip-option";
+      if (chip === selectedChip) el.classList.add("is-selected");
+      if (!downloadable) el.classList.add("is-unavailable");
+      if (downloadable) {
+        el.href = "#";
+        el.setAttribute("data-chip", chip);
+      }
+      const name = document.createElement("span");
+      name.className = "chip-option-name";
+      name.textContent = CHIP_LABELS[chip];
+      el.appendChild(name);
+      const state = document.createElement("span");
+      state.className = "chip-state";
+      state.textContent = downloadable ? "可下载" : "敬请期待";
+      el.appendChild(state);
+      options.appendChild(el);
+    });
+    if (picked) picked.textContent = selectedChip ? CHIP_LABELS[selectedChip] : "选择芯片";
+  }
+
+  // 推荐位：检测到的平台被移到这一行单独放大展示，其余平台留在下方网格。
+  // 未识别到平台时推荐位为空，由 CSS :empty 隐藏。
+  const featuredSlot = document.querySelector("[data-download-featured]");
+
+  // 提示语放在推荐位上方（而不是网格上方），与推荐的卡片成一组。
+  // 只有确实匹配到卡片时才显示，避免出现指向不存在平台的提示。
+  if (featuredSlot && matchedCard) {
     const wrap = document.createElement("div");
     wrap.className = "os-banner-wrap";
     const banner = document.createElement("div");
     banner.className = "os-banner";
-    banner.innerHTML =
-      '检测到你的设备是 <strong>' +
-      osLabels[os] +
-      "</strong>，已为你高亮对应下载。";
+    let note;
+    if (macChip === "intel") {
+      banner.innerHTML =
+        "检测到你的设备是 <strong>" +
+        osLabels[os] +
+        "</strong>，当前只提供 Apple 芯片版本。";
+      note = "Apple 芯片（M 系列）版本已可下载，Intel 版本敬请期待。";
+    } else {
+      banner.innerHTML =
+        '检测到你的设备是 <strong>' +
+        osLabels[os] +
+        "</strong>，已为你高亮对应下载。";
+    }
     wrap.appendChild(banner);
-    downloadGrid.parentNode.insertBefore(wrap, downloadGrid);
+    // 补充说明放进 banner 容器而不是推荐位：推荐位高度紧凑，
+    // 直接塞进去会溢出到卡片上、被卡片边框划过。
+    if (note) {
+      const p = document.createElement("p");
+      p.className = "download-note-featured";
+      p.textContent = note;
+      wrap.appendChild(p);
+    }
+    featuredSlot.parentNode.insertBefore(wrap, featuredSlot);
   }
 
-  // 高亮对应卡片
-  const cards = document.querySelectorAll(".download-card[data-os]");
-  cards.forEach(function (c) {
-    if (c.getAttribute("data-os") === os) c.classList.add("highlight");
+  // 把检测到的卡片移入推荐位并高亮（matchedCard 已在上方确定命中）
+  if (matchedCard) {
+    matchedCard.classList.add("highlight");
+    if (featuredSlot) featuredSlot.appendChild(matchedCard);
+  }
+
+  // 渲染芯片选择器（选项由检测结果预选）
+  renderChipPicker();
+  const chipPicker = document.querySelector(".chip-picker");
+
+  // 选中某个芯片：写回状态、重渲染选项、收起下拉
+  function chooseChip(chip) {
+    selectedChip = chip;
+    renderChipPicker();
+    if (chipPicker) chipPicker.open = false;
+  }
+
+  document.addEventListener("click", function (e) {
+    const opt = e.target.closest ? e.target.closest(".chip-option[data-chip]") : null;
+    if (opt) {
+      e.preventDefault();
+      chooseChip(opt.getAttribute("data-chip"));
+      return;
+    }
+    // 下载按钮与芯片选择：先接住，避免 href="#" 把页面带回顶部
+    const trigger = e.target.closest
+      ? e.target.closest("[data-download-trigger], .chip-picker .download-cta-link")
+      : null;
+    if (trigger) {
+      e.preventDefault();
+      return;
+    }
+    // 点在下拉外面就收起
+    if (chipPicker && chipPicker.open && !chipPicker.contains(e.target)) {
+      chipPicker.open = false;
+    }
   });
 
   // ---------- 下载点击埋点 ----------
   document.querySelectorAll(".download-card").forEach(function (card) {
-    card.addEventListener("click", function () {
+    card.addEventListener("click", function (e) {
+      // 卡片内部的控件（芯片选择器、下载链接）有自己的语义，
+      // 不应被当成"点了整张卡片"，否则一次点击会重复上报。
+      if (e.target.closest && e.target.closest(".chip-picker, .download-cta--split")) return;
       const osKey = card.getAttribute("data-os") || "source";
       // eslint-disable-next-line no-console
       console.info("[LimitRSS] download click:", osKey);
@@ -1101,7 +1240,7 @@
 
        **受控区只覆盖首屏 hero**：
        用户只希望首屏"一次滑动整屏切换"；
-       其它段落（features / platforms / download / faq）一旦进入就完全交给
+       其它段落（features / platforms / download / cta）一旦进入就完全交给
        浏览器原生滚动，**任何方向都不接管** —— 避免卡片/标题上的滚轮被吞、
        触控板惯性被拦在外面，避免"在 hero 外的元素上滑动没反应"。
 

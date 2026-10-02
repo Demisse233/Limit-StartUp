@@ -39,7 +39,7 @@ export const PLATFORMS = {
   windows: { label: 'Windows', logo: 'logo-windows.png', badgeClass: 'platform-badge--windows', aliases: ['windows', 'win', 'win32', 'win64', '微软'] },
   ios: { label: 'iOS', logo: 'logo-ios.png', badgeClass: 'platform-badge--ios', aliases: ['ios', 'iphone', 'ipad', 'ipados'] },
   android: { label: 'Android', logo: 'logo-android.png', badgeClass: 'platform-badge--android', aliases: ['android', '安卓', 'apk'] },
-  harmony: { label: 'HarmonyOS NEXT', logo: 'logo-harmony.png', badgeClass: 'platform-badge--harmony', aliases: ['harmonyos next', 'harmonyos', 'harmony', '鸿蒙', '鸿蒙 next', 'openharmony'] },
+  harmony: { label: 'HarmonyOS', logo: 'logo-harmony.png', badgeClass: 'platform-badge--harmony', aliases: ['harmonyos next', 'harmonyos', 'harmony', '鸿蒙', '鸿蒙 next', 'openharmony'] },
 };
 
 /** 分类 key → 元信息（含通用更新），供渲染器统一取用 */

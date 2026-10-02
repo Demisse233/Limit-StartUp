@@ -313,7 +313,7 @@ code {
    滚动行为不由 CSS 管 —— script.js 的 PagePager 只在
    「首屏 hero ↔ 核心能力 features」之间做整屏切换，之后恢复原生滚动。 */
 .snap-screen {
-  /* 整屏高度（含导航）。这样 hero.bottom === features.top === ... === faq.top + faq.h，
+  /* 整屏高度（含导航）。这样 hero.bottom === features.top === ... === cta.top，
      整页文档 = n × 100svh，每一段的"顶部对齐到视口顶"位置是确定的整屏倍数（100svh、200svh…），
      翻页器和 CSS 都能算出准确位置，不再受导航栏高度影响。 */
   min-height: 100svh;
@@ -330,7 +330,6 @@ html.is-paging .badge,
 html.is-paging .feature,
 html.is-paging .dl-card,
 html.is-paging .cta-card,
-html.is-paging .faq-item,
 html.is-paging header {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1287,6 +1286,234 @@ section[id] { scroll-margin-top: 61px; }
 .muted { color: var(--text-3); }
 
 /* ---------- Download ---------- */
+
+/* 推荐位：自动检测到的平台单独占一行，卡片比下方平台大一圈。
+   空时（未识别到平台，如 Linux）整个容器隐藏，不留空白。 */
+.download-featured {
+  margin-bottom: 24px;
+  /* 建立层叠上下文：芯片选择器的弹层会向下溢出卡片、压到下方网格上。
+     这里不设 position/z-index 的话，.download-featured 是 static/auto，
+     而网格里的卡片是 position:relative —— 后出现的定位元素层叠更高，
+     实测会把弹层的下半部分盖住（elementFromPoint 探测到卡片在最上层）。
+     给推荐位一个 z-index 后，弹层整体压在网格之上。 */
+  position: relative;
+  z-index: 20;
+}
+
+.download-featured:empty {
+  display: none;
+}
+
+.download-featured .download-card {
+  grid-template-columns: auto 1fr auto;
+  /* 收敛纵向节奏：普通卡基准是 padding 18 / gap 14，
+     推荐卡只比它大一档即可（26/20 会把卡片撑到 177px，显得空）。
+     实测构成：上下 padding 2×20 + logo 52 + row-gap 16 + 第二行 ≈ 152px。 */
+  gap: 12px;
+  padding: 20px 24px;
+  /* CTA 行横跨整卡宽度：默认的 grid-column:auto 会把它塞进第 2 列
+     （logo 与徽章之间），限宽后「居中」就变成在那一列里居中，位置偏左。 */
+  grid-template-columns: auto 1fr auto;
+  border-radius: var(--radius-lg);
+  /* 限宽居中：不限宽会占满整个内容区（1132px），版本号被推到最右、
+     中间空一大片，看起来像横幅而不是「一张大一圈的卡片」。
+     宽度由 --dl-featured-w 统一控制，便于一处调整。 */
+  max-width: var(--dl-featured-w, 480px);
+  margin: 0 auto;
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent),
+              var(--shadow-md);
+}
+
+/* 带芯片选择器的 CTA 行：左侧是选择器下拉，右侧是下载链接 */
+/* 下载链接在左、芯片选择器在右：选择器的弹层向右对齐后，
+   落在卡片右侧的空白区，不会盖住左侧的图标与平台名。 */
+.download-cta--split {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  /* 两端对齐：CTA 行现在横跨整卡宽度，链接与选择器分列两端与上行呼应 */
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.download-cta-link {
+  /* 用 <button> 而不是 <a href="#">：卡片已不是链接，按钮语义更正确，
+     也不依赖 JS 的 preventDefault 去阻止跳回页首。此处重置原生按钮样式。 */
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.download-cta-link:hover {
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.download-featured .download-cta-link {
+  font-size: 16px;
+}
+
+/* ---------- 芯片选择器 ---------- */
+.chip-picker {
+  position: relative;
+}
+
+.chip-picker-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  list-style: none;
+  cursor: pointer;
+  /* 收窄：内边距 5/10 → 3/8、字号 13 → 12、间距 5 → 3、箭头 14 → 12 */
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  transition: border-color 0.2s var(--t), color 0.2s var(--t);
+}
+
+.chip-picker-summary::-webkit-details-marker {
+  display: none;
+}
+
+.chip-picker-summary:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.chip-picker[open] .chip-picker-summary {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chip-picker-caret {
+  transition: transform 0.25s var(--t);
+}
+
+.chip-picker[open] .chip-picker-caret {
+  transform: rotate(180deg);
+}
+
+/* 选项面板：向上弹出，避免撑高卡片或把下方卡片顶开 */
+.chip-options {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px;
+  min-width: 0;
+  border-radius: var(--radius-md);
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.chip-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.chip-option:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.chip-option.is-selected {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  font-weight: 600;
+}
+
+/* 未提供的芯片版本：不可点击、标注「敬请期待」 */
+.chip-option.is-unavailable {
+  color: var(--text-3);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.chip-state {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+
+/* 芯片选择器的弹层需要溢出卡片显示：推荐卡放开 overflow，
+   其余卡片仍保持 overflow:hidden（用于内部涟漪动画的裁切）。 */
+.download-featured .download-card:has(.chip-picker) {
+  overflow: visible;
+}
+
+.download-featured .download-logo {
+  width: 52px;
+  height: 52px;
+}
+
+.download-featured .download-logo img {
+  width: 46px;
+  height: 46px;
+}
+
+.download-featured .os-name {
+  font-size: 21px;
+  /* 不设 line-height 时继承 1.5，21px 字号会被撑到 35px 高，
+     成为卡片里最高的一行；压到 1.2 与普通卡一致。 */
+  line-height: 1.2;
+}
+
+.download-featured .download-featured /* 推荐位的补充说明（目前用于解释 Intel Mac 为何是「敬请期待」） */
+.download-note-featured {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.download-cta {
+  font-size: 16px;
+}
+
+/* 推荐卡已有强调描边，hover 不再重复加深 */
+.download-featured /* 没有 CTA 的卡片（Windows 与 Intel Mac 的「敬请期待」态）。
+   虚线分隔来自 .download-cta 自身的 border-top，没有 CTA 时它自然消失。
+   无 CTA 卡片只剩一行，把底部内边距与行距一起收回，避免下方留一段空白。 */
+.download-card:not(:has(.download-cta-bar)) {
+  padding-bottom: 18px;
+}
+
+.download-card.highlight {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent),
+              var(--shadow-md);
+}
+
 .download-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1350,14 +1577,6 @@ section[id] { scroll-margin-top: 61px; }
   text-overflow: ellipsis;
 }
 
-.download-version {
-  font-size: 12px;
-  color: var(--text-3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .badge-tag {
   padding: 3px 9px;
   border-radius: 999px;
@@ -1370,23 +1589,26 @@ section[id] { scroll-margin-top: 61px; }
   white-space: nowrap;
 }
 
-.badge-tag-warn {
-  background: color-mix(in srgb, var(--warn) 12%, transparent);
-  border-color: color-mix(in srgb, var(--warn) 25%, transparent);
-  color: var(--warn);
-}
-
+/* CTA 那一行的通用排版（不负责虚线分隔）。
+   注意：macOS 卡片的 .download-cta 是「选择器 + 下载链接」的分割容器，
+   它带 download-cta 类是为了继承这里的字号与字重，并不需要整行虚线；
+   所以「整行 + 虚线」单独放在 .download-cta-bar 上，避免套到分割容器上。 */
 .download-cta {
-  grid-column: 1 / -1;
-  margin-top: 4px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--border);
   font-size: 14px;
   font-weight: 600;
   color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.download-cta-bar {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+  /* 下载/查看按钮靠右，与推荐卡 CTA 行右侧的下载链接对齐 */
+  justify-content: flex-end;
 }
 
 .os-banner {
@@ -1403,8 +1625,12 @@ section[id] { scroll-margin-top: 61px; }
 
 .os-banner-wrap {
   display: flex;
-  justify-content: center;
-  margin-bottom: 8px;
+  /* 竖排：提示胶囊 +（可选）一行说明，两者居中成一组 */
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  /* 紧贴它下方的推荐位：提示与推荐卡各留 14px，视觉上成一组 */
+  margin-bottom: 14px;
 }
 
 .download-note {
@@ -1417,56 +1643,6 @@ section[id] { scroll-margin-top: 61px; }
 .download-note a {
   color: var(--accent);
   font-weight: 500;
-}
-
-/* ---------- FAQ ---------- */
-.faq {
-  max-width: var(--container-narrow);
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.faq-item {
-  border-radius: var(--radius-md);
-  padding: 0;
-  overflow: hidden;
-}
-
-.faq-item summary {
-  list-style: none;
-  cursor: pointer;
-  padding: 20px 24px;
-  font-weight: 600;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.faq-item summary::-webkit-details-marker { display: none; }
-
-.faq-item summary::after {
-  content: "+";
-  font-size: 22px;
-  font-weight: 300;
-  color: var(--text-3);
-  transition: transform 0.3s var(--t);
-  flex-shrink: 0;
-}
-
-.faq-item[open] summary::after {
-  transform: rotate(45deg);
-  color: var(--accent);
-}
-
-.faq-item p {
-  margin: 0;
-  padding: 0 24px 22px;
-  color: var(--text-2);
-  line-height: 1.6;
 }
 
 /* ---------- CTA ---------- */
@@ -1778,7 +1954,7 @@ section[id] { scroll-margin-top: 61px; }
    - macOS 金色（macOS Big Sur 的 aurora 色调）
    - Windows 白色徽章：浅色主题用近白底 + 深色字，暗色主题用半透明白 + 白字
    - iOS / Android 保持原色
-   - HarmonyOS NEXT 天蓝色（淡化原红橙） */
+   - HarmonyOS 天蓝色（淡化原红橙） */
 .platform-badge--mac {
   --platform-accent: #8a6208;
   /* 纯色金。文字用深色保证对比度（7.4:1）。
@@ -1951,8 +2127,6 @@ section[id] { scroll-margin-top: 61px; }
 }
 @media (max-height: 880px) {
   .feature { padding: clamp(20px, 2.4vh, 28px); }
-  .faq-item summary { padding: clamp(14px, 1.8vh, 20px) 24px; }
-  .faq-item p { padding-bottom: clamp(16px, 1.8vh, 22px); }
 }
 
 /* ---------- Responsive ---------- */
@@ -1975,6 +2149,8 @@ section[id] { scroll-margin-top: 61px; }
   .features { grid-template-columns: repeat(2, 1fr); }
   .platforms-layout { grid-template-columns: 280px 1fr; gap: 20px; }
   .download-grid { grid-template-columns: repeat(2, 1fr); }
+  .download-featured .download-card { padding: 18px 20px; gap: 14px; }
+  .download-featured .os-name { font-size: 19px; }
   .nav-links a:not(.ext) { display: none; }
 }
 
@@ -1995,6 +2171,16 @@ section[id] { scroll-margin-top: 61px; }
   .platform-card { flex-shrink: 0; min-width: 240px; }
   .platforms-preview { order: -1; }
   .download-grid { grid-template-columns: 1fr; }
+  /* 窄屏：推荐卡内部改为竖排，logo 居中在上，避免挤压文字 */
+  .download-featured { margin-bottom: 18px; }
+  .download-featured .download-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 22px 20px;
+  }
+  .download-featured .download-info { align-items: center; }
   .footer-meta { margin-left: 0; width: 100%; }
   .theme-toggle { width: 32px; height: 32px; }
   .nav-inner { padding: 10px 16px; }
