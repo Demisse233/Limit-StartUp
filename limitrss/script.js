@@ -384,33 +384,69 @@
     }
   });
 
-  // ---------- 下载地址配置 ----------
-  // 只改这里就能换下载地址，不用动 HTML。
-  //   - 填了 URL：点击后在新标签打开（直链会直接触发下载；分享页会打开页面）
-  //   - 留空 "" ：按钮仍是占位，点击不跳转，只在控制台提示，便于逐步接入
-  // 注意：跨域时 <a download> 会被浏览器忽略，能否「直接下载」取决于
-  // 目标服务器是否返回 Content-Disposition: attachment，前端无法强制。
-  const DOWNLOAD_URLS = {
-    mac: "",       // 例如 "https://example.com/LimitRSS-0.3.0.dmg"
-    ios: "",       // 例如 "https://example.com/LimitRSS.ipa"
-    android: "",   // 例如 "https://example.com/LimitRSS-0.3.0.apk"
-    // windows 目前是「敬请期待」，没有 CTA；harmony 走内测邀请码，都不在这里配
+  // ---------- 下载地址 ----------
+  // 地址由「版本号 + 文件名约定」自动拼出，不需要手工维护：
+  //   版本号来自 data/changelog.json（由 npm run sync 从 notes/changelog.md 生成）
+  //   文件放在 GitHub Release 里，命名遵循 LimitRSS-<版本>-<平台>.<扩展名>
+  // 所以发新版时只要：改 changelog 的版本号 → npm run sync → 传包到对应 Release，
+  // 网页上的下载地址会自动跟着版本号走。
+  const RELEASE_BASE =
+    "https://github.com/Demisse233/LimitRSS_Client/releases/download";
+  // 文件名约定：平台 → [扩展名, 可选后缀]
+  const RELEASE_FILE = {
+    mac: "macOS.dmg",
+    ios: "iOS.ipa",
+    android: "Android.apk",
+  };
+  // 手工覆盖（留空表示走自动拼接）。万一某个版本的命名不一致，填这里即可。
+  const DOWNLOAD_OVERRIDES = {
+    mac: "",
+    ios: "",
+    android: "",
   };
 
-  // 给每张卡片的下载控件接上地址
-  document.querySelectorAll("[data-download-for]").forEach(function (el) {
-    const key = el.getAttribute("data-download-for");
-    const url = DOWNLOAD_URLS[key] || "";
-    if (url) {
-      // 用 <a> 承载，语义正确、可右键「另存为」、可在新标签打开
-      el.setAttribute("href", url);
-      el.setAttribute("target", "_blank");
-      el.setAttribute("rel", "noopener noreferrer");
-      el.removeAttribute("disabled");
-    } else {
-      el.setAttribute("aria-disabled", "true");
-    }
-  });
+  function releaseUrl(key, version) {
+    const file = RELEASE_FILE[key];
+    if (!file || !version) return "";
+    return RELEASE_BASE + "/v" + version + "/LimitRSS-" + version + "-" + file;
+  }
+
+  // 给每张卡片的下载控件接上地址。版本号要等运行时读完 changelog 才知道，
+  // 所以这里先注册一个「地址就绪」回调，由下面拉取 changelog 的流程触发。
+  function applyDownloadUrls(version) {
+    document.querySelectorAll("[data-download-for]").forEach(function (el) {
+      const key = el.getAttribute("data-download-for");
+      if (!key) return;
+      const url = DOWNLOAD_OVERRIDES[key] || releaseUrl(key, version);
+      if (url) {
+        // 用 <a> 承载，语义正确、可右键「另存为」、可在新标签打开；
+        // GitHub Release 会 302 到对象存储并带 attachment，可直接触发下载。
+        el.setAttribute("href", url);
+        el.setAttribute("target", "_blank");
+        el.setAttribute("rel", "noopener noreferrer");
+        el.removeAttribute("aria-disabled");
+      } else {
+        el.removeAttribute("href");
+        el.setAttribute("aria-disabled", "true");
+      }
+    });
+  }
+
+  // 先按「无地址」渲染，等版本号拿到后再补上
+  applyDownloadUrls("");
+
+  // 版本号来源：与更新日志页同一份数据，保证两处永远一致
+  fetch("./data/changelog.json")
+    .then(function (r) {
+      return r.ok ? r.json() : null;
+    })
+    .then(function (data) {
+      const latest = data && data.versions && data.versions[0];
+      if (latest && latest.version) applyDownloadUrls(latest.version);
+    })
+    .catch(function () {
+      /* 拿不到就维持占位状态，不影响页面其它功能 */
+    });
 
   // ---------- 下载点击埋点 ----------
   document.querySelectorAll(".download-card").forEach(function (card) {
@@ -424,15 +460,18 @@
     });
   });
 
-  // 未配置地址的下载按钮：阻止默认跳转（避免 href="#" 回顶），只做提示
+  // 尚无地址的下载按钮（版本号未读到、或该平台本版本没有包）：
+  // 阻止默认跳转（避免 href="#" 回顶），只做提示
   document.addEventListener("click", function (e) {
     const trigger = e.target.closest ? e.target.closest("[data-download-for]") : null;
     if (!trigger) return;
-    const key = trigger.getAttribute("data-download-for");
-    if (DOWNLOAD_URLS[key]) return;         // 已配置：交给浏览器正常跳转
+    if (trigger.getAttribute("href")) return;   // 有地址：交给浏览器正常跳转
     e.preventDefault();
     // eslint-disable-next-line no-console
-    console.info("[LimitRSS] 下载地址尚未配置:", key);
+    console.info(
+      "[LimitRSS] 该平台当前版本暂无安装包:",
+      trigger.getAttribute("data-download-for")
+    );
   });
 
   // ---------- 平台预览切换（hover/focus） + 多图轮播 + 设备类型自动切换 ----------

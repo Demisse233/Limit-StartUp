@@ -1,6 +1,46 @@
 {
   "versions": [
     {
+      "version": "0.3.1",
+      "date": "2026-10-04",
+      "platforms": [
+        {
+          "platform": "general",
+          "changes": [
+            {
+              "kind": "new",
+              "text": "新增应用图标角标展示未读文章数量功能（Windows 平台不支持）"
+            }
+          ]
+        },
+        {
+          "platform": "windows",
+          "changes": []
+        },
+        {
+          "platform": "mac",
+          "changes": []
+        },
+        {
+          "platform": "ios",
+          "changes": []
+        },
+        {
+          "platform": "android",
+          "changes": []
+        },
+        {
+          "platform": "harmony",
+          "changes": [
+            {
+              "kind": "fix",
+              "text": "修复网络添加页面部分控件显示层级异常的问题"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.3.0",
       "date": "2026-10-03",
       "platforms": [
@@ -26,6 +66,10 @@
             {
               "kind": "change",
               "text": "优化展开长图按钮 UI"
+            },
+            {
+              "kind": "change",
+              "text": "优化部分英文场景下文字显示不全问题"
             }
           ]
         },
@@ -84,12 +128,20 @@
           "platform": "harmony",
           "changes": [
             {
+              "kind": "new",
+              "text": "支持设备新增平板端"
+            },
+            {
               "kind": "fix",
               "text": "修复平板布局下部分控件错位问题"
             },
             {
               "kind": "fix",
               "text": "修复弹出键盘时可能遮挡输入框的问题"
+            },
+            {
+              "kind": "fix",
+              "text": "修复部分组件切换语言后没有立即更换语言的问题"
             }
           ]
         }
@@ -164,6 +216,10 @@
     }
   ],
   "warnings": [
+    "V0.3.1 的 windows 段为空，已跳过",
+    "V0.3.1 的 mac 段为空，已跳过",
+    "V0.3.1 的 ios 段为空，已跳过",
+    "V0.3.1 的 android 段为空，已跳过",
     "V0.3.0 的 windows 段为空，已跳过",
     "V0.2.0 的 windows 段为空，已跳过",
     "V0.2.0 的 mac 段为空，已跳过",

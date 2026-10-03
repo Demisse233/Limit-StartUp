@@ -43,8 +43,38 @@
              data-changelog-src="./notes/changelog.md"
              data-changelog-fallback="./data/changelog.json">
           <!-- changelog:start -->
-          <!-- V0.3.0 -->
+          <!-- V0.3.1 -->
           <article class="changelog-entry glass reveal">
+            <header class="changelog-head">
+              <h2 class="changelog-version">V0.3.1</h2>
+              <span class="changelog-date">2026 年 10 月 4 日</span>
+            </header>
+
+            <!-- 通用更新 -->
+            <div class="changelog-platform">
+              <div class="platform-badge platform-badge--general">
+                <img src="./assets/logo-general.svg" alt="" />
+                <span>通用更新</span>
+              </div>
+              <ul class="changelog-changes">
+                <li><strong class="kind-new">新增</strong> 新增应用图标角标展示未读文章数量功能（Windows 平台不支持）</li>
+              </ul>
+            </div>
+
+            <!-- HarmonyOS -->
+            <div class="changelog-platform">
+              <div class="platform-badge platform-badge--harmony">
+                <img src="./assets/logo-harmony.png" alt="" />
+                <span>HarmonyOS</span>
+              </div>
+              <ul class="changelog-changes">
+                <li><strong class="kind-fix">修复</strong> 修复网络添加页面部分控件显示层级异常的问题</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- V0.3.0 -->
+          <article class="changelog-entry glass reveal" style="--rd:0.08s">
             <header class="changelog-head">
               <h2 class="changelog-version">V0.3.0</h2>
               <span class="changelog-date">2026 年 10 月 3 日</span>
@@ -62,6 +92,7 @@
                 <li><strong class="kind-new">新增</strong> 设置页面-通用-rsshub 中新增 AI 寻源功能，可使用 AI 寻找可用的第三方rsshub 实例</li>
                 <li><strong class="kind-change">优化</strong> 优化设置页面二级页面的 UI 显示效果</li>
                 <li><strong class="kind-change">优化</strong> 优化展开长图按钮 UI</li>
+                <li><strong class="kind-change">优化</strong> 优化部分英文场景下文字显示不全问题</li>
               </ul>
             </div>
 
@@ -110,14 +141,16 @@
                 <span>HarmonyOS</span>
               </div>
               <ul class="changelog-changes">
+                <li><strong class="kind-new">新增</strong> 支持设备新增平板端</li>
                 <li><strong class="kind-fix">修复</strong> 修复平板布局下部分控件错位问题</li>
                 <li><strong class="kind-fix">修复</strong> 修复弹出键盘时可能遮挡输入框的问题</li>
+                <li><strong class="kind-fix">修复</strong> 修复部分组件切换语言后没有立即更换语言的问题</li>
               </ul>
             </div>
           </article>
 
           <!-- V0.2.0 -->
-          <article class="changelog-entry glass reveal" style="--rd:0.08s">
+          <article class="changelog-entry glass reveal" style="--rd:0.16s">
             <header class="changelog-head">
               <h2 class="changelog-version">V0.2.0</h2>
               <span class="changelog-date">2026 年 9 月 27 日</span>
@@ -150,7 +183,7 @@
           </article>
 
           <!-- V0.1.0 -->
-          <article class="changelog-entry glass reveal" style="--rd:0.16s">
+          <article class="changelog-entry glass reveal" style="--rd:0.24s">
             <header class="changelog-head">
               <h2 class="changelog-version">V0.1.0</h2>
               <span class="changelog-date">2026 年 9 月 1 日</span>
@@ -204,6 +237,32 @@
 <![CDATA[
 # LimitRSS 更新日志
 
+## V0.3.1-2026.10.04
+
+#### 通用更新
+
+【新增】新增应用图标角标展示未读文章数量功能（Windows 平台不支持）
+
+#### Windows
+
+
+
+#### MacOS
+
+
+
+#### iOS
+
+
+
+#### Android
+
+
+
+#### HarmonyOS
+
+【修复】修复网络添加页面部分控件显示层级异常的问题
+
 ## V0.3.0-2026.10.03
 
 #### 通用更新
@@ -217,6 +276,8 @@
 【优化】优化设置页面二级页面的 UI 显示效果
 
 【优化】优化展开长图按钮 UI
+
+【优化】优化部分英文场景下文字显示不全问题
 
 #### Windows
 
@@ -246,9 +307,13 @@
 
 #### HarmonyOS
 
+【新增】支持设备新增平板端
+
 【修复】修复平板布局下部分控件错位问题
 
 【修复】修复弹出键盘时可能遮挡输入框的问题
+
+【修复】修复部分组件切换语言后没有立即更换语言的问题
 
 ## V0.2.0-2026.9.27
 
