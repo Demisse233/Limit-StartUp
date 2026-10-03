@@ -4,7 +4,10 @@
   var STORAGE_KEY = 'ls_bookmarks_v1';
   var MAX_BOOKMARKS = 500;
   var MAX_CATEGORIES = 50;
+  var MAX_PINNED_BOOKMARKS = 16;
+  var DEFAULT_PINNED_BOOKMARKS = 12;
   var state = readState();
+  var panelView = 'quick';
   var activeCategory = 'all';
   var syncTimer = null;
   var syncPending = false;
@@ -30,7 +33,7 @@
 
   function defaultState() {
     return {
-      version: 1,
+      version: 2,
       panelOpen: false,
       categories: [{ id: 'uncategorized', name: '未分类' }],
       bookmarks: [],
@@ -106,12 +109,21 @@
     categoryIds = new Set(output.categories.map(function (category) { return category.id; }));
     var seenUrls = new Set();
     var sourceBookmarks = Array.isArray(input.bookmarks) ? input.bookmarks : [];
+    var hasPinnedState = sourceBookmarks.some(function (bookmark) {
+      return bookmark && Object.prototype.hasOwnProperty.call(bookmark, 'pinned');
+    });
+    var pinnedCount = 0;
     sourceBookmarks.slice(0, MAX_BOOKMARKS).forEach(function (bookmark) {
       var url = normalizeUrl(bookmark && bookmark.url);
       var name = cleanText(bookmark && bookmark.name, 120);
       var key = canonicalUrl(url);
       if (!url || !name || seenUrls.has(key)) return;
       seenUrls.add(key);
+      var pinned = hasPinnedState
+        ? Boolean(bookmark && bookmark.pinned)
+        : output.bookmarks.length < DEFAULT_PINNED_BOOKMARKS;
+      if (pinned && pinnedCount >= MAX_PINNED_BOOKMARKS) pinned = false;
+      if (pinned) pinnedCount += 1;
       output.bookmarks.push({
         id: cleanText(bookmark && bookmark.id, 64) || createId('bookmark'),
         name: name,
@@ -119,17 +131,28 @@
         iconUrl: normalizeIconUrl(bookmark && bookmark.iconUrl),
         categoryId: categoryIds.has(bookmark && bookmark.categoryId) ? bookmark.categoryId : 'uncategorized',
         size: normalizeBookmarkSize(bookmark && bookmark.size),
+        pinned: pinned,
         createdAt: Number(bookmark && bookmark.createdAt) || Date.now(),
         updatedAt: Number(bookmark && bookmark.updatedAt) || Date.now()
       });
     });
     output.updatedAt = Number(input.updatedAt) || 0;
+    output.version = 2;
     return output;
   }
 
   function readState() {
     try {
-      return normalizeState(JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'));
+      var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      var normalized = normalizeState(raw);
+      var needsMigration = raw && (
+        Number(raw.version) < 2 ||
+        (Array.isArray(raw.bookmarks) && raw.bookmarks.some(function (bookmark) {
+          return bookmark && !Object.prototype.hasOwnProperty.call(bookmark, 'pinned');
+        }))
+      );
+      if (needsMigration) localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+      return normalized;
     } catch (e) {
       return defaultState();
     }
@@ -152,6 +175,33 @@
 
   function getCategoryById(id) {
     return state.categories.find(function (category) { return category.id === id; }) || state.categories[0];
+  }
+
+  function pinnedBookmarkCount(excludeId) {
+    return state.bookmarks.filter(function (bookmark) {
+      return bookmark.pinned && bookmark.id !== excludeId;
+    }).length;
+  }
+
+  function canPinBookmark(id, pinned) {
+    return !pinned || pinnedBookmarkCount(id) < MAX_PINNED_BOOKMARKS;
+  }
+
+  function setBookmarkPinned(id, pinned) {
+    var bookmark = state.bookmarks.find(function (item) { return item.id === id; });
+    if (!bookmark) return false;
+    if (!canPinBookmark(id, pinned)) {
+      notify('首页最多置顶 ' + MAX_PINNED_BOOKMARKS + ' 个快捷书签', true);
+      return false;
+    }
+    if (bookmark.pinned === pinned) return true;
+    var now = Date.now();
+    bookmark.pinned = pinned;
+    bookmark.updatedAt = now;
+    state.updatedAt = now;
+    writeLocal(state, true);
+    notify(pinned ? '已加入快捷书签' : '已从快捷书签移除');
+    return true;
   }
 
   function categoryNameKey(name) {
@@ -304,13 +354,15 @@
     var empty = document.getElementById(emptyId);
     if (!grid || !empty) return;
     grid.replaceChildren();
+    var quickView = gridId === 'bookmarkPanelGrid' && panelView === 'quick';
     var visible = state.bookmarks.filter(function (bookmark) {
+      if (quickView) return bookmark.pinned === true;
       return activeCategory === 'all' || bookmark.categoryId === activeCategory;
     });
     empty.hidden = visible.length > 0;
     visible.forEach(function (bookmark) {
       var item = document.createElement('div');
-      item.className = 'bookmark_item bookmark_item--' + normalizeBookmarkSize(bookmark.size);
+      item.className = 'bookmark_item bookmark_item--' + (quickView ? 'large' : normalizeBookmarkSize(bookmark.size));
       item.dataset.bookmarkId = bookmark.id;
       var link = document.createElement('a');
       link.className = 'bookmark_link';
@@ -370,7 +422,8 @@
         event.stopPropagation();
         openQuickEditor(bookmark.id);
       });
-      item.append(link, resize, editActions, mobileSelect);
+      item.appendChild(link);
+      if (!quickView) item.append(resize, editActions, mobileSelect);
       grid.appendChild(item);
     });
     if (gridId === 'bookmarkPanelGrid') requestAnimationFrame(syncBookmarkGridUnits);
@@ -441,6 +494,12 @@
 
     var actions = document.createElement('span');
     actions.className = 'bookmark_settings_row_actions';
+    var pin = document.createElement('button');
+    pin.type = 'button';
+    pin.className = 'bookmark_settings_row_action bookmark_settings_row_action--pin' + (bookmark.pinned ? ' is-active' : '');
+    pin.textContent = bookmark.pinned ? '取消置顶' : '置顶';
+    pin.setAttribute('aria-label', (bookmark.pinned ? '取消置顶 ' : '置顶 ') + bookmark.name);
+    pin.addEventListener('click', function () { setBookmarkPinned(bookmark.id, !bookmark.pinned); });
     var edit = document.createElement('button');
     edit.type = 'button';
     edit.className = 'bookmark_settings_row_action bookmark_settings_row_action--edit';
@@ -453,7 +512,7 @@
     remove.textContent = '删除';
     remove.setAttribute('aria-label', '删除 ' + bookmark.name);
     remove.addEventListener('click', function () { removeBookmark(bookmark.id); });
-    actions.append(edit, remove);
+    actions.append(pin, edit, remove);
     row.append(icon, details, actions);
     return row;
   }
@@ -759,8 +818,24 @@
     if (!panel || !launcher) return;
     var temporarilyHidden = state.panelOpen === true && isPanelTemporarilyHidden();
     var open = state.panelOpen === true && !temporarilyHidden;
+    var fullView = panelView === 'all';
     panel.classList.toggle('is-open', open);
+    panel.classList.toggle('is-full-view', fullView);
     panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    var title = document.getElementById('bookmarkPanelTitle');
+    var viewToggle = document.getElementById('bookmarkViewToggle');
+    var emptyTitle = document.getElementById('bookmarkPanelEmptyTitle');
+    var emptyHint = document.getElementById('bookmarkPanelEmptyHint');
+    if (title) title.textContent = fullView ? '全部书签' : '快捷书签';
+    if (emptyTitle) emptyTitle.textContent = fullView ? '还没有书签' : '还没有快捷书签';
+    if (emptyHint) emptyHint.textContent = fullView ? '可在设置 → 书签中添加或导入' : '可在全部书签或设置中置顶';
+    if (viewToggle) {
+      var viewToggleText = viewToggle.querySelector('span');
+      var viewToggleLabel = fullView ? '返回快捷' : '查看全部';
+      if (viewToggleText) viewToggleText.textContent = viewToggleLabel;
+      viewToggle.setAttribute('aria-label', fullView ? '返回快捷书签' : '查看全部书签');
+      viewToggle.title = fullView ? '返回快捷书签' : '查看全部书签';
+    }
     launcher.classList.toggle('is-temporarily-hidden', temporarilyHidden);
     launcher.setAttribute('aria-expanded', open ? 'true' : 'false');
     launcher.setAttribute('aria-label', temporarilyHidden ? '恢复书签' : (open ? '关闭书签' : '打开书签'));
@@ -865,7 +940,7 @@
     var move = document.getElementById('bookmarkMoveButton');
     var size = document.getElementById('bookmarkSizeButton');
     var edit = document.getElementById('bookmarkEditButton');
-    if (!panel || !menu || !panel.classList.contains('is-open')) return;
+    if (!panel || !menu || !panel.classList.contains('is-open') || panelView !== 'all') return;
     event.preventDefault();
     hideBookmarkSizeMenu();
     var bookmarkCount = panel.querySelectorAll('#bookmarkPanelGrid .bookmark_item').length;
@@ -878,8 +953,12 @@
   }
 
   function setPanelOpen(open) {
+    if (!open) {
+      panelView = 'quick';
+      activeCategory = 'all';
+      setPanelMode(null);
+    }
     if (state.panelOpen === open) return;
-    if (!open) setPanelManaging(false);
     state.panelOpen = open;
     state.updatedAt = Date.now();
     writeLocal(state, true);
@@ -887,6 +966,13 @@
 
   function openPanel() { setPanelOpen(true); }
   function closePanel() { setPanelOpen(false); }
+
+  function setPanelView(view) {
+    panelView = view === 'all' ? 'all' : 'quick';
+    activeCategory = 'all';
+    setPanelMode(null);
+    render();
+  }
 
   function togglePanel() {
     setPanelOpen(!state.panelOpen);
@@ -929,6 +1015,8 @@
     });
     var size = document.querySelector('input[name="bookmarkQuickSize"][value="' + bookmark.size + '"]');
     if (size) size.checked = true;
+    var pinned = document.getElementById('bookmarkQuickPinned');
+    if (pinned) pinned.checked = bookmark.pinned === true;
     editor.hidden = false;
     requestAnimationFrame(function () { document.getElementById('bookmarkQuickName').focus(); });
   }
@@ -959,10 +1047,17 @@
     }
     var now = Date.now();
     var size = document.querySelector('input[name="bookmarkQuickSize"]:checked');
+    var pinned = document.getElementById('bookmarkQuickPinned');
+    var shouldPin = Boolean(pinned && pinned.checked);
+    if (!canPinBookmark(bookmark.id, shouldPin)) {
+      notify('首页最多置顶 ' + MAX_PINNED_BOOKMARKS + ' 个快捷书签', true);
+      return;
+    }
     bookmark.name = name;
     bookmark.url = url;
     bookmark.categoryId = document.getElementById('bookmarkQuickCategory').value || 'uncategorized';
     bookmark.size = normalizeBookmarkSize(size && size.value);
+    bookmark.pinned = shouldPin;
     bookmark.updatedAt = now;
     state.updatedAt = now;
     writeLocal(state, true);
@@ -989,6 +1084,8 @@
     var size = bookmark ? bookmark.size : 'large';
     var radio = form.querySelector('input[name="bookmarkSize"][value="' + size + '"]');
     if (radio) radio.checked = true;
+    var pinned = document.getElementById('bookmarkPinned');
+    if (pinned) pinned.checked = bookmark ? bookmark.pinned === true : pinnedBookmarkCount() < DEFAULT_PINNED_BOOKMARKS;
     document.getElementById('bookmarkEditorSave').textContent = bookmark ? '保存' : '添加';
     editor.hidden = false;
     requestAnimationFrame(function () { document.getElementById('bookmarkName').focus(); });
@@ -1060,6 +1157,8 @@
     var categoryName = cleanText(document.getElementById('bookmarkCategory').value, 60) || '未分类';
     var sizeInput = document.querySelector('input[name="bookmarkSize"]:checked');
     var size = normalizeBookmarkSize(sizeInput && sizeInput.value);
+    var pinnedInput = document.getElementById('bookmarkPinned');
+    var pinned = Boolean(pinnedInput && pinnedInput.checked);
     if (!url) {
       notify('请填写有效的书签网址', true);
       return;
@@ -1079,19 +1178,24 @@
     var now = Date.now();
     var categoryId = getOrCreateCategory(categoryName);
     var existing = state.bookmarks.find(function (bookmark) { return bookmark.id === id; });
+    if (!canPinBookmark(id, pinned)) {
+      notify('首页最多置顶 ' + MAX_PINNED_BOOKMARKS + ' 个快捷书签', true);
+      return;
+    }
     if (existing) {
       existing.name = name;
       existing.url = url;
       existing.iconUrl = iconUrl;
       existing.categoryId = categoryId;
       existing.size = size;
+      existing.pinned = pinned;
       existing.updatedAt = now;
     } else {
       if (state.bookmarks.length >= MAX_BOOKMARKS) {
         notify('最多保存 ' + MAX_BOOKMARKS + ' 个书签', true);
         return;
       }
-      state.bookmarks.push({ id: createId('bookmark'), name: name, url: url, iconUrl: iconUrl, categoryId: categoryId, size: size, createdAt: now, updatedAt: now });
+      state.bookmarks.push({ id: createId('bookmark'), name: name, url: url, iconUrl: iconUrl, categoryId: categoryId, size: size, pinned: pinned, createdAt: now, updatedAt: now });
     }
     state.updatedAt = now;
     writeLocal(state, true);
@@ -1225,6 +1329,7 @@
           iconUrl: item.iconUrl,
           categoryId: getOrCreateCategory(item.category),
           size: normalizeBookmarkSize(item.size),
+          pinned: false,
           createdAt: now,
           updatedAt: now
         };
@@ -1328,6 +1433,7 @@
     var launcher = document.getElementById('bookmarkLauncher');
     var panel = document.getElementById('bookmarkPanel');
     var settingsButton = document.getElementById('bookmarkSettingsButton');
+    var viewToggle = document.getElementById('bookmarkViewToggle');
     var moveButton = document.getElementById('bookmarkMoveButton');
     var sizeButton = document.getElementById('bookmarkSizeButton');
     var editButton = document.getElementById('bookmarkEditButton');
@@ -1355,6 +1461,9 @@
     bindEnginePickerVisibility();
     if (panel) panel.addEventListener('contextmenu', showBookmarkContextMenu);
     if (settingsButton) settingsButton.addEventListener('click', openBookmarkSettings);
+    if (viewToggle) viewToggle.addEventListener('click', function () {
+      setPanelView(panelView === 'quick' ? 'all' : 'quick');
+    });
     if (moveButton) moveButton.addEventListener('click', function () { setPanelManaging(true); });
     if (sizeButton) sizeButton.addEventListener('click', function () { setPanelSizing(true); });
     if (editButton) editButton.addEventListener('click', function () { setPanelEditing(true); });
