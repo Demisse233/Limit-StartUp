@@ -43,11 +43,11 @@
              data-changelog-src="./notes/changelog.md"
              data-changelog-fallback="./data/changelog.json">
           <!-- changelog:start -->
-          <!-- V0.3.1 -->
+          <!-- V0.4.0 -->
           <article class="changelog-entry glass reveal">
             <header class="changelog-head">
-              <h2 class="changelog-version">V0.3.1</h2>
-              <span class="changelog-date">2026 年 10 月 4 日</span>
+              <h2 class="changelog-version">V0.4.0</h2>
+              <span class="changelog-date">2026 年 10 月 5 日</span>
             </header>
 
             <!-- 通用更新 -->
@@ -58,6 +58,49 @@
               </div>
               <ul class="changelog-changes">
                 <li><strong class="kind-new">新增</strong> 新增应用图标角标展示未读文章数量功能（Windows 平台不支持）</li>
+                <li><strong class="kind-new">新增</strong> 新增本地诊断中心，可通过设置-关于-诊断中心进入。诊断中心可查看软件运行日志、性能和缓存情况，必要时可导出日志方便开发者排查问题。</li>
+                <li><strong class="kind-change">优化</strong> 优化小组件的显示逻辑，小组件中文章将显示标题以及正文部分内容</li>
+                <li><strong class="kind-change">优化</strong> 优化查看大图中的手势逻辑</li>
+                <li><strong class="kind-change">优化</strong> 优化查看大图中普通图片和长图的显示逻辑</li>
+              </ul>
+            </div>
+
+            <!-- macOS 段 -->
+            <div class="changelog-platform">
+              <div class="platform-badge platform-badge--mac">
+                <img src="./assets/logo-macos.png" alt="" />
+                <span>macOS</span>
+              </div>
+              <ul class="changelog-changes">
+                <li><strong class="kind-fix">修复</strong> 修复小组件一直显示“请在应用中设置特别关心”的问题</li>
+                <li><strong class="kind-fix">修复</strong> 修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题</li>
+                <li><strong class="kind-fix">修复</strong> 修复小组件中文章已读但是未从小组件中消失的问题</li>
+              </ul>
+            </div>
+
+            <!-- iOS -->
+            <div class="changelog-platform">
+              <div class="platform-badge platform-badge--ios">
+                <img src="./assets/logo-ios.png" alt="" />
+                <span>iOS</span>
+              </div>
+              <ul class="changelog-changes">
+                <li><strong class="kind-fix">修复</strong> 修复小组件一直显示“请在应用中设置特别关心”的问题</li>
+                <li><strong class="kind-fix">修复</strong> 修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题</li>
+                <li><strong class="kind-fix">修复</strong> 修复小组件中文章已读但是未从小组件中消失的问题</li>
+              </ul>
+            </div>
+
+            <!-- Android -->
+            <div class="changelog-platform">
+              <div class="platform-badge platform-badge--android">
+                <img src="./assets/logo-android.png" alt="" />
+                <span>Android</span>
+              </div>
+              <ul class="changelog-changes">
+                <li><strong class="kind-fix">修复</strong> 修复小组件一直显示“请在应用中设置特别关心”的问题</li>
+                <li><strong class="kind-fix">修复</strong> 修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题</li>
+                <li><strong class="kind-fix">修复</strong> 修复小组件中文章已读但是未从小组件中消失的问题</li>
               </ul>
             </div>
 
@@ -69,6 +112,7 @@
               </div>
               <ul class="changelog-changes">
                 <li><strong class="kind-fix">修复</strong> 修复网络添加页面部分控件显示层级异常的问题</li>
+                <li><strong class="kind-fix">修复</strong> 修复阅读页查看大图时保存图片按钮消失的问题</li>
               </ul>
             </div>
           </article>
@@ -237,11 +281,45 @@
 <![CDATA[
 # LimitRSS 更新日志
 
-## V0.3.1-2026.10.04
+> 日志模板
+>
+> ## Vx.x.x-xxxx.xx.xx
+>
+> #### 通用更新
+>
+> #### Windows
+>
+> 
+>
+> #### MacOS
+>
+> 
+>
+> #### iOS
+>
+> 
+>
+> #### Android
+>
+> 
+>
+> #### HarmonyOS
+>
+> 
+
+## V0.4.0-2026.10.05
 
 #### 通用更新
 
 【新增】新增应用图标角标展示未读文章数量功能（Windows 平台不支持）
+
+【新增】新增本地诊断中心，可通过设置-关于-诊断中心进入。诊断中心可查看软件运行日志、性能和缓存情况，必要时可导出日志方便开发者排查问题。
+
+【优化】优化小组件的显示逻辑，小组件中文章将显示标题以及正文部分内容
+
+【优化】优化查看大图中的手势逻辑
+
+【优化】优化查看大图中普通图片和长图的显示逻辑
 
 #### Windows
 
@@ -249,19 +327,33 @@
 
 #### MacOS
 
+【修复】修复小组件一直显示“请在应用中设置特别关心”的问题
 
+【修复】修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题
+
+【修复】修复小组件中文章已读但是未从小组件中消失的问题
 
 #### iOS
 
+【修复】修复小组件一直显示“请在应用中设置特别关心”的问题
 
+【修复】修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题
+
+【修复】修复小组件中文章已读但是未从小组件中消失的问题
 
 #### Android
 
+【修复】修复小组件一直显示“请在应用中设置特别关心”的问题
 
+【修复】修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题
+
+【修复】修复小组件中文章已读但是未从小组件中消失的问题
 
 #### HarmonyOS
 
 【修复】修复网络添加页面部分控件显示层级异常的问题
+
+【修复】修复阅读页查看大图时保存图片按钮消失的问题
 
 ## V0.3.0-2026.10.03
 

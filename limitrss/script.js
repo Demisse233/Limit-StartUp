@@ -390,14 +390,6 @@
   //   文件放在 GitHub Release 里，命名遵循 LimitRSS-<版本>-<平台>.<扩展名>
   // 所以发新版时只要：改 changelog 的版本号 → npm run sync → 传包到对应 Release，
   // 网页上的下载地址会自动跟着版本号走。
-  const RELEASE_BASE =
-    "https://github.com/Demisse233/LimitRSS_Client/releases/download";
-  // 文件名约定：平台 → [扩展名, 可选后缀]
-  const RELEASE_FILE = {
-    mac: "macOS.dmg",
-    ios: "iOS.ipa",
-    android: "Android.apk",
-  };
   // 手工覆盖（留空表示走自动拼接）。万一某个版本的命名不一致，填这里即可。
   const DOWNLOAD_OVERRIDES = {
     mac: "",
@@ -405,47 +397,65 @@
     android: "",
   };
 
-  function releaseUrl(key, version) {
-    const file = RELEASE_FILE[key];
-    if (!file || !version) return "";
-    return RELEASE_BASE + "/v" + version + "/LimitRSS-" + version + "-" + file;
+  // ---------- 安装包清单（构建时生成，运行时只读本地文件）----------
+  // 为什么不在前端探测 release 资产是否存在：
+  //   GitHub 的下载地址会 302 到 objects.githubusercontent.com，
+  //   该链路没有 CORS 头，fetch 一律 `TypeError: Failed to fetch`（实测）。
+  //   所以由 scripts/gen-download-manifest.mjs 在构建时查 GitHub API，
+  //   把「哪些版本、哪些平台真的有包」落成 data/downloads.json，前端直接读。
+  // 【重要】清单里的版本可能晚于更新日志的版本（例如日志先写、
+  // 安装包后传）。必须用清单里「最新的有包版本」，而不是 changelog 的版本，
+  // 否则会拼出 404 死链。
+  const REPO_SLUG = "Demisse233/LimitRSS_Client";
+
+  function manifestUrl(repo, version, fileName) {
+    return (
+      "https://github.com/" + repo + "/releases/download/v" + version + "/" + fileName
+    );
   }
 
-  // 给每张卡片的下载控件接上地址。版本号要等运行时读完 changelog 才知道，
-  // 所以这里先注册一个「地址就绪」回调，由下面拉取 changelog 的流程触发。
-  function applyDownloadUrls(version) {
-    document.querySelectorAll("[data-download-for]").forEach(function (el) {
-      const key = el.getAttribute("data-download-for");
-      if (!key) return;
-      const url = DOWNLOAD_OVERRIDES[key] || releaseUrl(key, version);
-      if (url) {
-        // 用 <a> 承载，语义正确、可右键「另存为」、可在新标签打开；
-        // GitHub Release 会 302 到对象存储并带 attachment，可直接触发下载。
-        el.setAttribute("href", url);
-        el.setAttribute("target", "_blank");
-        el.setAttribute("rel", "noopener noreferrer");
-        el.removeAttribute("aria-disabled");
-      } else {
-        el.removeAttribute("href");
-        el.setAttribute("aria-disabled", "true");
-      }
-    });
-  }
-
-  // 先按「无地址」渲染，等版本号拿到后再补上
-  applyDownloadUrls("");
-
-  // 版本号来源：与更新日志页同一份数据，保证两处永远一致
-  fetch("./data/changelog.json")
+  fetch("./data/downloads.json")
     .then(function (r) {
       return r.ok ? r.json() : null;
     })
-    .then(function (data) {
-      const latest = data && data.versions && data.versions[0];
-      if (latest && latest.version) applyDownloadUrls(latest.version);
+    .then(function (manifest) {
+      if (!manifest || !manifest.versions) return;
+      const repo = manifest.repo || REPO_SLUG;
+      const versions = manifest.versions; // 已按版本从新到旧排序
+
+      document.querySelectorAll("[data-download-for]").forEach(function (el) {
+        const key = el.getAttribute("data-download-for");
+        if (!key) return;
+        if (DOWNLOAD_OVERRIDES[key]) {
+          el.setAttribute("href", DOWNLOAD_OVERRIDES[key]);
+          el.setAttribute("target", "_blank");
+          el.setAttribute("rel", "noopener noreferrer");
+          el.removeAttribute("aria-disabled");
+          return;
+        }
+        // 找「最新的、且该平台确实有包」的版本
+        let hit = "";
+        for (const ver of Object.keys(versions)) {
+          const files = versions[ver] || {};
+          if (files[key]) {
+            hit = manifestUrl(repo, ver, files[key]);
+            break;
+          }
+        }
+        if (hit) {
+          el.setAttribute("href", hit);
+          el.setAttribute("target", "_blank");
+          el.setAttribute("rel", "noopener noreferrer");
+          el.removeAttribute("aria-disabled");
+        } else {
+          // 任何版本都没有该平台的包：保持占位，绝不产生死链
+          el.removeAttribute("href");
+          el.setAttribute("aria-disabled", "true");
+        }
+      });
     })
     .catch(function () {
-      /* 拿不到就维持占位状态，不影响页面其它功能 */
+      /* 读不到清单就维持占位状态，不影响页面其它功能 */
     });
 
   // ---------- 下载点击埋点 ----------

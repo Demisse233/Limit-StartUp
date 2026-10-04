@@ -1,0 +1,11 @@
+{
+  "repo": "Demisse233/LimitRSS_Client",
+  "generatedAt": "2026-10-04T08:47:47.605Z",
+  "versions": {
+    "0.3.1": {
+      "android": "LimitRSS-0.3.1-Android.apk",
+      "ios": "LimitRSS-0.3.1-iOS.ipa",
+      "mac": "LimitRSS-0.3.1-macOS.dmg"
+    }
+  }
+}
