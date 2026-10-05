@@ -23,6 +23,64 @@ GET https://www.demisse.cn/limitrss/api/check-update.js
 → window.LIMITRSS_UPDATE_INFO = { ... }
 ```
 
+## 下载接口（固定地址，与版本号无关）
+
+检测到更新后，用下面这些地址拿安装包。**地址永久不变，内容随发版更新**，
+所以客户端可以长期写死，不必自己拼版本号和文件名。
+
+```
+GET https://www.demisse.cn/limitrss/api/download/index.json     ← 所有平台汇总
+GET https://www.demisse.cn/limitrss/api/download/mac.json
+GET https://www.demisse.cn/limitrss/api/download/windows.json
+GET https://www.demisse.cn/limitrss/api/download/ios.json
+GET https://www.demisse.cn/limitrss/api/download/android.json
+GET https://www.demisse.cn/limitrss/api/download/harmony.json
+```
+
+响应示例（`api/download/mac.json`）：
+
+```jsonc
+{
+  "schemaVersion": 1,
+  "product": "LimitRSS",
+  "platform": "mac",
+  "label": "macOS",
+  "available": true,              // ← false 时不要给下载按钮
+  "version": "0.3.1",
+  "fileName": "LimitRSS-0.3.1-macOS.dmg",
+  "url": "https://github.com/.../releases/download/v0.3.1/LimitRSS-0.3.1-macOS.dmg",
+  "upToDateWithLatest": false,
+  "latestVersion": "0.4.0",
+  "releasePage": "https://github.com/.../releases/tag/v0.3.1",
+  "changelog": "https://www.demisse.cn/limitrss/changelog",
+  "downloads": "https://www.demisse.cn/limitrss/"
+}
+```
+
+### ⚠️ 这个接口返回的是**地址**，不是文件流
+
+想直接下载文件，请**用返回的 `url` 再发一次请求**：
+
+```
+GET api/download/mac.json   →  拿到 url
+GET <url>                   →  拿到 .dmg 文件
+```
+
+**为什么不能直接返回文件流**（已实测）：本站托管在 Retinbox，它对**任何不存在
+的路径**都返回 `HTTP 200 + 主站 index.html`（只是 MIME 会被 `_headers` 改成
+`application/json`）。所以静态托管做不出真正的 302 重定向——如果客户端去请求
+`api/download/mac`（不带 `.json`），会拿到 200 + HTML，**把网页当安装包下下来**。
+
+`url` 指向 GitHub，它会 `302` 到对象存储并带：
+
+```
+content-type: application/octet-stream
+content-disposition: attachment; filename=LimitRSS-0.3.1-macOS.dmg
+```
+
+原生 HTTP 客户端（dio / OkHttp / URLSession）**默认跟随重定向**，直接用即可。
+注意关掉重定向跟随会拿到 302 而不是文件。
+
 ## 响应结构（schemaVersion 1）
 
 ```jsonc
@@ -135,12 +193,17 @@ _V? _parse(String raw) {
 3. 若 versions.latest 比本地版本新 → 有更新
 4. 弹窗展示 notes.general（或 notes.summary）
 5. 取 platforms[当前平台]：
-     available == false        → 按钮禁用，提示"该版本安装包准备中"
-     upToDateWithLatest == true → 按钮跳 downloadUrl 直接下载
-     否则                       → 按钮跳 downloadUrl（拿到的可能是上一个版本）
-                                  并在提示里说明
-6. 任何网络异常都不要阻塞用户 —— 降级为"检查失败，请稍后重试"
+     available == false         → 按钮禁用，提示"该版本安装包准备中"
+     upToDateWithLatest == true → 按钮可下载（就是最新版）
+     否则                       → 按钮可下载（拿到的是上一个版本），在提示里说明
+6. 用户点「立即更新」：
+     a. 用 platforms[当前平台].downloadUrl 下载（少一次请求）
+     b. 失败时兜底：GET platforms[当前平台].stableJson?t=<时间戳> 再取一次 url
+     c. available == false → 提示"安装包准备中"，不要给下载按钮
+7. 任何网络异常都不要阻塞用户 —— 降级为"检查失败，请稍后重试"
 ```
+
+**`stableJson` 是固定地址，客户端可以长期写死**，不必自己拼版本号和文件名。
 
 ## 客户端平台标识
 
@@ -174,17 +237,28 @@ notes/changelog.md       ← 你维护的唯一数据源
 data/changelog.json      ← 决定 versions.latest 与 notes
 data/downloads.json      ← 由 GitHub Release 实际内容生成，决定 downloadUrl
   ↓
-api/check-update.json    ← 接口产物
-api/check-update.js      ← 浏览器端副本
+api/check-update.json          ← 检查更新接口
+api/check-update.js            ← 浏览器端副本
+api/download/index.json        ← 下载清单汇总（固定地址）
+api/download/<平台>.json        ← 各平台下载清单（固定地址）
 ```
 
 所以发新版的顺序是：
 
 ```
 1. 改 notes/changelog.md 的版本号与条目
-2. npm run sync           # 自动同步日志、拉取 Release 清单、重生成接口
+2. npm run sync           # 自动同步日志、拉取 Release 清单、重生成全部接口
 3. 把安装包传到 GitHub Release（tag = v<版本号>）
 4. 再跑一次 npm run sync  # 让接口认出新上传的包
+```
+
+`npm run sync` 会依次跑四个脚本，全部自动：
+
+```
+scripts/sync.mjs                    同步更新日志 → data/changelog.json
+scripts/gen-download-manifest.mjs   查 GitHub Release → data/downloads.json
+scripts/gen-download-api.mjs        生成下载清单接口 → api/download/*.json
+scripts/gen-update-api.mjs          生成检查更新接口 → api/check-update.json
 ```
 
 第 3 步之后如果不重跑 sync，接口里 `platforms.<p>.version` 会停留在上一个版本

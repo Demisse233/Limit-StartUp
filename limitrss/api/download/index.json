@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-05T14:39:26.306Z",
+  "product": "LimitRSS",
+  "latestVersion": "0.4.0",
+  "repo": "Demisse233/LimitRSS_Client",
+  "usage": "GET 本文件取平台清单，再 GET api/download/<platform>.json 取下载地址，然后用返回的 url 请求安装包。请自带 ?t=<时间戳> 绕开缓存。",
+  "platforms": {
+    "mac": {
+      "label": "macOS",
+      "available": true,
+      "version": "0.3.1",
+      "file": "https://www.demisse.cn/limitrss/api/download/mac.json",
+      "url": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-macOS.dmg"
+    },
+    "windows": {
+      "label": "Windows",
+      "available": false,
+      "version": null,
+      "file": "https://www.demisse.cn/limitrss/api/download/windows.json",
+      "url": null
+    },
+    "ios": {
+      "label": "iOS",
+      "available": true,
+      "version": "0.3.1",
+      "file": "https://www.demisse.cn/limitrss/api/download/ios.json",
+      "url": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-iOS.ipa"
+    },
+    "android": {
+      "label": "Android",
+      "available": true,
+      "version": "0.3.1",
+      "file": "https://www.demisse.cn/limitrss/api/download/android.json",
+      "url": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-Android.apk"
+    },
+    "harmony": {
+      "label": "HarmonyOS",
+      "available": false,
+      "version": null,
+      "file": "https://www.demisse.cn/limitrss/api/download/harmony.json",
+      "url": null
+    }
+  }
+}

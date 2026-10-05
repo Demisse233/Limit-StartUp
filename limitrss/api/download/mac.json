@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-05T14:39:26.305Z",
+  "product": "LimitRSS",
+  "platform": "mac",
+  "label": "macOS",
+  "available": true,
+  "version": "0.3.1",
+  "fileName": "LimitRSS-0.3.1-macOS.dmg",
+  "url": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-macOS.dmg",
+  "upToDateWithLatest": false,
+  "latestVersion": "0.4.0",
+  "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
+  "changelog": "https://www.demisse.cn/limitrss/changelog",
+  "downloads": "https://www.demisse.cn/limitrss/"
+}

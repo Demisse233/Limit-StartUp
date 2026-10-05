@@ -1,7 +1,7 @@
 /* 由 scripts/gen-update-api.mjs 自动生成，请勿手工编辑。 JSONP 式全局变量，供浏览器端直接读取，避免 CORS。 */
 window.LIMITRSS_UPDATE_INFO = {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-05T08:35:06.501Z",
+  "generatedAt": "2026-10-05T14:39:44.509Z",
   "product": "LimitRSS",
   "versions": {
     "latest": "0.4.0",
@@ -182,7 +182,8 @@ window.LIMITRSS_UPDATE_INFO = {
       "upToDateWithLatest": false,
       "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-macOS.dmg",
       "fileName": "LimitRSS-0.3.1-macOS.dmg",
-      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1"
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
+      "stableJson": "https://www.demisse.cn/limitrss/api/download/mac.json"
     },
     "windows": {
       "label": "Windows",
@@ -191,7 +192,8 @@ window.LIMITRSS_UPDATE_INFO = {
       "upToDateWithLatest": false,
       "downloadUrl": null,
       "fileName": null,
-      "releasePage": null
+      "releasePage": null,
+      "stableJson": "https://www.demisse.cn/limitrss/api/download/windows.json"
     },
     "ios": {
       "label": "iOS",
@@ -200,7 +202,8 @@ window.LIMITRSS_UPDATE_INFO = {
       "upToDateWithLatest": false,
       "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-iOS.ipa",
       "fileName": "LimitRSS-0.3.1-iOS.ipa",
-      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1"
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
+      "stableJson": "https://www.demisse.cn/limitrss/api/download/ios.json"
     },
     "android": {
       "label": "Android",
@@ -209,7 +212,8 @@ window.LIMITRSS_UPDATE_INFO = {
       "upToDateWithLatest": false,
       "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-Android.apk",
       "fileName": "LimitRSS-0.3.1-Android.apk",
-      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1"
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
+      "stableJson": "https://www.demisse.cn/limitrss/api/download/android.json"
     },
     "harmony": {
       "label": "HarmonyOS",
@@ -218,7 +222,8 @@ window.LIMITRSS_UPDATE_INFO = {
       "upToDateWithLatest": false,
       "downloadUrl": null,
       "fileName": null,
-      "releasePage": null
+      "releasePage": null,
+      "stableJson": "https://www.demisse.cn/limitrss/api/download/harmony.json"
     }
   },
   "links": {
@@ -226,6 +231,7 @@ window.LIMITRSS_UPDATE_INFO = {
     "downloads": "https://www.demisse.cn/limitrss/",
     "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases",
     "releasePageForVersion": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
-    "latestReleaseExists": false
+    "latestReleaseExists": false,
+    "downloadApi": "https://www.demisse.cn/limitrss/api/download/index.json"
   }
 };

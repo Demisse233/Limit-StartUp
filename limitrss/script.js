@@ -414,6 +414,25 @@
     );
   }
 
+  // 从清单里解析出「某平台最新的、确实有包的版本」。
+  // 抽成独立函数是为了让网页和构建脚本（scripts/lib/download.mjs）用同一套规则，
+  // 两边算出的地址必须完全一致，否则接口给的地址和网页上的会对不上。
+  // 返回 { version, fileName, url }，没有任何版本有包时返回 null。
+  function resolveDownloadEntry(versions, key, repo) {
+    if (!versions || !key) return null;
+    for (const ver of Object.keys(versions)) {
+      const files = versions[ver] || {};
+      if (files[key]) {
+        return {
+          version: ver,
+          fileName: files[key],
+          url: manifestUrl(repo || REPO_SLUG, ver, files[key]),
+        };
+      }
+    }
+    return null;
+  }
+
   fetch("./data/downloads.json")
     .then(function (r) {
       return r.ok ? r.json() : null;
@@ -434,16 +453,9 @@
           return;
         }
         // 找「最新的、且该平台确实有包」的版本
-        let hit = "";
-        for (const ver of Object.keys(versions)) {
-          const files = versions[ver] || {};
-          if (files[key]) {
-            hit = manifestUrl(repo, ver, files[key]);
-            break;
-          }
-        }
-        if (hit) {
-          el.setAttribute("href", hit);
+        const entry = resolveDownloadEntry(versions, key, repo);
+        if (entry) {
+          el.setAttribute("href", entry.url);
           el.setAttribute("target", "_blank");
           el.setAttribute("rel", "noopener noreferrer");
           el.removeAttribute("aria-disabled");
