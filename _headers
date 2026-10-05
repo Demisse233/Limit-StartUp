@@ -1,26 +1,24 @@
-# Cloudflare Pages _headers
-# 文档: https://developers.cloudflare.com/pages/configuration/headers/
+# Cloudflare Pages 响应头
+#
+# ⚠️ 本站挂载在子路径 /limitrss/ 下（www.demisse.cn/limitrss），
+#    所以所有路径规则都必须带 /limitrss 前缀 —— 用根路径写的话一条都不会匹配。
+#    如果哪天改成独立域名，把所有 /limitrss 前缀去掉即可。
+#
+# 语法：<URL 路径> 换行后跟若干 "Header: value"
+# 文档：https://developers.cloudflare.com/pages/configuration/headers/
 
-/
+/limitrss/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  X-Frame-Options: DENY
-  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
-  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://sp0.baidu.com https://static.cloudflareinsights.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com; font-src 'self' https://fonts.gstatic.com data:; frame-src 'self' https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
 
-/api/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  Cache-Control: no-store
-
-# ── LimitRSS 子站（挂载在 /limitrss/）─────────────────────────────
-# 子站是"运行时读 markdown 再渲染"的，所以下面两类 MIME 必须正确，
-# 否则 ES 模块会被浏览器拒绝加载，更新日志页面会整页空白。
+# 更新日志的数据源：必须能被页面 fetch 到，且改了要立刻生效（不缓存）
 /limitrss/notes/changelog.md
   Content-Type: text/markdown; charset=utf-8
   Cache-Control: public, max-age=0, must-revalidate
+  Access-Control-Allow-Origin: "*"
 
+# ES 模块必须带正确的 JS MIME，否则浏览器会拒绝加载（整页空白）
 /limitrss/src/changelog/*
   Content-Type: text/javascript; charset=utf-8
   Cache-Control: public, max-age=0, must-revalidate
@@ -29,6 +27,15 @@
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=0, must-revalidate
 
+# 检查更新接口：客户端每次点「检查更新」都应拿到最新结果，绝不能吃缓存。
+# 同时必须允许跨域，App / 网页端都可能直接调用。
+/limitrss/api/*
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Access-Control-Allow-Origin: "*"
+  Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+
+# 图片等静态资源可以长缓存（文件名不含指纹，所以不用 immutable）
 /limitrss/assets/*
   Cache-Control: public, max-age=86400
 

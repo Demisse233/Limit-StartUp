@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-05T08:35:06.501Z",
+  "product": "LimitRSS",
+  "versions": {
+    "latest": "0.4.0",
+    "latestReleaseDate": "2026-10-05",
+    "latestPrerelease": false,
+    "changelog": [
+      {
+        "version": "0.4.0",
+        "date": "2026-10-05"
+      },
+      {
+        "version": "0.3.0",
+        "date": "2026-10-03"
+      },
+      {
+        "version": "0.2.0",
+        "date": "2026-09-27"
+      },
+      {
+        "version": "0.1.0",
+        "date": "2026-09-01"
+      }
+    ]
+  },
+  "notes": {
+    "url": "https://www.demisse.cn/limitrss/changelog",
+    "items": [
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增应用图标角标展示未读文章数量功能（Windows 平台不支持）"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增本地诊断中心，可通过设置-关于-诊断中心进入。诊断中心可查看软件运行日志、性能和缓存情况，必要时可导出日志方便开发者排查问题。"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "小组件新增刷新按钮反馈"
+      },
+      {
+        "platform": "general",
+        "kind": "change",
+        "text": "优化小组件的显示逻辑，小组件中文章将显示标题以及正文部分内容"
+      },
+      {
+        "platform": "general",
+        "kind": "change",
+        "text": "优化查看大图中的手势逻辑"
+      },
+      {
+        "platform": "general",
+        "kind": "change",
+        "text": "优化查看大图中普通图片和长图的显示逻辑"
+      },
+      {
+        "platform": "mac",
+        "kind": "fix",
+        "text": "修复小组件一直显示“请在应用中设置特别关心”的问题"
+      },
+      {
+        "platform": "mac",
+        "kind": "fix",
+        "text": "修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题"
+      },
+      {
+        "platform": "mac",
+        "kind": "fix",
+        "text": "修复小组件中文章已读但是未从小组件中消失的问题"
+      },
+      {
+        "platform": "mac",
+        "kind": "fix",
+        "text": "小组件点击刷新按钮无反应问题"
+      },
+      {
+        "platform": "ios",
+        "kind": "fix",
+        "text": "修复小组件一直显示“请在应用中设置特别关心”的问题"
+      },
+      {
+        "platform": "ios",
+        "kind": "fix",
+        "text": "修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题"
+      },
+      {
+        "platform": "ios",
+        "kind": "fix",
+        "text": "修复小组件中文章已读但是未从小组件中消失的问题"
+      },
+      {
+        "platform": "ios",
+        "kind": "fix",
+        "text": "修复深色模式下设置页面状态栏区域背景颜色与下方颜色不统一问题"
+      },
+      {
+        "platform": "ios",
+        "kind": "fix",
+        "text": "小组件点击刷新按钮无反应问题"
+      },
+      {
+        "platform": "android",
+        "kind": "fix",
+        "text": "修复小组件一直显示“请在应用中设置特别关心”的问题"
+      },
+      {
+        "platform": "android",
+        "kind": "fix",
+        "text": "修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题"
+      },
+      {
+        "platform": "android",
+        "kind": "fix",
+        "text": "修复小组件中文章已读但是未从小组件中消失的问题"
+      },
+      {
+        "platform": "android",
+        "kind": "fix",
+        "text": "修复深色模式下设置页面状态栏区域背景颜色与下方颜色不统一问题"
+      },
+      {
+        "platform": "harmony",
+        "kind": "fix",
+        "text": "修复网络添加页面部分控件显示层级异常的问题"
+      },
+      {
+        "platform": "harmony",
+        "kind": "fix",
+        "text": "修复阅读页查看大图时保存图片按钮消失的问题"
+      },
+      {
+        "platform": "harmony",
+        "kind": "fix",
+        "text": "修复深色模式下设置页面状态栏区域背景颜色与下方颜色不统一问题"
+      }
+    ],
+    "summary": "新增应用图标角标展示未读文章数量功能（Windows 平台不支持）",
+    "general": [
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增应用图标角标展示未读文章数量功能（Windows 平台不支持）"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增本地诊断中心，可通过设置-关于-诊断中心进入。诊断中心可查看软件运行日志、性能和缓存情况，必要时可导出日志方便开发者排查问题。"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "小组件新增刷新按钮反馈"
+      },
+      {
+        "platform": "general",
+        "kind": "change",
+        "text": "优化小组件的显示逻辑，小组件中文章将显示标题以及正文部分内容"
+      },
+      {
+        "platform": "general",
+        "kind": "change",
+        "text": "优化查看大图中的手势逻辑"
+      },
+      {
+        "platform": "general",
+        "kind": "change",
+        "text": "优化查看大图中普通图片和长图的显示逻辑"
+      }
+    ]
+  },
+  "platforms": {
+    "mac": {
+      "label": "macOS",
+      "version": "0.3.1",
+      "available": true,
+      "upToDateWithLatest": false,
+      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-macOS.dmg",
+      "fileName": "LimitRSS-0.3.1-macOS.dmg",
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1"
+    },
+    "windows": {
+      "label": "Windows",
+      "version": null,
+      "available": false,
+      "upToDateWithLatest": false,
+      "downloadUrl": null,
+      "fileName": null,
+      "releasePage": null
+    },
+    "ios": {
+      "label": "iOS",
+      "version": "0.3.1",
+      "available": true,
+      "upToDateWithLatest": false,
+      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-iOS.ipa",
+      "fileName": "LimitRSS-0.3.1-iOS.ipa",
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1"
+    },
+    "android": {
+      "label": "Android",
+      "version": "0.3.1",
+      "available": true,
+      "upToDateWithLatest": false,
+      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-Android.apk",
+      "fileName": "LimitRSS-0.3.1-Android.apk",
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1"
+    },
+    "harmony": {
+      "label": "HarmonyOS",
+      "version": null,
+      "available": false,
+      "upToDateWithLatest": false,
+      "downloadUrl": null,
+      "fileName": null,
+      "releasePage": null
+    }
+  },
+  "links": {
+    "changelog": "https://www.demisse.cn/limitrss/changelog",
+    "downloads": "https://www.demisse.cn/limitrss/",
+    "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases",
+    "releasePageForVersion": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
+    "latestReleaseExists": false
+  }
+}
