@@ -1,7 +1,7 @@
 /* 由 scripts/gen-update-api.mjs 自动生成，请勿手工编辑。 JSONP 式全局变量，供浏览器端直接读取，避免 CORS。 */
 window.LIMITRSS_UPDATE_INFO = {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-05T14:39:44.509Z",
+  "generatedAt": "2026-10-05T15:35:14.169Z",
   "product": "LimitRSS",
   "versions": {
     "latest": "0.4.0",
