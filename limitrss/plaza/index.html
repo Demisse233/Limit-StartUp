@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LimitRSS Plaza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap" rel="stylesheet">
+  <link rel="icon" href="../assets/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav glass plaza-nav">
+    <div class="nav-inner">
+      <a class="brand" href="../"><img src="../assets/icon.png" alt="" width="28" height="28"><span class="brand-name">LimitRSS<span class="plaza-wordmark">Plaza</span></span></a>
+      <nav class="nav-links" aria-label="LimitRSS">
+        <a href="../" data-t="home">官网首页</a>
+        <a href="../#download" data-t="downloadNav">下载</a>
+      </nav>
+      <button id="language" type="button">English</button>
+    </div>
+  </header>
+  <main class="plaza-main">
+    <section class="intro">
+      <h1 data-t="heading">发现值得订阅的内容</h1>
+      <p data-t="intro">由社区分享的 RSS 订阅源，找到喜欢的内容，一键导入 LimitRSS。</p>
+    </section>
+    <section class="controls">
+      <label><span data-t="searchLabel">搜索</span><input id="search" type="search"></label>
+      <label><span data-t="category">分类</span><span class="select-field"><select id="category"><option value="">全部</option></select></span></label>
+      <label><span data-t="status">检测状态</span><span class="select-field"><select id="status"><option value="">全部</option></select></span></label>
+    </section>
+    <p class="notice" data-t="notice">检测结果来自 Plaza 服务器，与你本地网络的可用性可能不同。订阅源定期分批检测。</p>
+    <div class="list-heading"><h2 data-t="directory">订阅源目录</h2><p id="summary" role="status" aria-live="polite"></p></div>
+    <p class="table-hint" data-t="scrollHint">左右滑动查看完整表格</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="table-caption">
+      <table class="feed-table">
+        <caption id="table-caption" data-t="directory">订阅源目录</caption>
+        <colgroup><col class="source-col"><col class="address-col"><col class="category-col"><col class="health-col"><col class="actions-col"></colgroup>
+        <thead><tr><th scope="col" data-t="source">订阅源</th><th scope="col" data-t="address">订阅地址</th><th scope="col" data-t="category">分类</th><th scope="col" data-t="status">检测状态</th><th scope="col" data-t="actions">操作</th></tr></thead>
+        <tbody id="list"></tbody>
+      </table>
+    </div>
+    <nav class="pagination"><button id="previous" data-t="previous">上一页</button><span id="page"></span><button id="next" data-t="next">下一页</button></nav>
+    <section class="contribute"><div><h2 data-t="contributeTitle">一起丰富 Plaza</h2><p data-t="contribute">在 LimitRSS 的订阅源菜单中选择“分享至 LimitRSS Plaza”。上传的订阅源通过检测后将公开展示。</p></div><a href="../#download" class="download-link" data-t="download">下载 LimitRSS</a></section>
+  </main>
+  <footer class="plaza-footer"><span data-t="footer">请仅分享适合公开访问的订阅源。</span></footer>
+  <script src="plaza.js" type="module"></script>
+</body>
+</html>

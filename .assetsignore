@@ -1,0 +1,9 @@
+node_modules
+.wrangler
+.git
+.dev.vars*
+AGENTS.md
+package*.json
+workers
+scripts
+functions
