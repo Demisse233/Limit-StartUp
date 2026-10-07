@@ -31,9 +31,9 @@ body { background: var(--bg); color: var(--text); }
 .list-heading h2 { font-size: 19px; font-weight: 650; margin: 0; }
 .list-heading p { margin: 0; font-size: 13px; }
 .table-scroll { width: 100%; overflow-x: auto; border-top: 1px solid var(--border-strong); border-bottom: 1px solid var(--border-strong); }
-.feed-table { border-collapse: collapse; table-layout: fixed; width: 100%; min-width: 960px; font-size: 13px; }
+.feed-table { border-collapse: collapse; table-layout: fixed; width: 100%; min-width: 1120px; font-size: 13px; }
 .feed-table caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.source-col { width: 23%; }.address-col { width: 29%; }.category-col { width: 10%; }.health-col { width: 19%; }.actions-col { width: 19%; }
+.source-col { width: 20%; }.address-col { width: 28%; }.category-col { width: 8%; }.language-col { width: 9%; }.popularity-col { width: 7%; }.health-col { width: 15%; }.actions-col { width: 13%; }
 .feed-table th { background: var(--bg-elev); color: var(--text-3); font-weight: 600; text-align: left; padding: 15px 16px; border-bottom: 1px solid var(--border-strong); }
 .feed-table td { padding: 20px 16px; vertical-align: middle; border-bottom: 1px solid var(--border); }
 .feed-table tbody tr:last-child td { border-bottom: 0; }
@@ -50,8 +50,6 @@ body { background: var(--bg); color: var(--text); }
 .row-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 8px; }
 .feed-table .action { display: inline-block; padding: 8px 12px; border-radius: 7px; background: var(--accent-grad); color: #fff; text-decoration: none; font-size: 12px; font-weight: 600; line-height: 1.5; }
 .feed-table .action:hover { filter: brightness(1.08); }
-.feed-table .copy-button { border: 0; padding: 0; background: none; color: var(--text-3); font-size: 12px; }
-.feed-table .copy-button:hover { background: none; color: var(--accent); }
 .pagination { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 26px 0; font-size: 13px; }
 .contribute { border-top: 1px solid var(--border-strong); margin: 24px 0 0; padding: 30px 0; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
 .contribute h2 { font-size: 19px; margin: 0 0 10px; }.contribute p { margin: 0; max-width: 780px; font-size: 14px; }
@@ -71,3 +69,13 @@ body { background: var(--bg); color: var(--text); }
   .plaza-main .table-hint { display: block; font-size: 11px; color: var(--text-3); margin: 0 0 10px; }
   .contribute { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
+
+.feed-address { display: flex; align-items: center; gap: 6px; }
+.feed-address .url { min-width: 0; flex: 1; }
+.feed-table .address-icon { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 30px; width: 30px; height: 30px; padding: 6px; border: 0; border-radius: 6px; background: transparent; color: var(--text-3); cursor: pointer; }
+.feed-table .address-icon:hover { color: var(--accent); background: var(--bg-elev); }
+.address-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.feed-table .address-icon.is-copied { color: var(--success); }
+
+.feed-language { color: var(--text-2); }
+.feed-popularity { display: inline-flex; padding: 4px 9px; border-radius: 6px; color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); font-variant-numeric: tabular-nums; font-weight: 600; }

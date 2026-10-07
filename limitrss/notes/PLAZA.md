@@ -49,4 +49,20 @@ bash scripts/deploy.sh
 UPDATE plaza_feeds SET published=0,next_check=9007199254740991 WHERE id='<核对后的来源ID>';
 ```
 
-此操作保留记录，便于恢复；恢复设 `next_check=0` 后通过检测才重新公开。此阶段不含用户账号、评论、热度排序、AI 分类和独立审核后台。匿名上传的滥用先通过限流、检测和人工下架处理。
+此操作保留记录，便于恢复；恢复设 `next_check=0` 后通过检测才重新公开。此阶段不含用户账号、评论、AI 分类和独立审核后台。匿名上传的滥用先通过限流、检测和人工下架处理。
+
+## 语言与热度
+
+目录与详情返回 `language`、`copyCount`、`importCount`、`popularity`、`createdAt`。语言来自 RSS `<language>` 或 Atom `xml:lang`，未声明时为 null，网页显示“未标注”。检测成功时刷新语言，检测失败保留上一次结果。已有来源在下次成功检测后获得语言。
+
+`POST /api/limitrss/plaza/:id/interaction`，JSON 为 `{"action":"copy"}` 或 `{"action":"import"}`。仅公开来源可计数，服务端原子累加，返回最新计数，响应不缓存。每 IP 哈希每分钟最多 60 次、每天最多 500 次。热度 = 成功复制次数 + 导入点击次数（不代表客户端最终导入成功，也不是独立用户数）。重复点击在限流范围内仍计数；不采集用户身份。默认全目录按热度降序、添加时间降序、ID 升序稳定排序，再分页。网页更新数字时不重排当前行，重新加载目录后采用最新排序。列表缓存最长 60 秒。
+
+部署此改动前先运行数据库迁移，且同步部署检测 Worker：
+
+```sh
+npx wrangler d1 execute limit-startup-db --remote --file migrations/20261007-plaza-popularity.sql
+npx wrangler deploy --config workers/plaza-checker/wrangler.toml
+bash scripts/deploy.sh
+```
+
+迁移仅新增 `plaza_feed_stats` 表，保留现有订阅源；可重复运行。新环境完整 schema 也包含此表。上述远端操作仍须用户授权。

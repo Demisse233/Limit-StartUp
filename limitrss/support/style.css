@@ -1,0 +1,28 @@
+body { background: var(--bg); color: var(--text); }
+.brand, .brand:hover { color: var(--text); }
+.nav { border-bottom: 1px solid var(--border-strong); }
+.support-main { max-width: 720px; margin: 0 auto; padding: 40px 24px 64px; }
+.support-main h1 { font-size: 30px; margin: 0 0 28px; }
+.support-card { border: 1px solid var(--border); border-radius: 24px; padding: 32px; background: var(--bg-elev); box-shadow: 0 12px 40px -24px rgba(0,0,0,.25); margin-bottom: 24px; }
+.message { color: var(--text-2); line-height: 1.8; font-size: 16px; margin: 0 0 28px; }
+.channel-image { display: block; width: 100%; max-width: 360px; height: auto; border-radius: 16px; margin: 0 auto; }
+.channel-caption { text-align: center; font-size: 14px; line-height: 1.6; color: var(--text-2); margin: 16px 0 0; }
+.support-card hr { border: 0; border-top: 1px solid var(--border-strong); margin: 24px 0; }
+.afdian-channel { display: block; width: fit-content; max-width: 100%; margin: 0 auto; border-radius: 16px; }
+.afdian-channel:hover { opacity: .9; }
+.thanks-card h2 { font-size: 20px; margin: 0 0 20px; }
+#thanks-status { color: var(--text-2); font-size: 14px; line-height: 1.6; }
+#sponsors { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.sponsor { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.sponsor img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.sponsor span { overflow-wrap: anywhere; font-size: 14px; }
+#language, #retry { font: inherit; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); padding: 10px 14px; border-radius: 8px; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media(max-width:700px) { .nav-inner { flex-wrap: wrap; gap: 12px; } .nav-links { display: flex; order: 3; flex-basis: 100%; } .nav-links a { display: inline-flex !important; } #language { margin-left: auto; } .support-main { padding: 28px 18px 40px; } .support-card { padding: 22px; border-radius: 20px; } }
+
+.support-columns { display: grid; gap: 24px; align-items: start; }
+.support-columns .support-card { margin-bottom: 0; min-width: 0; }
+@media (min-width: 1000px) {
+  .support-main { max-width: 1180px; }
+  .support-columns { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; }
+}

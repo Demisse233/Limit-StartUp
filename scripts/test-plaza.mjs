@@ -40,3 +40,32 @@ test('anonymous upload, deduplication, pending visibility, checks and recovery u
   assert.equal((await DB.prepare('SELECT * FROM plaza_feeds').first()).reason,'unsafe_origin');
  }finally{await proxy.dispose();}
 });
+
+test('RSS and Atom expose declared language without guessing',()=>{
+ assert.equal(parseFeed('<rss><channel><title>News</title><language>zh-CN</language></channel></rss>').language,'zh-cn');
+ assert.equal(parseFeed('<feed xml:lang="en-US"><title>News</title></feed>').language,'en-us');
+ assert.equal(parseFeed('<rss><channel><title>News</title></channel></rss>').language,null);
+});
+test('interaction counters are atomic, public-only and sort before pagination with newest ties',async()=>{
+ const {onRequestPost:interaction}=await import('../functions/api/limitrss/plaza/[id]/interaction.js');
+ const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
+ try {
+  const DB=proxy.env.DB,env={DB};
+  for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const id=n=>n.toString(16).padStart(32,'0');
+  for(let n=1;n<=32;n++)await DB.prepare('INSERT INTO plaza_feeds (id,url,title,created_at,published) VALUES (?,?,?,?,?)').bind(id(n),`https://example.com/${n}`,'Feed '+n,n,n===32?0:1).run();
+  const hit=(n,action)=>interaction({env,params:{id:id(n)},request:new Request('https://site',{method:'POST',body:JSON.stringify({action})})});
+  assert.equal((await hit(32,'copy')).status,404);
+  assert.equal((await hit(1,'invalid')).status,400);
+  await Promise.all([hit(1,'copy'),hit(1,'import'),hit(1,'copy')]);
+  const result=await (await hit(2,'import')).json();assert.equal(result.popularity,1);
+  const rows=await DB.prepare('SELECT * FROM plaza_feed_stats WHERE feed_id=?').bind(id(1)).first();
+  assert.equal(rows.copy_count,2);assert.equal(rows.import_count,1);
+  const list=page=>onRequestGet({env,request:new Request('https://site/api/limitrss/plaza?page='+page)}).then(r=>r.json());
+  const first=await list(1);assert.equal(first.total,31);assert.equal(first.feeds.length,30);
+  assert.deepEqual(first.feeds.slice(0,3).map(f=>f.id),[id(1),id(2),id(31)]);
+  assert.equal(first.feeds[0].popularity,3);
+  assert.equal((await list(2)).feeds[0].id,id(3));
+  const response=await hit(1,'copy');assert.equal(response.headers.get('Cache-Control'),'no-store');
+ }finally{await proxy.dispose();}
+});

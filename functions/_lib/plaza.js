@@ -1,5 +1,12 @@
 import {XMLParser, XMLValidator} from 'fast-xml-parser';
 export const schema = `
+CREATE TABLE IF NOT EXISTS plaza_feed_stats (
+ feed_id TEXT PRIMARY KEY,
+ language TEXT,
+ copy_count INTEGER NOT NULL DEFAULT 0 CHECK(copy_count >= 0),
+ import_count INTEGER NOT NULL DEFAULT 0 CHECK(import_count >= 0)
+);
+
 CREATE TABLE IF NOT EXISTS plaza_feeds (
  id TEXT PRIMARY KEY, url TEXT NOT NULL UNIQUE, title TEXT NOT NULL, icon TEXT,
  category TEXT NOT NULL DEFAULT 'other', status TEXT NOT NULL DEFAULT 'pending',
@@ -75,12 +82,16 @@ export function parseFeed(xml) {
  const text=v=> typeof v==='string'?v:typeof v?.['#text']==='string'?v['#text']:'';
  const title=text(feed.title).trim().slice(0,200);
  if(!title)throw new Error('invalid_feed');
- return {title,category:classify(title,text(feed.description ?? feed.subtitle))};
+ const declared=text(feed.language) || feed['@_xml:lang'] || value.rss?.['@_xml:lang'];
+ const language=typeof declared==='string' && /^[a-z]{2,3}(?:[-_][a-z0-9]{2,8})*$/i.test(declared.trim())
+  ? declared.trim().replaceAll('_','-').toLowerCase() : null;
+ return {title,language,category:classify(title,text(feed.description ?? feed.subtitle))};
 }
 export async function checkFeed(row, env, transport=fetch) {
- const start=Date.now();let status='healthy',reason=null,failures=0,published=1,category=row.category;
- try {const parsed=parseFeed(await safeFetch(row.url,transport));category=parsed.category;}
+ const start=Date.now();let status='healthy',reason=null,failures=0,published=1,category=row.category;let language=null;
+ try {const parsed=parseFeed(await safeFetch(row.url,transport));category=parsed.category;language=parsed.language;}
  catch(error) {failures=row.failures+1;status=failures>=3?'failed':'degraded';reason=/^(http_\d{3}|[a-z_]+)$/.test(error.message)?error.message:'network_error';published=row.published;}
+ if(status==='healthy')await env.DB.prepare('INSERT INTO plaza_feed_stats (feed_id,language) VALUES (?,?) ON CONFLICT(feed_id) DO UPDATE SET language=excluded.language').bind(row.id,language).run();
  const now=Date.now();
  await env.DB.prepare('UPDATE plaza_feeds SET status=?,reason=?,failures=?,published=?,category=?,checked_at=?,next_check=?,latency=? WHERE id=?').bind(status,reason,failures,published,category,now,now+(status==='healthy'?12*3600000:Math.min(12,failures)*3600000),now-start,row.id).run();
  console.log(JSON.stringify({module:'plaza',event:'feed_checked',id:row.id,status,reason,durationMs:now-start}));
@@ -89,7 +100,7 @@ export function respond(data,status=200) {
  return Response.json(data,{status,headers:{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Cache-Control':status===200?'public, max-age=60':'no-store'}});
 }
 export function publicFeed(row) {
- return {id:row.id,title:row.title,url:row.url,icon:row.icon,category:row.category,status:row.status,checkedAt:row.checked_at,latencyMs:row.latency};
+ return {id:row.id,title:row.title,url:row.url,icon:row.icon,category:row.category,status:row.status,checkedAt:row.checked_at,latencyMs:row.latency,language:row.language??null,copyCount:row.copy_count??0,importCount:row.import_count??0,popularity:(row.copy_count??0)+(row.import_count??0),createdAt:row.created_at};
 }
 export async function quota(request,env,kind,maxMinute,maxDay) {
  const ip=request.headers.get('CF-Connecting-IP') || 'local';

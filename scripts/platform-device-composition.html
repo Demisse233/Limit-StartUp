@@ -1,0 +1,46 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><base href="../limitrss/"><title>LimitRSS device composition source</title><style>:root{--accent:#337aff}*{box-sizing:border-box}body{margin:0;padding:64px;width:1308px;height:988px;background:transparent}/* Back to front: monitor, laptop, tablet, then three equally tall handhelds.
+   Handhelds share the front baseline; each rear layer lifts by one step. */
+.device-scene { position:relative; width:100%; aspect-ratio:1180/860; isolation:isolate; }
+.device-scene::before { content:""; position:absolute; inset:0 -4% -5%; z-index:-1; border-radius:50%; background:radial-gradient(ellipse at 50% 50%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 72%); }
+.show-device { position:absolute; bottom:0; filter:drop-shadow(0 12px 14px #0002); }
+.framed-art { position:relative; overflow:hidden; width:100%; }
+.framed-art img { position:absolute; display:block; max-width:none; height:auto; }
+.show-monitor { height:75.7%; width:auto; aspect-ratio:16/11; left:0; bottom:15%; z-index:1; }
+.monitor-hardware { box-sizing:border-box; height:90%; padding:9px 9px 20px; border:1px solid #8d929a; border-radius:14px; background:linear-gradient(135deg,#484b52,#17191e 40%); }
+.monitor-placeholder { height:100%; border-radius:7px; display:grid; place-items:center; background:linear-gradient(135deg,#edf3fc,#dce6f5); }
+.monitor-placeholder img { width:38px; height:38px; object-fit:contain; }
+.monitor-stand { height:10%; width:20%; margin:auto; background:linear-gradient(90deg,#8c919a,#d9dce1 50%,#9da2aa); clip-path:polygon(32% 0,68% 0,73% 84%,100% 92%,100% 100%,0 100%,0 92%,27% 84%); }
+.show-macbook { height:56.775%; width:auto; aspect-ratio:3910/2241; left:27%; bottom:9%; z-index:2; }
+.show-ipad { height:37.85%; width:auto; aspect-ratio:2583/1863; left:4%; bottom:4%; z-index:3; }
+.show-iphone,.show-android,.show-fold { height:31.8%; width:auto; z-index:4; }
+.show-iphone { left:31%; aspect-ratio:804/1658; }
+.show-android { left:44%; aspect-ratio:1527/3318; }
+.show-fold { left:57%; aspect-ratio:1622/1158; }
+.show-macbook .framed-art,.show-ipad .framed-art,.show-iphone .framed-art,.show-android .framed-art,.show-fold .framed-art { height:100%; }
+@media (max-width:760px) {
+ .platform-badges { gap:8px; margin-bottom:24px; }.platform-badges li { padding:8px 12px; font-size:12px; gap:6px; }
+ .platform-mark { width:22px; height:22px; }.platform-mark img { width:19px; height:19px; }
+ .monitor-hardware { padding:5px 5px 10px; border-radius:8px; }.monitor-placeholder img { width:24px; height:24px; }
+ .show-device { filter:drop-shadow(0 6px 8px #0002); }
+}
+.device-scene::before{display:none!important}</style></head><body><div class="device-scene" style="width: 1180px; height: 860px; aspect-ratio: auto;">
+              <div class="show-device show-monitor">
+                <div class="monitor-hardware"><div class="monitor-placeholder"><img src="./assets/logo-windows.png" alt=""></div></div>
+                <div class="monitor-stand" aria-hidden="true"></div>
+              </div>
+              <div class="show-device show-macbook">
+                <div class="framed-art" style="aspect-ratio:3910/2241"><img src="./assets/platforms/framed-macbook.png" alt="MacBook 上的 LimitRSS 三栏阅读界面" loading="lazy" decoding="async" style="width:106.18926%;left:-3.09463%;top:-10.79875%"></div>
+              </div>
+              <div class="show-device show-ipad">
+                <div class="framed-art" style="aspect-ratio:2583/1863"><img src="./assets/platforms/framed-ipad.png" alt="iPad 上的 LimitRSS 视频与文章阅读界面" loading="lazy" decoding="async" style="width:111.03368%;left:-5.42005%;top:-7.51476%"></div>
+              </div>
+              <div class="show-device show-fold">
+                <div class="framed-art" style="aspect-ratio:1622/1158"><img src="./assets/platforms/framed-fold.png" alt="华为三折叠展开态的 LimitRSS 订阅管理界面" loading="lazy" decoding="async" style="width:124.53761%;left:-12.26880%;top:-37.21934%"></div>
+              </div>
+              <div class="show-device show-iphone">
+                <div class="framed-art" style="aspect-ratio:804/1658"><img src="./assets/platforms/framed-iphone.png" alt="iPhone 上的 LimitRSS 图文阅读界面" loading="lazy" decoding="async" style="width:126.86567%;left:-13.43284%;top:-13.32931%"></div>
+              </div>
+              <div class="show-device show-android">
+                <div class="framed-art" style="aspect-ratio:1527/3318"><img src="./assets/platforms/framed-android.png" alt="Android 手机上的 RSSHub 订阅源发现界面" loading="lazy" decoding="async" style="width:125.73674%;left:-13.16306%;top:-5.78662%"></div>
+              </div>
+            </div></body></html>

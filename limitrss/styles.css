@@ -309,9 +309,7 @@ code {
 [data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
 
 /* ---------- Hero ---------- */
-/* .snap-screen：只负责把段落撑到"至少一屏高"，让每屏铺满、视觉整齐。
-   滚动行为不由 CSS 管 —— script.js 的 PagePager 只在
-   「首屏 hero ↔ 核心能力 features」之间做整屏切换，之后恢复原生滚动。 */
+/* Sections retain their visual height; all scrolling stays native. */
 .snap-screen {
   /* 整屏高度（含导航）。这样 hero.bottom === features.top === ... === cta.top，
      整页文档 = n × 100svh，每一段的"顶部对齐到视口顶"位置是确定的整屏倍数（100svh、200svh…），
@@ -321,29 +319,6 @@ code {
 
 /* 各屏保持自然流（顶部对齐），所有屏的标题才会落在同一视口位置。 */
 
-/* ---------- 翻页动效降级 ----------
-   滚动时全页重绘开销最大的就是毛玻璃 backdrop-filter，
-   翻页这几帧临时关掉，肉眼几乎无感但掉帧明显减少。 */
-html.is-paging .glass,
-html.is-paging .glass-nav,
-html.is-paging .badge,
-html.is-paging .feature,
-html.is-paging .dl-card,
-html.is-paging .cta-card,
-html.is-paging header {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-html.is-paging .wave-ring,
-html.is-paging .dot-field,
-html.is-paging .ico-layer {
-  will-change: auto;
-}
-/* 翻页时 hero 的背景光斑停止模糊计算 */
-html.is-paging .hero::before,
-html.is-paging .hero::after {
-  filter: none;
-}
 
 .hero {
   --cx: 72%;
@@ -901,402 +876,92 @@ section[id] { scroll-margin-top: 61px; }
 }
 
 .feature {
-  padding: 28px;
-  border-radius: var(--radius-md);
-  transition: transform 0.3s var(--t), box-shadow 0.3s var(--t), border-color 0.3s var(--t);
+  --feature-accent: #287bf4;
   position: relative;
+  padding: 28px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: var(--bg-glass-strong);
+  box-shadow: 0 6px 24px -16px rgba(20, 35, 60, 0.18);
+  transition: transform 0.25s var(--t), box-shadow 0.25s var(--t), border-color 0.25s var(--t);
 }
-
+.feature:nth-child(2) { --feature-accent: #9254de; }
+.feature:nth-child(3) { --feature-accent: #cc7419; }
+.feature:nth-child(4) { --feature-accent: #d34f80; }
+.feature:nth-child(5) { --feature-accent: #6467df; }
+.feature:nth-child(6) { --feature-accent: #008f83; }
 .feature::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--accent) 5%, transparent),
-    transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s var(--t);
+  background: radial-gradient(ellipse at top left,
+    color-mix(in srgb, var(--feature-accent) 4%, transparent), transparent 70%);
   pointer-events: none;
 }
-
-.feature:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
-  box-shadow:
-    0 12px 32px -12px color-mix(in srgb, var(--accent) 25%, transparent),
-    var(--shadow-md);
-}
-
-.feature:hover::before { opacity: 1; }
-
 .feature-icon {
-  margin-bottom: 18px;
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 24px;
   border-radius: 14px;
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--accent) 16%, var(--bg-elev)),
-    color-mix(in srgb, var(--accent-2) 10%, var(--bg-elev)));
-  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
-  color: var(--accent);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent),
-    0 4px 12px -4px color-mix(in srgb, var(--accent) 30%, transparent);
-  transition: transform 0.3s var(--t), box-shadow 0.3s var(--t);
+  color: var(--feature-accent);
+  background: linear-gradient(145deg,
+    color-mix(in srgb, var(--feature-accent) 12%, var(--bg)),
+    color-mix(in srgb, var(--feature-accent) 5%, var(--bg)));
+  border: 0;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--bg) 60%, transparent);
 }
-
-.feature:hover .feature-icon {
-  transform: scale(1.06) rotate(-3deg);
-  box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent),
-    0 6px 18px -4px color-mix(in srgb, var(--accent) 45%, transparent);
-}
-
-.feature-icon svg {
-  width: 26px;
-  height: 26px;
-  display: block;
-}
-
+.feature-icon svg { width: 26px; height: 26px; display: block; }
 .feature h3 {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 0 0 8px;
+  position: relative;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.5;
+  letter-spacing: -0.025em;
+  margin: 0 0 12px;
+  text-wrap: pretty;
 }
-
 .feature p {
+  position: relative;
   margin: 0;
   color: var(--text-2);
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: 14px;
+  line-height: 1.8;
+  text-wrap: pretty;
+}
+[data-theme="dark"] .feature { box-shadow: 0 8px 28px -18px rgba(0, 0, 0, 0.6); }
+[data-theme="dark"] .feature:nth-child(1) { --feature-accent: #75acff; }
+[data-theme="dark"] .feature:nth-child(2) { --feature-accent: #bb92ff; }
+[data-theme="dark"] .feature:nth-child(3) { --feature-accent: #f4b766; }
+[data-theme="dark"] .feature:nth-child(4) { --feature-accent: #ef92b4; }
+[data-theme="dark"] .feature:nth-child(5) { --feature-accent: #a4a6ff; }
+[data-theme="dark"] .feature:nth-child(6) { --feature-accent: #60d6c7; }
+@media (hover: hover) and (pointer: fine) {
+  .feature:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--feature-accent) 22%, var(--border));
+    box-shadow: 0 14px 32px -18px color-mix(in srgb, var(--feature-accent) 30%, transparent);
+  }
 }
 
 /* ---------- Platforms ---------- */
-.platforms-layout {
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  gap: 28px;
-  align-items: stretch;
-}
-
-/* 左栏：平台卡片列表 */
-.platforms-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.platform-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 16px 18px;
-  border-radius: var(--radius-md);
-  background: var(--bg-glass-strong);
-  border: 1px solid var(--border);
-  text-align: left;
-  cursor: pointer;
-  font-family: inherit;
-  color: inherit;
-  transition: transform 0.2s var(--t), border-color 0.2s var(--t),
-    box-shadow 0.2s var(--t), background-color 0.2s var(--t);
-}
-
-.platform-card:hover {
-  border-color: var(--border-strong);
-  transform: translateX(2px);
-}
-
-.platform-card.is-active {
-  border-color: var(--accent);
-  background: var(--bg-glass-strong);
-  box-shadow:
-    0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent),
-    var(--shadow-sm);
-}
-
-.platform-card:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
-}
-
-.platform-logo {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: transparent;
-  border: 0;
-  overflow: hidden;
-}
-
-.platform-logo img {
-  width: 36px;
-  height: 36px;
-  display: block;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-.platform-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.platform-name {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--text);
-}
-
-/* 右栏：手机相框 + 截图轮播 */
-.platforms-preview {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 28px 20px 24px;
-  border-radius: var(--radius-lg);
-  min-height: 0;
-  gap: 12px;
-}
-
-.phone-stage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  flex: 1;
-  width: 100%;
-  padding: 12px 0;
-}
-
-/* 桌面双栏：锁定设备槽位高度。
-   手机相框是 9:19.5（280px 宽 → 607px 高），笔记本只有 339px 高；
-   不锁高度的话，悬停 iOS/Android/鸿蒙时整段会从 839 长到 1036，
-   比一屏多出 199px —— 手机底部被永久切掉，翻页停靠点也会失效。
-   锁定后两种相框占同一槽位，切换平台不再引起任何重排。 */
-@media (min-width: 961px) {
-  .platforms-preview {
-    /* 476px = 该段里除设备槽位外的全部固定开销（段落上下留白 + 标题块 +
-       预览区 padding + 底部信息块 + 间距），实测得出 */
-    --stage-h: clamp(280px, calc(100svh - var(--nav-h, 61px) - 476px), 460px);
-  }
-  /* 带上 .phone-stage 前缀提高优先级：下面的 .device-* 基础规则在文件里更靠后，
-     同优先级会被它们覆盖，导致手机相框仍是固定 280px 宽并撑破槽位 */
-  .phone-stage { flex: none; height: var(--stage-h); }
-  .phone-stage > .device-frame { height: 100%; justify-content: center; }
-  .phone-stage .device-phone { height: 100%; width: auto; }
-  .phone-stage .device-laptop { width: min(520px, calc(var(--stage-h) * 1.6), 100%); }
-}
-
-/* 设备相框（手机 / 笔记本自动切换） */
-.device-frame {
-  flex-shrink: 0;
-  transition: transform 0.4s var(--t), opacity 0.3s var(--t);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.platform-card:hover ~ .platforms-preview .device-frame,
-.platforms-preview:hover .device-frame {
-  transform: translateY(-4px);
-}
-
-/* 通过 data-device 切换显隐 */
-[data-device="phone"] .device-laptop { display: none; }
-[data-device="laptop"] .device-phone { display: none; }
-
-/* ---------- 手机相框 ---------- */
-.device-phone {
-  width: 280px;
-  aspect-ratio: 9 / 19.5;
-  background: transparent;
-  border: 2px solid #1a1a1a;
-  border-radius: 36px;
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.22);
-  overflow: hidden;
-  max-height: min(620px, 70vh);
-  position: relative;
-}
-
-/* ---------- 笔记本相框（MacBook 风） ---------- */
-.device-laptop {
-  width: 520px;
-  max-width: 100%;
-  gap: 0;
-  position: relative;
-}
-
-.device-laptop .device-screen {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  border: 2px solid #1a1a1a;
-  border-bottom: 0;
-  border-radius: 14px 14px 0 0;
-  background: #1a1a1a;
-  overflow: hidden;
-}
-
-.device-laptop .device-base {
-  width: 108%;
-  height: 14px;
-  background: linear-gradient(180deg, #1f1f1f 0%, #0a0a0a 100%);
-  border: 2px solid #1a1a1a;
-  border-top: 0;
-  border-radius: 0 0 12px 12px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.35);
-}
-
-.device-laptop .device-base::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%);
-  border-radius: 0 0 12px 12px;
-  pointer-events: none;
-}
-
-.device-laptop .device-base-notch {
-  display: block;
-  width: 70px;
-  height: 4px;
-  background: #050505;
-  border-radius: 2px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ---------- 暗色模式边框适配 ---------- */
-[data-theme="dark"] .device-phone {
-  border-color: rgba(255, 255, 255, 0.5);
-}
-[data-theme="dark"] .device-laptop .device-screen,
-[data-theme="dark"] .device-laptop .device-base {
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* ---------- 屏幕 + 图片 ---------- */
-.device-screen {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.device-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  transition: opacity 0.3s var(--t);
-}
-
-/* 左右导航按钮 */
-.phone-nav {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg-glass-strong);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  cursor: pointer;
-  color: var(--text);
-  transition: all 0.2s var(--t);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.phone-nav svg { width: 18px; height: 18px; }
-
-.phone-nav:hover {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
-  transform: scale(1.05);
-}
-
-.phone-nav:disabled {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* 进度点 */
-.phone-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  height: 8px;
-  min-height: 8px;
-}
-
-.phone-dots:empty { display: none; }
-
-.phone-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border-strong);
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  transition: all 0.25s var(--t);
-}
-
-.phone-dot.is-active {
-  width: 22px;
-  border-radius: 3px;
-  background: var(--accent);
-}
-
-.preview-image-fallback {
-  position: absolute;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--accent) 10%, transparent),
-    color-mix(in srgb, var(--accent-2) 10%, transparent));
-  pointer-events: none;
-}
-
-.preview-image.is-missing + .preview-image-fallback {
-  display: flex;
-}
-
-.preview-fallback-msg {
-  padding: 12px 24px;
-  border-radius: 999px;
-  background: var(--bg-glass-strong);
-  border: 1px solid var(--border);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+/* Static device family: platform badges deliberately have no switching behavior. */
+.platform-badges { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:12px; padding:0; margin:0 0 16px; list-style:none; }
+.platform-badges li { display:flex; align-items:center; gap:9px; padding:10px 17px; border:1px solid var(--border); border-radius:999px; background:var(--bg-glass-strong); font-size:14px; font-weight:600; color:var(--text-2); }
+.platform-mark { display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:#fff; }
+.platform-mark img { width:23px; height:23px; object-fit:contain; }
+.device-collection { margin:0; }
+/* One raster locks the approved device positions, proportions and overlaps. */
+.device-collection { position:relative; isolation:isolate; overflow:hidden; }
+.device-collection::before { content:""; position:absolute; inset:8% 0 3%; z-index:-1; border-radius:50%; background:radial-gradient(ellipse at 50% 50%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 72%); }
+.device-composition { display:block; width:100%; height:auto; margin-top:-9%; }
+@media (max-width:760px) {
+ .platform-badges { gap:8px; margin-bottom:12px; }.platform-badges li { padding:8px 12px; font-size:12px; gap:6px; }
+ .platform-mark { width:22px; height:22px; }.platform-mark img { width:19px; height:19px; }
 }
 
 .muted { color: var(--text-3); }
@@ -2227,7 +1892,7 @@ section[id] { scroll-margin-top: 61px; }
   .section { padding: clamp(52px, 6.2vh, 96px) 0; }
   .section-head { margin-bottom: clamp(28px, 3.6vh, 56px); }
   .features { gap: clamp(14px, 1.6vh, 20px); }
-  .platforms-preview { padding: clamp(16px, 2.2vh, 28px) 20px clamp(12px, 1.8vh, 24px); }
+
 }
 @media (max-height: 880px) {
   .feature { padding: clamp(20px, 2.4vh, 28px); }
@@ -2251,7 +1916,7 @@ section[id] { scroll-margin-top: 61px; }
       transparent 58%);
   }
   .features { grid-template-columns: repeat(2, 1fr); }
-  .platforms-layout { grid-template-columns: 280px 1fr; gap: 20px; }
+
   .download-grid { grid-template-columns: repeat(2, 1fr); }
   .download-featured .download-card { padding: 18px 20px; gap: 14px; }
   .download-featured .os-name { font-size: 19px; }
@@ -2270,10 +1935,7 @@ section[id] { scroll-margin-top: 61px; }
   .hero h1 { font-size: clamp(22px, calc((100vw - 56px) / 8.72), 44px); }
   .lede { font-size: 16px; }
   .features { grid-template-columns: 1fr; }
-  .platforms-layout { grid-template-columns: 1fr; }
-  .platforms-list { flex-direction: row; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
-  .platform-card { flex-shrink: 0; min-width: 240px; }
-  .platforms-preview { order: -1; }
+
   .download-grid { grid-template-columns: 1fr; }
   /* 窄屏：推荐卡内部改为竖排，logo 居中在上，避免挤压文字 */
   .download-featured { margin-bottom: 18px; }
@@ -2310,3 +1972,43 @@ section[id] { scroll-margin-top: 61px; }
   }
   html { scroll-behavior: auto; }
 }
+/* One shared grid keeps both rows and columns aligned. */
+.hero-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+  max-width: 440px;
+  margin-bottom: 28px;
+}
+.hero-actions .btn {
+  min-width: 0;
+  min-height: 52px;
+  padding: 12px 16px;
+}
+@media (max-width: 480px) {
+  .hero-actions { gap: 12px; }
+  .hero-actions .btn { padding: 12px 10px; font-size: 13px; }
+}
+@media (max-width: 340px) {
+  .hero-actions { grid-template-columns: 1fr; }
+}
+
+/* Plaza uses the primary button treatment with its sharing accent. */
+.btn-plaza {
+  --accent: #00dac3;
+  --accent-2: #00dac3;
+  background: #00dac3;
+}
+
+.btn-plaza svg { flex: 0 0 auto; }
+
+.nav-plaza-wordmark {
+  font-family: "Tilt Neon", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "XROT" 0, "YROT" 0;
+}
+
+.hero-actions svg { flex-shrink: 0; }

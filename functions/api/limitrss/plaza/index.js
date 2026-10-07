@@ -9,7 +9,7 @@ export async function onRequestGet({request,env}) {
   if(['healthy','degraded','failed'].includes(status)){where.push('status=?');args.push(status);}
   const clause=where.join(' AND ');
   const total=await env.DB.prepare(`SELECT COUNT(*) AS total FROM plaza_feeds WHERE ${clause}`).bind(...args).first();
-  const rows=await env.DB.prepare(`SELECT * FROM plaza_feeds WHERE ${clause} ORDER BY created_at DESC,id LIMIT 30 OFFSET ?`).bind(...args,(page-1)*30).all();
+  const rows=await env.DB.prepare(`SELECT * FROM (SELECT f.*,s.language,COALESCE(s.copy_count,0) AS copy_count,COALESCE(s.import_count,0) AS import_count FROM plaza_feeds f LEFT JOIN plaza_feed_stats s ON s.feed_id=f.id) WHERE ${clause} ORDER BY (copy_count+import_count) DESC,created_at DESC,id ASC LIMIT 30 OFFSET ?`).bind(...args,(page-1)*30).all();
   return respond({schemaVersion:1,total:total.total,page,feeds:rows.results.map(publicFeed)});
  }catch{ return respond({error:'unavailable'},503); }
 }
