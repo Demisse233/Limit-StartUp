@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap" rel="stylesheet">
   <link rel="icon" href="../assets/favicon.png">
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20261008-language">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,7 +19,16 @@
         <a href="../" data-t="home">官网首页</a>
         <a href="../#download" data-t="downloadNav">下载</a>
       </nav>
-      <button id="language" type="button">English</button>
+      <div class="nav-tools"><button id="language" class="language-toggle" type="button" aria-label="切换语言" title="切换语言"><svg width="20" height="20" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="translate(61.44 61.44) scale(.88)" fill="currentColor" d="M938.666667 981.333333 c-17.066667 0 -29.866667 -8.533333 -38.4 -25.6 l-59.733334 -119.466666 l-277.333333 0 l-59.733333 119.466666 c-8.533334 21.333333 -34.133334 29.866667 -55.466667 17.066667 c-25.6 -8.533334 -34.133334 -34.133334 -21.333333 -51.2 l72.533333 -140.8 l145.066667 -290.133333 c12.8 -21.333333 34.133333 -38.4 59.733333 -38.4 c25.6 0 46.933333 12.8 59.733333 38.4 l145.066667 290.133333 l72.533333 140.8 c8.533333 21.333333 0 46.933333 -17.066666 55.466667 c-12.8 4.266666 -17.066667 4.266666 -25.6 4.266666 Z m-332.8 -226.133333 l192 0 l-98.133333 -192 l-93.866667 192 Z M85.333333 844.8 c-17.066666 0 -29.866666 -8.533333 -38.4 -25.6 c-8.533333 -21.333333 0 -46.933333 21.333334 -55.466667 c93.866667 -46.933333 179.2 -110.933333 247.466666 -187.733333 c-46.933333 -64 -85.333333 -128 -110.933333 -192 c-8.533333 -21.333333 4.266667 -46.933333 25.6 -55.466667 c21.333333 -8.533333 46.933333 4.266667 55.466667 25.6 c21.333333 51.2 46.933333 102.4 81.066666 149.333334 c59.733334 -85.333334 102.4 -179.2 128 -281.6 L85.333333 221.866667 c-25.6 0 -42.666666 -17.066667 -42.666666 -42.666667 c0 -25.6 17.066666 -42.666666 42.666666 -42.666666 l243.2 0 L328.533333 85.333333 c0 -25.6 17.066667 -42.666666 42.666667 -42.666666 c25.6 0 42.666667 17.066666 42.666667 42.666666 l0 51.2 l238.933333 0 c25.6 0 42.666667 17.066667 42.666667 42.666667 c0 25.6 -17.066667 42.666667 -42.666667 42.666667 l-68.266667 0 c-25.6 128 -85.333333 247.466667 -162.133333 349.866666 l25.6 25.6 c17.066667 17.066667 17.066667 42.666667 0 59.733334 c-17.066667 17.066667 -42.666667 17.066667 -59.733333 0 l-17.066667 -17.066667 c-72.533333 81.066667 -162.133333 149.333333 -264.533333 200.533333 c-8.533333 0 -17.066667 4.266667 -21.333334 4.266667 Z"/></svg></button>
+      <button class="theme-toggle" aria-label="切换主题" type="button">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      </div>
     </div>
   </header>
   <main class="plaza-main">
@@ -38,8 +47,8 @@
     <div class="table-scroll" tabindex="0" role="region" aria-labelledby="table-caption">
       <table class="feed-table">
         <caption id="table-caption" data-t="directory">订阅源目录</caption>
-        <colgroup><col class="source-col"><col class="address-col"><col class="category-col"><col class="language-col"><col class="popularity-col"><col class="health-col"><col class="actions-col"></colgroup>
-        <thead><tr><th scope="col" data-t="source">订阅源</th><th scope="col" data-t="address">订阅地址</th><th scope="col" data-t="category">分类</th><th scope="col" data-t="feedLanguage">语言</th><th scope="col" data-t="popularity" aria-sort="descending">热度</th><th scope="col" data-t="status">检测状态</th><th scope="col" data-t="actions">操作</th></tr></thead>
+        <colgroup><col class="source-col"><col class="address-col"><col class="category-col"><col class="language-col"><col class="health-col"><col class="actions-col"><col class="popularity-col"></colgroup>
+        <thead><tr><th scope="col" data-t="source">订阅源</th><th scope="col" data-t="address">订阅地址</th><th scope="col" data-t="category">分类</th><th scope="col" data-t="feedLanguage">语言</th><th scope="col" data-t="status">检测状态</th><th scope="col" data-t="actions">操作</th><th scope="col" data-t="popularity" aria-sort="descending">热度</th></tr></thead>
         <tbody id="list"></tbody>
       </table>
     </div>
@@ -47,6 +56,7 @@
     <section class="contribute"><div><h2 data-t="contributeTitle">一起丰富 Plaza</h2><p data-t="contribute">在 LimitRSS 的订阅源菜单中选择“分享至 LimitRSS Plaza”。上传的订阅源通过检测后将公开展示。</p></div><a href="../#download" class="download-link" data-t="download">下载 LimitRSS</a></section>
   </main>
   <footer class="plaza-footer"><span data-t="footer">请仅分享适合公开访问的订阅源。</span></footer>
-  <script src="plaza.js" type="module"></script>
+  <script src="../nav-controls.js?v=20261008-language" defer></script>
+  <script src="plaza.js?v=20261008-language" type="module"></script>
 </body>
 </html>

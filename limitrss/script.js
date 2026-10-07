@@ -43,25 +43,6 @@
     applyTheme("auto");
   }
 
-  // 切换按钮
-  const themeBtn = document.querySelector(".theme-toggle");
-  if (themeBtn) {
-    themeBtn.addEventListener("click", function () {
-      const current = html.getAttribute("data-theme");
-      // auto -> 显式设为暗 -> 显式设为亮 -> 回到 auto
-      let next;
-      if (current === "auto") {
-        next = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark";
-      } else if (current === "dark") {
-        next = "light";
-      } else {
-        next = "dark";
-      }
-      applyTheme(next);
-      setStoredTheme(next);
-    });
-  }
-
   // 监听系统主题变化（仅在 auto 模式下生效）
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function (e) {
     if (html.getAttribute("data-theme") === "auto") {
@@ -73,7 +54,38 @@
   const typewriterEl = document.getElementById("typewriter");
   if (typewriterEl) {
     const wordsAttr = typewriterEl.getAttribute("data-words") || "";
-    const words = wordsAttr.split(",").map(function (s) { return s.trim(); }).filter(Boolean);
+    const chineseWords = wordsAttr.split(",").map(s => s.trim()).filter(Boolean);
+    const englishWords = ['Social media','Media','News','Forums','Blogs','Code','Design','Live streams','Audio & video','Photos','Anime','App updates','Campus news','Weather','Travel','Shopping','Games','Books','Public affairs','Learning','Research','Finance','Sports'];
+    let titleLanguage = 'zh';
+    try { titleLanguage = localStorage.getItem('limitrss-language') || localStorage.getItem('plaza-language') || (navigator.language.startsWith('zh') ? 'zh' : 'en'); } catch {}
+    let words = titleLanguage === 'en' ? englishWords : chineseWords;
+    const intro = document.getElementById('hero-title-intro');
+    const suffix = document.getElementById('hero-title-suffix');
+    const heading = typewriterEl.closest('h1');
+    function fitTitle() {
+      const width = heading.clientWidth;
+      if (!width) return;
+      const style = getComputedStyle(heading);
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      const maxSize = window.innerWidth <= 640 ? 44 : 72;
+      context.font = `${style.fontWeight} ${maxSize}px ${style.fontFamily}`;
+      const samples = [intro.textContent, ...words.map(word => word + suffix.textContent)];
+      const longest = Math.max(...samples.map(text => context.measureText(text).width - .035 * maxSize * Math.max(0,text.length-1)));
+      heading.style.fontSize = `${Math.min(maxSize, maxSize * (width - 10) / longest)}px`;
+    }
+    function setTitleLanguage(value) {
+      titleLanguage = value === 'en' ? 'en' : 'zh';
+      words = titleLanguage === 'en' ? englishWords : chineseWords;
+      intro.textContent = titleLanguage === 'en' ? 'Follow what you love.' : '轻松订阅您感兴趣的';
+      suffix.textContent = titleLanguage === 'en' ? ', all in one feed.' : ' RSS源';
+      typewriterEl.setAttribute('aria-label', titleLanguage === 'en' ? 'Feed categories' : '动态展示订阅分类');
+      fitTitle();
+    }
+    setTitleLanguage(titleLanguage);
+    new ResizeObserver(fitTitle).observe(heading);
+    window.addEventListener("resize", fitTitle);
+    document.fonts.ready.then(fitTitle);
     // 每个词对应的颜色（与 data-words 顺序一一对应；超出时循环取）
     const WORD_COLORS = [
       "#0ea5e9", // 社交媒体 - sky 蓝
@@ -111,9 +123,6 @@
       typewriterEl.textContent = words[0];
       applyColor(0);
 
-      if (reducedMotion) {
-        return;
-      }
 
       let wordIdx = 0;
       let charIdx = words[0].length;
@@ -150,14 +159,21 @@
       }
 
       // 启动：先 hold 一段时间让用户看清首词，再开始切换
-      timer = setTimeout(tick, 1800);
+      if (!reducedMotion) timer = setTimeout(tick, 1800);
+      document.addEventListener('limitrss-language-change', event => {
+        clearTimeout(timer);timer = null;
+        setTitleLanguage(event.detail);
+        wordIdx = 0;charIdx = words[0].length;phase = 'hold';
+        typewriterEl.textContent = words[0];applyColor(0);
+        if (!reducedMotion && !document.hidden) timer = setTimeout(tick, 1800);
+      });
 
       // 切到后台标签时暂停，节省资源
       document.addEventListener("visibilitychange", function () {
         if (document.hidden && timer) {
           clearTimeout(timer);
           timer = null;
-        } else if (!document.hidden && !timer) {
+        } else if (!document.hidden && !timer && !reducedMotion) {
           tick();
         }
       });
@@ -500,6 +516,7 @@
   // 一次一道光波从 logo 背后缓慢扩散（粗渐变环，外缘深内缘浅），
   // 发射瞬间 logo 放大再回缩；波前扫到目标点时该点"长出"订阅源图标并推开
   // 附近挡路的点；图标飞向 logo 时逐帧挤开路径上的点，到达后被 logo 吸收。
+  const narrowHero = window.matchMedia("(max-width: 960px)");
   const vizEl = document.getElementById("feed-viz");
   const dotFieldEl = document.getElementById("dot-field");
   const waveEl = document.getElementById("wave-ring");
@@ -752,8 +769,11 @@
 
     function scheduleNext(delay) {
       if (nextTimer) window.clearTimeout(nextTimer);
+      nextTimer = null;
+      if (narrowHero.matches) return;
       nextTimer = window.setTimeout(function () {
         nextTimer = null;
+        if (narrowHero.matches) return;
         if (vizVisible && !document.hidden) startWave();
         else scheduleNext(600); // 不可见时顺延，保证恢复后仍有下一道波
       }, delay);
@@ -844,7 +864,7 @@
 
     // ---------- 主循环 ----------
     function ensureLoop() {
-      if (!running) {
+      if (!narrowHero.matches && !running) {
         running = true;
         rafId = requestAnimationFrame(frame);
       }
@@ -852,6 +872,7 @@
 
     let lastNow = 0;
     function frame(now) {
+      if (narrowHero.matches) { running = false; lastNow = 0; return; }
       // 翻页期间暂停 hero 动画：342 个点的样式写入 + 3200px 模糊光波
       // 会和滚动抢占主线程，是翻页卡顿的主要来源之一。
       // 复用下面 visibilitychange 的"暂停 + 重排时间轴"模式，结束后自动恢复。
@@ -985,7 +1006,7 @@
     }
 
     // ---------- 生命周期 ----------
-    buildDots();
+    if (!narrowHero.matches) buildDots();
     scheduleNext(900);
 
     // hero 离开视口即暂停（省电），回来先重排时间轴再继续
@@ -1032,12 +1053,22 @@
     // 防抖重建点阵（避免频繁清空重建）
     let resizeTimer = null;
     window.addEventListener("resize", function () {
+      if (narrowHero.matches) {
+        if (resizeTimer) window.clearTimeout(resizeTimer);
+        if (nextTimer) window.clearTimeout(nextTimer);
+        nextTimer = null;
+        cancelAnimationFrame(rafId);
+        running = false;
+        lastNow = 0;
+        return;
+      }
       resolveCenter();
       if (resizeTimer) window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(function () {
         buildDots();
         wave = null;
         waveEl.style.opacity = "0";
+        scheduleNext(900);
       }, 250);
     });
   }

@@ -1,0 +1,10 @@
+name = "limitrss-plaza-api"
+main = "index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+[[d1_databases]]
+binding = "DB"
+database_name = "limit-startup-db"
+database_id = "de871d75-01ee-4fbc-a7af-62fddb23e6ff"
+[observability]
+enabled = true

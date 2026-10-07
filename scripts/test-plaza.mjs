@@ -69,3 +69,33 @@ test('interaction counters are atomic, public-only and sort before pagination wi
   const response=await hit(1,'copy');assert.equal(response.headers.get('Cache-Control'),'no-store');
  }finally{await proxy.dispose();}
 });
+
+test('versioned app API exposes public metadata, filters, sort and direct D1 interaction without website fetch',async()=>{
+ const {default:worker}=await import('../workers/plaza-api/index.js');
+ const {onRequestGet:versioned}=await import('../functions/api/limitrss/plaza/v1/feeds/index.js');
+ const {onRequestGet:versionedDetail}=await import('../functions/api/limitrss/plaza/v1/feeds/[id].js');
+ const {onRequestPost:versionedHit}=await import('../functions/api/limitrss/plaza/v1/feeds/[id]/interaction.js');
+ assert.equal(typeof versionedDetail,'function');assert.equal(typeof versionedHit,'function');
+ const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
+ try {
+  const DB=proxy.env.DB,env={DB};for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const id=n=>n.toString(16).padStart(32,'0');
+  for(let n=1;n<=4;n++) {
+   await DB.prepare('INSERT INTO plaza_feeds (id,url,title,category,status,created_at,published) VALUES (?,?,?,?,?,?,?)').bind(id(n),`https://example.com/${n}`,['Zebra','Alpha','Beta','Hidden'][n-1],n===1?'gaming':'development','healthy',n,n===4?0:1).run();
+   await DB.prepare('INSERT INTO plaza_feed_stats (feed_id,language,copy_count,import_count) VALUES (?,?,?,?)').bind(id(n),[null,'zh-cn','en','en'][n-1],n===1?5:0,0).run();
+  }
+  const url='https://api.example/api/limitrss/plaza/v1/feeds';
+  const list=async(q='')=>(await worker.fetch(new Request(url+q),env)).json();
+  let result=await list();assert.equal(result.total,3);assert.deepEqual(result.feeds.map(r=>r.id),[id(1),id(3),id(2)]);
+  for(const key of ['id','title','url','icon','category','language','status','checkedAt','createdAt','latencyMs','copyCount','importCount','popularity'])assert.ok(Object.hasOwn(result.feeds[0],key),key);
+  assert.equal((await list('?language=zh')).feeds[0].id,id(2));
+  assert.equal((await list('?language=unknown')).feeds[0].id,id(1));
+  assert.equal((await list('?q=Alpha&status=healthy&category=development')).total,1);
+  assert.deepEqual((await list('?sort=name')).feeds.map(r=>r.title),['Alpha','Beta','Zebra']);
+  assert.equal((await list('?sort=newest')).feeds[0].id,id(3));
+  assert.equal((await versioned({env,request:new Request(url)})).status,200);
+  assert.equal((await worker.fetch(new Request(url+'/'+id(4)),env)).status,404);
+  const hit=await worker.fetch(new Request(url+'/'+id(2)+'/interaction',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'copy'})}),env);assert.equal(hit.status,200);assert.equal((await hit.json()).popularity,1);
+  assert.equal((await worker.fetch(new Request('https://api.example/website'),env)).status,404);
+ }finally{await proxy.dispose();}
+});

@@ -66,3 +66,21 @@ bash scripts/deploy.sh
 ```
 
 迁移仅新增 `plaza_feed_stats` 表，保留现有订阅源；可重复运行。新环境完整 schema 也包含此表。上述远端操作仍须用户授权。
+
+## 软件内目录与独立 API（2026-10-08）
+
+新增 `GET /api/limitrss/plaza/v1/feeds`，原网页 API 保持兼容。返回 `schemaVersion:1,total,page,pageSize:30,sort,filters,feeds`。每个 feed 含 id/title/url/icon/category/language/status/checkedAt/createdAt/latencyMs/copyCount/importCount/popularity，时间为毫秒，未知值为 null；仅公开来源可读取。`filters` 含 categories/statuses/languages，language 是源声明的语言而非用户 UI 语言。
+
+参数：`q`（标题或地址，最多100字符）、`category`、`status`（healthy/degraded/failed）、`language`（如 zh 匹配 zh-cn；unknown 表示未标注）、`sort`（popularity 默认 / newest / name）、`page`。热度相同按添加时间降序，再按 ID 稳定排序。详情 `GET /v1/feeds/:id`，热度计数 `POST /v1/feeds/:id/interaction`，与原详情、计数接口语义及限流相同。全部公开字段都有返回，不返回内部检测失败原因、IP 哈希或管理信息。
+
+客户端默认使用 Pages 项目域名 `https://limit-startup.pages.dev/api/limitrss/plaza/v1/feeds`，不经过官网自定义域名的人机验证。官网仍可使用 Turnstile；不得给 App JSON 接口添加网页挑战、登录重定向或 cookie 验证。客户端检测 HTML / cf-mitigated，显示本地化错误并记录诊断，不尝试绕过挑战。
+
+未来若进一步保护网站，推荐独立部署 `workers/plaza-api/wrangler.toml`，保留 `workers_dev = true`：该 Worker 直接绑定同一个 D1，仅提供列表、详情和交互计数，不反向请求官网。软件构建时设置：
+
+```sh
+flutter build <目标> --dart-define=PLAZA_DIRECTORY_API=https://limitrss-plaza-api.<实际账号子域>.workers.dev/api/limitrss/plaza/v1/feeds
+```
+
+发布前先 `npx wrangler deploy --dry-run --config workers/plaza-api/wrangler.toml` 验证构建；获部署授权后才运行不带 dry-run 的命令，使用实际输出域名构建客户端。该功能未新增数据库迁移；需已有 plaza_feed_stats 表。
+
+Cloudflare 规则不能仅靠客户端代码保证：普通 Bot Fight Mode 不能通过 WAF Skip 规则豁免。不要将该 API 入口置于网站 Bot Fight Mode、Cloudflare Access 或 Managed Challenge 之下；使用独立 workers.dev 域名隔离网站区域规则。使用自定义 API 域名时仍需单独核验其防火墙设置。上线验收必须使用无浏览器 cookie 的 GET 和 POST 验证 JSON、分页及限流，确保无挑战。参考官方文档：https://developers.cloudflare.com/bots/get-started/bot-fight-mode/ 和 https://developers.cloudflare.com/waf/custom-rules/skip/options/ 。

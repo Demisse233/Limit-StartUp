@@ -1900,7 +1900,8 @@ section[id] { scroll-margin-top: 61px; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 960px) {
-  /* 窄屏/平板：文字贴顶，logo 下移避让按钮 */
+  /* 窄屏优先展示介绍与操作，隐藏装饰动画。 */
+  .feed-viz { display: none; }
   .hero { --cx: 50%; --cy: 85%; align-items: flex-start; padding: 20px 0 40px; }
   .hero .container { max-width: 100%; }
   .hero-veil {
@@ -2012,3 +2013,22 @@ section[id] { scroll-margin-top: 61px; }
 }
 
 .hero-actions svg { flex-shrink: 0; }
+
+/* Shared navigation controls on the home page and Plaza. */
+.nav-tools { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.nav-tools .language-toggle, .nav-tools .theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-glass-strong); color: var(--text-2); cursor: pointer; }
+.nav-tools button:hover { border-color: var(--border-strong); color: var(--text); }
+@media (prefers-color-scheme: dark) {
+ :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: none; }
+ :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: inline; }
+}
+
+.nav-tools { position: relative; }
+.language-menu { position: absolute; z-index: 50; top: calc(100% + 10px); right: 46px; min-width: 156px; padding: 5px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--bg); box-shadow: 0 12px 32px rgba(0,0,0,.16); }
+.language-menu[hidden] { display: none; }
+.nav-tools .language-menu button { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; padding: 10px 12px; border: 0; border-radius: 8px; background: transparent; color: var(--text); font: inherit; font-size: 14px; cursor: pointer; text-align: left; }
+.nav-tools .language-menu button:hover { background: var(--bg-elev); }
+.nav-tools .language-menu button[aria-pressed="true"] { color: var(--accent); }
+.nav-tools .language-menu button[aria-pressed="true"]::after { content: '✓'; }
+
+.hero-title-line { display: block; white-space: nowrap; }

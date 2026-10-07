@@ -1,18 +1,6 @@
 import {respond,publicUrl,feedUrl,publicFeed,classify,quota,readSmallJson,categories} from '../../../_lib/plaza.js';
 export const onRequestOptions=()=>new Response(null,{status:204,headers:{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type','Access-Control-Allow-Methods':'GET, POST, OPTIONS'}});
-export async function onRequestGet({request,env}) {
- try {
-  const query=new URL(request.url).searchParams;const q=(query.get('q')??'').slice(0,100);const category=query.get('category');const status=query.get('status');
-  const page=Math.max(1,Math.min(10000,parseInt(query.get('page'))||1));const where=['published=1'];const args=[];
-  if(q){where.push('(title LIKE ? ESCAPE \'\\\' OR url LIKE ? ESCAPE \'\\\')');const term=`%${q.replace(/[\\%_]/g,'\\$&')}%`;args.push(term,term);}
-  if(categories.includes(category)){where.push('category=?');args.push(category);}
-  if(['healthy','degraded','failed'].includes(status)){where.push('status=?');args.push(status);}
-  const clause=where.join(' AND ');
-  const total=await env.DB.prepare(`SELECT COUNT(*) AS total FROM plaza_feeds WHERE ${clause}`).bind(...args).first();
-  const rows=await env.DB.prepare(`SELECT * FROM (SELECT f.*,s.language,COALESCE(s.copy_count,0) AS copy_count,COALESCE(s.import_count,0) AS import_count FROM plaza_feeds f LEFT JOIN plaza_feed_stats s ON s.feed_id=f.id) WHERE ${clause} ORDER BY (copy_count+import_count) DESC,created_at DESC,id ASC LIMIT 30 OFFSET ?`).bind(...args,(page-1)*30).all();
-  return respond({schemaVersion:1,total:total.total,page,feeds:rows.results.map(publicFeed)});
- }catch{ return respond({error:'unavailable'},503); }
-}
+export {listPlazaFeeds as onRequestGet} from '../../../_lib/plaza-directory.js';
 export async function onRequestPost({request,env}) {
  try {
   if(!await quota(request,env,'upload',30,300)) return respond({error:'rate_limited'},429);
