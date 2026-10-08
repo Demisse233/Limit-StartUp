@@ -1,5 +1,5 @@
 import {respond,publicFeed,categories} from './plaza.js';
-const statuses=['healthy','degraded','failed'];
+const statuses=['healthy','degraded','failed','unknown'];
 export async function listPlazaFeeds({request,env}) {
  const started=Date.now();
  try {
@@ -9,7 +9,7 @@ export async function listPlazaFeeds({request,env}) {
   const where=['published=1'],args=[];
   if(q){where.push('(title LIKE ? ESCAPE \'\\\' OR url LIKE ? ESCAPE \'\\\')');const term=`%${q.replace(/[\\%_]/g,'\\$&')}%`;args.push(term,term);}
   if(categories.includes(category)){where.push('category=?');args.push(category);}
-  if(statuses.includes(status)){where.push('status=?');args.push(status);}
+  if(statuses.includes(status)){where.push("(CASE WHEN lower(url) LIKE 'rsshub://%' THEN 'unknown' ELSE status END)=?");args.push(status);}
   if(language==='unknown')where.push('(language IS NULL OR language=\'\')');
   else if(language && /^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i.test(language)){
    where.push('(lower(language)=? OR lower(language) LIKE ?)');args.push(language.toLowerCase(),language.toLowerCase()+'-%');

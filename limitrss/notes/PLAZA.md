@@ -13,7 +13,7 @@
 
 当前容量约 1440 次检测/天；大量来源会排队，12 小时是目标间隔而非所有规模下的保证。先监控排队长度，扩大规模时拆分批次或使用 Queue，不应直接无限提高每轮数量。
 
-只接受 HTTP(S) 和 rsshub:// 公共路线；拒绝内网/IP 字面量、URL 用户密码、明显凭据查询参数、非默认端口。检查 DNS A 记录和每次重定向，拒绝解析到保留/内网地址；v1 不接受只有 IPv6 地址的站点。RSSHub 用 RSSForever 公共实例检查并保留原始路线。XML 拒绝 HTML、无标题来源、DTD/实体声明及无效 XML。分类根据标题/描述规则，不使用 AI 服务。
+只接受 HTTP(S) 和 rsshub:// 公共路线；拒绝内网/IP 字面量、URL 用户密码、明显凭据查询参数、非默认端口。检查 DNS A 记录和每次重定向，拒绝解析到保留/内网地址；v1 不接受只有 IPv6 地址的站点。RSSHub 保留原始 rsshub:// 路线，通过地址校验后直接公开，带 RSSHub 标志，状态固定为 unknown，不进行网络可用性检测。现有记录通过迁移和定时任务清除旧实例检测结果。XML 拒绝 HTML、无标题来源、DTD/实体声明及无效 XML。分类根据标题/描述规则，不使用 AI 服务。
 
 公网地址校验不保证任意链接不含个人凭据；客户端必须展示地址并提示不要分享私密链接。诊断日志不写原始 URL、IP、用户信息。服务器日志是结构化计数、状态、原因和耗时；客户端使用诊断中心 plaza 模块。
 
@@ -71,7 +71,7 @@ bash scripts/deploy.sh
 
 新增 `GET /api/limitrss/plaza/v1/feeds`，原网页 API 保持兼容。返回 `schemaVersion:1,total,page,pageSize:30,sort,filters,feeds`。每个 feed 含 id/title/url/icon/category/language/status/checkedAt/createdAt/latencyMs/copyCount/importCount/popularity，时间为毫秒，未知值为 null；仅公开来源可读取。`filters` 含 categories/statuses/languages，language 是源声明的语言而非用户 UI 语言。
 
-参数：`q`（标题或地址，最多100字符）、`category`、`status`（healthy/degraded/failed）、`language`（如 zh 匹配 zh-cn；unknown 表示未标注）、`sort`（popularity 默认 / newest / name）、`page`。热度相同按添加时间降序，再按 ID 稳定排序。详情 `GET /v1/feeds/:id`，热度计数 `POST /v1/feeds/:id/interaction`，与原详情、计数接口语义及限流相同。全部公开字段都有返回，不返回内部检测失败原因、IP 哈希或管理信息。
+参数：`q`（标题或地址，最多100字符）、`category`、`status`（healthy/degraded/failed/unknown）、`language`（如 zh 匹配 zh-cn；unknown 表示未标注）、`sort`（popularity 默认 / newest / name）、`page`。热度相同按添加时间降序，再按 ID 稳定排序。详情 `GET /v1/feeds/:id`，热度计数 `POST /v1/feeds/:id/interaction`，与原详情、计数接口语义及限流相同。全部公开字段都有返回，不返回内部检测失败原因、IP 哈希或管理信息。
 
 客户端默认使用 Pages 项目域名 `https://limit-startup.pages.dev/api/limitrss/plaza/v1/feeds`，不经过官网自定义域名的人机验证。官网仍可使用 Turnstile；不得给 App JSON 接口添加网页挑战、登录重定向或 cookie 验证。客户端检测 HTML / cf-mitigated，显示本地化错误并记录诊断，不尝试绕过挑战。
 

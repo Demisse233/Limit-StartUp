@@ -99,3 +99,27 @@ test('versioned app API exposes public metadata, filters, sort and direct D1 int
   assert.equal((await worker.fetch(new Request('https://api.example/website'),env)).status,404);
  }finally{await proxy.dispose();}
 });
+
+test('RSSHub uploads are public and unknown; checks never fetch; legacy results and filters stay consistent',async()=>{
+ const {default:checker}=await import('../workers/plaza-checker/index.js');
+ const {publicFeed}=await import('../functions/_lib/plaza.js');
+ const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
+ try {
+  const DB=proxy.env.DB,env={DB};for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const post=await onRequestPost({env,request:new Request('https://site/api/limitrss/plaza',{method:'POST',body:JSON.stringify({feeds:[{title:'RSSHub route',url:'rsshub://github/trending'}]})})});
+  assert.equal(post.status,201);
+  let row=await DB.prepare('SELECT * FROM plaza_feeds').first();
+  assert.equal(row.status,'unknown');assert.equal(row.published,1);assert.equal(row.checked_at,null);
+  await checkFeed(row,env,()=>{assert.fail('RSSHub must never make a network request');});
+  await DB.prepare("UPDATE plaza_feeds SET status='healthy',checked_at=123,latency=42 WHERE id=?").bind(row.id).run();
+  const list=async status=>(await onRequestGet({env,request:new Request('https://site/api/limitrss/plaza?status='+status)})).json();
+  let result=await list('unknown');assert.equal(result.total,1);assert.equal(result.feeds[0].sourceType,'rsshub');assert.equal(result.feeds[0].status,'unknown');assert.equal(result.feeds[0].checkedAt,null);assert.equal(result.feeds[0].latencyMs,null);
+  assert.equal((await list('healthy')).total,0);
+  row=await DB.prepare('SELECT * FROM plaza_feeds').first();assert.equal(publicFeed(row).status,'unknown');
+  await DB.prepare("UPDATE plaza_feeds SET status='failed',published=0,failures=3,reason='network_error'").run();
+  let pending;await checker.scheduled(null,env,{waitUntil:promise=>pending=promise});await pending;
+  row=await DB.prepare('SELECT * FROM plaza_feeds').first();
+  assert.equal(row.status,'unknown');assert.equal(row.published,1);assert.equal(row.checked_at,null);assert.equal(row.latency,null);assert.equal(row.failures,0);assert.equal(row.reason,null);
+  assert.equal((await list('unknown')).total,1);
+ } finally {await proxy.dispose();}
+});

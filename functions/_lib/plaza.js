@@ -43,6 +43,7 @@ export function feedUrl(raw) {
  publicUrl(`https://rsshub.rssforever.com/${route.hostname}${route.pathname}${route.search}`);
  route.hash='';return route.href;
 }
+export function isRssHubFeed(url) { return typeof url==='string' && /^rsshub:\/\//i.test(url); }
 export function publicAddress(ip) {
  if (ip.includes(':')) return false; // IPv6-only origins are conservatively excluded in v1.
  const a=ip.split('.').map(Number);
@@ -88,6 +89,11 @@ export function parseFeed(xml) {
  return {title,language,category:classify(title,text(feed.description ?? feed.subtitle))};
 }
 export async function checkFeed(row, env, transport=fetch) {
+ if(isRssHubFeed(row.url)) {
+  await env.DB.prepare("UPDATE plaza_feeds SET status='unknown',reason=NULL,failures=0,published=1,checked_at=NULL,next_check=0,latency=NULL WHERE id=?").bind(row.id).run();
+  console.log(JSON.stringify({module:'plaza',event:'feed_check_skipped',id:row.id,sourceType:'rsshub'}));
+  return;
+ }
  const start=Date.now();let status='healthy',reason=null,failures=0,published=1,category=row.category;let language=null;
  try {const parsed=parseFeed(await safeFetch(row.url,transport));category=parsed.category;language=parsed.language;}
  catch(error) {failures=row.failures+1;status=failures>=3?'failed':'degraded';reason=/^(http_\d{3}|[a-z_]+)$/.test(error.message)?error.message:'network_error';published=row.published;}
@@ -100,7 +106,8 @@ export function respond(data,status=200) {
  return Response.json(data,{status,headers:{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Cache-Control':status===200?'public, max-age=60':'no-store'}});
 }
 export function publicFeed(row) {
- return {id:row.id,title:row.title,url:row.url,icon:row.icon,category:row.category,status:row.status,checkedAt:row.checked_at,latencyMs:row.latency,language:row.language??null,copyCount:row.copy_count??0,importCount:row.import_count??0,popularity:(row.copy_count??0)+(row.import_count??0),createdAt:row.created_at};
+ const rsshub=isRssHubFeed(row.url);
+ return {sourceType:rsshub?'rsshub':'rss',id:row.id,title:row.title,url:row.url,icon:row.icon,category:row.category,status:rsshub?'unknown':row.status,checkedAt:rsshub?null:row.checked_at,latencyMs:rsshub?null:row.latency,language:row.language??null,copyCount:row.copy_count??0,importCount:row.import_count??0,popularity:(row.copy_count??0)+(row.import_count??0),createdAt:row.created_at};
 }
 export async function quota(request,env,kind,maxMinute,maxDay) {
  const ip=request.headers.get('CF-Connecting-IP') || 'local';

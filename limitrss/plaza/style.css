@@ -87,3 +87,13 @@ body { background: var(--bg); color: var(--text); }
 .loading-spinner { width: 20px; height: 20px; flex-shrink: 0; border: 2px solid var(--border-strong); border-top-color: var(--accent); border-radius: 50%; animation: plaza-spin .8s linear infinite; }
 @keyframes plaza-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .loading-spinner { animation: none; } }
+
+.feed-name { min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 5px 7px; }
+.rsshub-badge { display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; padding: 3px 6px; border: 1px solid #ff8a0061; border-radius: 6px; background: #ff8a0024; color: #ff8a00; font-size: 10.5px; font-weight: 700; line-height: 1; white-space: nowrap; }
+.rsshub-badge svg { width: 12px; height: 12px; }
+.unknown { color: var(--text-3); }
+.health-group { display: flex; align-items: center; gap: 5px; }
+.feed-table .status-help { position: relative; display: inline-flex; align-items: center; justify-content: center; padding: 0; width: 22px; height: 24px; border: 0; background: transparent; color: var(--text-3); }
+.status-help svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.status-tooltip { display: none; position: fixed; z-index: 20; width: min(300px, calc(100vw - 36px)); padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: 9px; background: var(--bg-elev); color: var(--text-2); box-shadow: 0 5px 20px #0002; font-size: 12px; line-height: 1.6; font-weight: 400; text-align: left; pointer-events: none; }
+.status-help:hover .status-tooltip, .status-help:focus-visible .status-tooltip, .status-help.is-open .status-tooltip { display: block; }
