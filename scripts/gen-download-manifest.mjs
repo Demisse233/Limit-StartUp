@@ -29,6 +29,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { releaseManifest } from '../limitrss/src/downloads.mjs';
 
 const rootArg = process.argv.indexOf('--root');
 const ROOT = rootArg >= 0 ? resolve(process.argv[rootArg + 1]) : resolve(dirname(fileURLToPath(import.meta.url)), '../limitrss');
@@ -39,7 +40,7 @@ const valueOf = (f) => {
   const i = argv.indexOf(f);
   return i !== -1 && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : null;
 };
-const DEFAULT_REPO = 'Demisse233/LimitRSS_Client';
+const DEFAULT_REPO = 'Demisse233/LimitRSS_Releases';
 const REPO = valueOf('--repo') || DEFAULT_REPO;
 
 // 平台 → 文件名里的特征串。判定资产属于哪个平台就看文件名是否包含它。
@@ -133,44 +134,9 @@ async function main() {
     throw new Error('无法确认安装包状态，且没有已有清单，停止部署');
   }
 
-  const versions = {};
-  let scanned = 0;
-  for (const rel of releases) {
-    if (rel.draft) continue;
-    for (const asset of rel.assets || []) {
-      scanned += 1;
-      const name = asset.name;
-      const key = platformFromName(name);
-      if (!key) continue;
-      const ver = versionFromName(name, key) || String(rel.tag_name || '').replace(/^v/, '');
-      if (!ver) continue;
-      versions[ver] = versions[ver] || {};
-      // 同一版本同一平台若有多个文件，保留先出现的（通常是正式包）
-      if (!versions[ver][key]) versions[ver][key] = name;
-    }
-  }
-
-  // 版本号从新到旧排列，方便人看
-  const sorted = {};
-  Object.keys(versions)
-    .sort((a, b) => {
-      const pa = a.split(/[.-]/).map((x) => parseInt(x, 10) || 0);
-      const pb = b.split(/[.-]/).map((x) => parseInt(x, 10) || 0);
-      for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
-        const d = (pb[i] || 0) - (pa[i] || 0);
-        if (d) return d;
-      }
-      return 0;
-    })
-    .forEach((v) => {
-      sorted[v] = versions[v];
-    });
-
-  const out = {
-    repo: REPO,
-    generatedAt: new Date().toISOString(),
-    versions: sorted,
-  };
+  const out = releaseManifest(releases);
+  const sorted = out.versions;
+  const scanned = releases.reduce((total, release) => total + (release.assets || []).length, 0);
   mkdirSync(dirname(OUT), { recursive: true });
   writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n', 'utf8');
 

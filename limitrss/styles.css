@@ -1237,7 +1237,7 @@ section[id] { scroll-margin-top: 61px; }
 
 /* 芯片选择器的弹层需要溢出卡片显示：推荐卡放开 overflow，
    其余卡片仍保持 overflow:hidden（用于内部涟漪动画的裁切）。 */
-.download-featured .download-card:has(.chip-picker) {
+.download-card:has(.chip-picker) {
   overflow: visible;
 }
 
@@ -2032,3 +2032,11 @@ section[id] { scroll-margin-top: 61px; }
 .nav-tools .language-menu button[aria-pressed="true"]::after { content: '✓'; }
 
 .hero-title-line { display: block; white-space: nowrap; }
+
+/* Architecture controls use the existing card typography. */
+button.chip-option { border: 0; background: none; font-family: inherit; text-align: left; cursor: pointer; }
+button.chip-option.is-selected { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.download-signing-note { grid-column: 1 / -1; font-size: 12px; color: var(--text-2); }
+.download-cta-link[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+.download-card:has(.chip-picker[open]) { z-index: 50; }
+.download-featured:has(.chip-picker[open]) { position: relative; z-index: 60; }

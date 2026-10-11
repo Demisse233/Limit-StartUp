@@ -270,247 +270,80 @@
     }
   }
 
-  // macOS 芯片选择器：目前只提供 Apple 芯片包，Intel 版本「敬请期待」。
-  // 检测结果只用于「预选」——最终由用户自己选，避免指纹识别被屏蔽时误判。
-  const CHIP_LABELS = { apple: "Apple 芯片", intel: "Intel 芯片" };
-  const CHIP_DOWNLOADABLE = { apple: true, intel: false };
-  // 只在 macOS 上探测芯片（其它平台探测没有意义，还会白白建一个 WebGL 上下文）
+  // 按实际存在的公开安装包提供架构选项。
   const macChip = os === "mac" ? detectMacChip() : "unknown";
-  // 未识别出芯片（隐私设置屏蔽了 GPU 信息）时不预设，让用户明确选一次
-  let selectedChip = macChip === "apple" || macChip === "intel" ? macChip : null;
-
-  function renderChipPicker() {
-    const picker = document.querySelector(".chip-picker");
-    if (!picker) return;
-    const options = picker.querySelector(".chip-options");
-    const picked = picker.querySelector("[data-chip-picked]");
-    options.textContent = "";
-    Object.keys(CHIP_LABELS).forEach(function (chip) {
-      const downloadable = CHIP_DOWNLOADABLE[chip];
-      const el = document.createElement(downloadable ? "a" : "span");
-      el.className = "chip-option";
-      if (chip === selectedChip) el.classList.add("is-selected");
-      if (!downloadable) el.classList.add("is-unavailable");
-      if (downloadable) {
-        el.href = "#";
-        el.setAttribute("data-chip", chip);
-      }
-      const name = document.createElement("span");
-      name.className = "chip-option-name";
-      name.textContent = CHIP_LABELS[chip];
-      el.appendChild(name);
-      const state = document.createElement("span");
-      state.className = "chip-state";
-      state.textContent = downloadable ? "可下载" : "敬请期待";
-      el.appendChild(state);
-      options.appendChild(el);
-    });
-    if (picked) picked.textContent = selectedChip ? CHIP_LABELS[selectedChip] : "选择芯片";
-  }
-
-  // 推荐位：检测到的平台被移到这一行单独放大展示，其余平台留在下方网格。
-  // 未识别到平台时推荐位为空，由 CSS :empty 隐藏。
-  const featuredSlot = document.querySelector("[data-download-featured]");
-
-  // 提示语放在推荐位上方（而不是网格上方），与推荐的卡片成一组。
-  // 只有确实匹配到卡片时才显示，避免出现指向不存在平台的提示。
-  if (featuredSlot && matchedCard) {
-    const wrap = document.createElement("div");
-    wrap.className = "os-banner-wrap";
-    const banner = document.createElement("div");
-    banner.className = "os-banner";
-    let note;
-    if (macChip === "intel") {
-      banner.innerHTML =
-        "检测到你的设备是 <strong>" +
-        osLabels[os] +
-        "</strong>，当前只提供 Apple 芯片版本。";
-      note = "Apple 芯片（M 系列）版本已可下载，Intel 版本敬请期待。";
-    } else {
-      banner.innerHTML =
-        '检测到你的设备是 <strong>' +
-        osLabels[os] +
-        "</strong>，已为你高亮对应下载。";
-    }
-    wrap.appendChild(banner);
-    // 补充说明放进 banner 容器而不是推荐位：推荐位高度紧凑，
-    // 直接塞进去会溢出到卡片上、被卡片边框划过。
-    if (note) {
-      const p = document.createElement("p");
-      p.className = "download-note-featured";
-      p.textContent = note;
-      wrap.appendChild(p);
-    }
-    featuredSlot.parentNode.insertBefore(wrap, featuredSlot);
-  }
-
-  // 把检测到的卡片移入推荐位并高亮（matchedCard 已在上方确定命中）
-  if (matchedCard) {
-    matchedCard.classList.add("highlight");
-    if (featuredSlot) featuredSlot.appendChild(matchedCard);
-  }
-
-  // macOS 的芯片选择器只在它位于推荐位时才有意义。
-  // 若访客不是 macOS（例如 Windows），macOS 卡片会留在下方网格里：
-  // 那时它没有 .download-featured 的 overflow:visible（弹层会被裁掉），
-  // 芯片探测也没有意义（会停在「选择芯片」这种空状态）。
-  // 因此把这种情况下的选择器换回普通的「下载 →」，与其它平台卡片一致。
-  const macCardEl = document.querySelector('.download-card[data-os="mac"]');
-  const macIsFeatured = !!(macCardEl && featuredSlot && macCardEl.parentElement === featuredSlot);
-  if (macCardEl && !macIsFeatured) {
-    const picker = macCardEl.querySelector(".chip-picker");
-    if (picker) {
-      picker.closest(".download-cta--split").remove();
-      const plainCta = document.createElement("span");
-      plainCta.className = "download-cta download-cta-bar";
-      plainCta.textContent = "下载 →";
-      macCardEl.appendChild(plainCta);
-    }
-  }
-
-  // 渲染芯片选择器（选项由检测结果预选）
-  renderChipPicker();
-  const chipPicker = document.querySelector(".chip-picker");
-
-  // 选中某个芯片：写回状态、重渲染选项、收起下拉
-  function chooseChip(chip) {
-    selectedChip = chip;
-    renderChipPicker();
-    if (chipPicker) chipPicker.open = false;
-  }
-
-  document.addEventListener("click", function (e) {
-    const opt = e.target.closest ? e.target.closest(".chip-option[data-chip]") : null;
-    if (opt) {
-      e.preventDefault();
-      chooseChip(opt.getAttribute("data-chip"));
-      return;
-    }
-    // 下载按钮与芯片选择：先接住，避免 href="#" 把页面带回顶部
-    const trigger = e.target.closest
-      ? e.target.closest("[data-download-trigger], .chip-picker .download-cta-link")
-      : null;
-    if (trigger) {
-      e.preventDefault();
-      return;
-    }
-    // 点在下拉外面就收起
-    if (chipPicker && chipPicker.open && !chipPicker.contains(e.target)) {
-      chipPicker.open = false;
-    }
-  });
-
-  // ---------- 下载地址 ----------
-  // 地址由「版本号 + 文件名约定」自动拼出，不需要手工维护：
-  //   版本号来自 data/changelog.json（由 npm run sync 从 notes/changelog.md 生成）
-  //   文件放在 GitHub Release 里，命名遵循 LimitRSS-<版本>-<平台>.<扩展名>
-  // 所以发新版时只要：改 changelog 的版本号 → npm run sync → 传包到对应 Release，
-  // 网页上的下载地址会自动跟着版本号走。
-  // 手工覆盖（留空表示走自动拼接）。万一某个版本的命名不一致，填这里即可。
-  const DOWNLOAD_OVERRIDES = {
-    mac: "",
-    ios: "",
-    android: "",
+  const selectedArchitectures = { mac: macChip === 'intel' ? 'x86_64' : 'arm64', windows: 'x64' };
+  const architectureLabels = {
+    mac: { arm64: 'Apple 芯片', x86_64: 'Intel 芯片' },
+    windows: { x64: 'x64 · Intel / AMD', arm64: 'ARM64' },
   };
-
-  // ---------- 安装包清单（构建时生成，运行时只读本地文件）----------
-  // 为什么不在前端探测 release 资产是否存在：
-  //   GitHub 的下载地址会 302 到 objects.githubusercontent.com，
-  //   该链路没有 CORS 头，fetch 一律 `TypeError: Failed to fetch`（实测）。
-  //   所以由 scripts/gen-download-manifest.mjs 在构建时查 GitHub API，
-  //   把「哪些版本、哪些平台真的有包」落成 data/downloads.json，前端直接读。
-  // 【重要】清单里的版本可能晚于更新日志的版本（例如日志先写、
-  // 安装包后传）。必须用清单里「最新的有包版本」，而不是 changelog 的版本，
-  // 否则会拼出 404 死链。
-  const REPO_SLUG = "Demisse233/LimitRSS_Client";
-
-  function manifestUrl(repo, version, fileName) {
-    return (
-      "https://github.com/" + repo + "/releases/download/v" + version + "/" + fileName
-    );
+  const architectureKeys = {
+    mac: { arm64: 'mac-arm64', x86_64: 'mac-x86_64' },
+    windows: { x64: 'windows-x64', arm64: 'windows-arm64' },
+  };
+  const featuredSlot = document.querySelector('[data-download-featured]');
+  if (matchedCard && featuredSlot) {
+    matchedCard.classList.add('highlight');
+    featuredSlot.appendChild(matchedCard);
   }
-
-  // 从清单里解析出「某平台最新的、确实有包的版本」。
-  // 抽成独立函数是为了让网页和构建脚本（scripts/lib/download.mjs）用同一套规则，
-  // 两边算出的地址必须完全一致，否则接口给的地址和网页上的会对不上。
-  // 返回 { version, fileName, url }，没有任何版本有包时返回 null。
+  const REPO_SLUG = 'Demisse233/LimitRSS_Releases';
+  let downloadManifest = null;
   function resolveDownloadEntry(versions, key, repo) {
-    if (!versions || !key) return null;
-    for (const ver of Object.keys(versions)) {
-      const files = versions[ver] || {};
-      if (files[key]) {
-        return {
-          version: ver,
-          fileName: files[key],
-          url: manifestUrl(repo || REPO_SLUG, ver, files[key]),
-        };
-      }
+    for (const [version, files] of Object.entries(versions || {})) {
+      if (files[key]) return {version, fileName: files[key],
+        url: `https://github.com/${repo || REPO_SLUG}/releases/download/v${version}/${files[key]}`};
     }
     return null;
   }
-
-  fetch("./data/downloads.json")
-    .then(function (r) {
-      return r.ok ? r.json() : null;
-    })
-    .then(function (manifest) {
-      if (!manifest || !manifest.versions) return;
-      const repo = manifest.repo || REPO_SLUG;
-      const versions = manifest.versions; // 已按版本从新到旧排序
-
-      document.querySelectorAll("[data-download-for]").forEach(function (el) {
-        const key = el.getAttribute("data-download-for");
-        if (!key) return;
-        if (DOWNLOAD_OVERRIDES[key]) {
-          el.setAttribute("href", DOWNLOAD_OVERRIDES[key]);
-          el.setAttribute("target", "_blank");
-          el.setAttribute("rel", "noopener noreferrer");
-          el.removeAttribute("aria-disabled");
-          return;
-        }
-        // 找「最新的、且该平台确实有包」的版本
-        const entry = resolveDownloadEntry(versions, key, repo);
-        if (entry) {
-          el.setAttribute("href", entry.url);
-          el.setAttribute("target", "_blank");
-          el.setAttribute("rel", "noopener noreferrer");
-          el.removeAttribute("aria-disabled");
-        } else {
-          // 任何版本都没有该平台的包：保持占位，绝不产生死链
-          el.removeAttribute("href");
-          el.setAttribute("aria-disabled", "true");
-        }
+  function renderDownloads() {
+    document.querySelectorAll('[data-platform-picker]').forEach(picker => {
+      const platform = picker.dataset.platformPicker;
+      picker.querySelector('[data-chip-picked]').textContent = architectureLabels[platform][selectedArchitectures[platform]];
+      const options = picker.querySelector('.chip-options');
+      options.replaceChildren();
+      Object.entries(architectureLabels[platform]).forEach(([arch, label]) => {
+        const hit = resolveDownloadEntry(downloadManifest?.versions, architectureKeys[platform][arch], REPO_SLUG);
+        const button = document.createElement('button');
+        button.type = 'button';button.className = 'chip-option';
+        button.dataset.arch = arch;button.dataset.platform = platform;
+        button.disabled = !hit;button.setAttribute('aria-pressed', String(selectedArchitectures[platform] === arch));
+        if (!hit) button.classList.add('is-unavailable');
+        if (selectedArchitectures[platform] === arch) button.classList.add('is-selected');
+        const name = document.createElement('span');name.className = 'chip-option-name';name.textContent = label;
+        const state = document.createElement('span');state.className = 'chip-state';state.textContent = hit ? '可下载' : '敬请期待';
+        button.append(name,state);options.append(button);
       });
-    })
-    .catch(function () {
-      /* 读不到清单就维持占位状态，不影响页面其它功能 */
     });
-
-  // ---------- 下载点击埋点 ----------
-  document.querySelectorAll(".download-card").forEach(function (card) {
-    card.addEventListener("click", function (e) {
-      // 卡片内部的控件（芯片选择器、下载链接）有自己的语义，
-      // 不应被当成"点了整张卡片"，否则一次点击会重复上报。
-      if (e.target.closest && e.target.closest(".chip-picker, .download-cta--split")) return;
-      const osKey = card.getAttribute("data-os") || "source";
-      // eslint-disable-next-line no-console
-      console.info("[LimitRSS] download click:", osKey);
+    document.querySelectorAll('[data-download-for]').forEach(link => {
+      const platform = link.dataset.downloadFor;
+      const key = architectureKeys[platform]?.[selectedArchitectures[platform]] || platform;
+      const hit = resolveDownloadEntry(downloadManifest?.versions, key, REPO_SLUG);
+      if (hit) {
+        link.href = hit.url;link.target = '_blank';link.rel = 'noopener noreferrer';link.removeAttribute('aria-disabled');
+        const badge = link.closest('.download-card').querySelector('.badge-tag');
+        if (badge) badge.textContent = `v${hit.version}`;
+      } else {link.removeAttribute('href');link.setAttribute('aria-disabled', 'true');}
+    });
+  }
+  renderDownloads();
+  document.addEventListener('click', event => {
+    const option = event.target.closest?.('button[data-arch][data-platform]');
+    if (option && !option.disabled) {
+      selectedArchitectures[option.dataset.platform] = option.dataset.arch;
+      const picker = option.closest('details');picker.open = false;renderDownloads();
+    }
+    const link = event.target.closest?.('[data-download-for]');
+    if (link && !link.getAttribute('href')) event.preventDefault();
+    document.querySelectorAll('[data-platform-picker][open]').forEach(picker => {
+      if (!picker.contains(event.target)) picker.open = false;
     });
   });
-
-  // 尚无地址的下载按钮（版本号未读到、或该平台本版本没有包）：
-  // 阻止默认跳转（避免 href="#" 回顶），只做提示
-  document.addEventListener("click", function (e) {
-    const trigger = e.target.closest ? e.target.closest("[data-download-for]") : null;
-    if (!trigger) return;
-    if (trigger.getAttribute("href")) return;   // 有地址：交给浏览器正常跳转
-    e.preventDefault();
-    // eslint-disable-next-line no-console
-    console.info(
-      "[LimitRSS] 该平台当前版本暂无安装包:",
-      trigger.getAttribute("data-download-for")
-    );
-  });
+  fetch('./data/downloads.json', {signal: AbortSignal.timeout(12000)})
+    .then(response => response.ok ? response.json() : null)
+    .then(manifest => {
+      if (manifest?.repo !== REPO_SLUG || !manifest.versions) return;
+      downloadManifest = manifest;renderDownloads();
+    }).catch(() => { /* Keep unavailable buttons disabled, never point to missing assets. */ });
 
   // ---------- Hero · 光波扫描点阵动画 ----------
   // 一次一道光波从 logo 背后缓慢扩散（粗渐变环，外缘深内缘浅），

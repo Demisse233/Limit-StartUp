@@ -237,11 +237,10 @@
             <span class="download-info">
               <span class="os-name">macOS</span>
             </span>
-            <span class="badge-tag" data-changelog="mac">v0.4.0</span>
-            <!-- 芯片选择器：目前只提供 Apple 芯片包，Intel 机器需要能切过去看到状态。
-                 默认收起、摘要显示自动检测到的芯片；选项由 JS 生成，便于跟随检测结果。 -->
+            <span class="badge-tag" data-changelog="mac">v0.5.0</span>
+            <!-- 按公开 Release 实际资产提供芯片选项。 -->
             <div class="download-cta download-cta--split">
-              <details class="chip-picker">
+              <details class="chip-picker" data-platform-picker="mac">
                 <summary class="chip-picker-summary">
                   <span data-chip-picked>Apple 芯片</span>
                   <svg class="chip-picker-caret" width="12" height="12" viewBox="0 0 24 24" fill="none"
@@ -250,7 +249,7 @@
                 </summary>
                 <div class="chip-options"></div>
               </details>
-              <button type="button" class="download-cta-link" data-download-trigger data-download-for="mac">下载 →</button>
+              <a class="download-cta-link" data-download-for="mac" aria-disabled="true">下载 →</a>
             </div>
           </div>
 
@@ -261,7 +260,17 @@
             <span class="download-info">
               <span class="os-name">Windows</span>
             </span>
-            <span class="badge-tag">敬请期待</span>
+            <span class="badge-tag" data-changelog="windows">v0.5.0</span>
+            <div class="download-cta download-cta--split">
+              <details class="chip-picker" data-platform-picker="windows">
+                <summary class="chip-picker-summary">
+                  <span data-chip-picked>x64 · Intel / AMD</span>
+                  <svg class="chip-picker-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div class="chip-options"></div>
+              </details>
+              <a class="download-cta-link" data-download-for="windows" aria-disabled="true">下载 →</a>
+            </div>
           </div>
 
           <div class="download-card glass" data-os="ios">
@@ -271,10 +280,10 @@
             <span class="download-info">
               <span class="os-name">iOS</span>
             </span>
-            <span class="badge-tag" data-changelog="ios">v0.4.0</span>
-            <!-- 纯 IPA：下载后需自签或 TestFlight 才能安装，所以文案不用「下载」，
-                 避免用户以为下完就能装。地址在 script.js 的 DOWNLOAD_URLS 里配置。 -->
+            <span class="badge-tag" data-changelog="ios">v0.5.0</span>
+            <!-- 未签名 IPA，需要用户重签后安装。 -->
             <a class="download-cta download-cta-bar download-cta-link" data-download-for="ios">获取自签包 →</a>
+            <span class="download-signing-note">需要重签后安装</span>
           </div>
 
           <div class="download-card glass" data-os="android">
@@ -284,7 +293,7 @@
             <span class="download-info">
               <span class="os-name">Android</span>
             </span>
-            <span class="badge-tag" data-changelog="android">v0.4.0</span>
+            <span class="badge-tag" data-changelog="android">v0.5.0</span>
             <a class="download-cta download-cta-bar download-cta-link" data-download-for="android">下载 →</a>
           </div>
 
@@ -295,7 +304,7 @@
             <span class="download-info">
               <span class="os-name">HarmonyOS</span>
             </span>
-            <span class="badge-tag" data-changelog="harmony">v0.4.0</span>
+            <span class="badge-tag" data-changelog="harmony">v0.5.0</span>
             <!-- 鸿蒙端暂未公开发布：点「申请内测」展开邀请码 -->
             <div class="download-cta download-cta-bar download-cta-bar--center">
               <details class="invite">

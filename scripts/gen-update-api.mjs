@@ -96,8 +96,8 @@ export function flattenChanges(entry) {
 export function buildPayload(changelog, downloads, baseUrl) {
   const versions = Array.isArray(changelog.versions) ? changelog.versions : [];
   if (!versions.length) throw new Error('data/changelog.json 里没有任何版本');
-  downloads = downloads || { repo: 'Demisse233/LimitRSS_Client', versions: {} };
-  const repo = downloads.repo || 'Demisse233/LimitRSS_Client';
+  downloads = downloads || { repo: 'Demisse233/LimitRSS_Releases', versions: {} };
+  const repo = downloads.repo || 'Demisse233/LimitRSS_Releases';
   const pkgVersions = downloads.versions || {};
 
   // ---------- 最新版本 ----------
@@ -209,7 +209,7 @@ function main() {
     process.exit(1);
   }
   const changelog = JSON.parse(readFileSync(CHANGELOG, 'utf8'));
-  let downloads = { repo: 'Demisse233/LimitRSS_Client', versions: {} };
+  let downloads = { repo: 'Demisse233/LimitRSS_Releases', versions: {} };
   if (existsSync(DOWNLOADS)) {
     downloads = JSON.parse(readFileSync(DOWNLOADS, 'utf8'));
   } else {

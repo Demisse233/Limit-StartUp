@@ -108,7 +108,7 @@ function main() {
     process.exit(1);
   }
   const downloads = JSON.parse(readFileSync(DOWNLOADS, 'utf8'));
-  const repo = downloads.repo || 'Demisse233/LimitRSS_Client';
+  const repo = downloads.repo || 'Demisse233/LimitRSS_Releases';
   const versions = downloads.versions || {};
 
   let latestVersion = null;

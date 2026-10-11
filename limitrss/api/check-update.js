@@ -1,7 +1,7 @@
 /* 由 scripts/gen-update-api.mjs 自动生成，请勿手工编辑。 JSONP 式全局变量，供浏览器端直接读取，避免 CORS。 */
 window.LIMITRSS_UPDATE_INFO = {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-11T12:24:37.782Z",
+  "generatedAt": "2026-10-11T14:59:55.094Z",
   "product": "LimitRSS",
   "versions": {
     "latest": "0.5.0",
@@ -211,42 +211,42 @@ window.LIMITRSS_UPDATE_INFO = {
   "platforms": {
     "mac": {
       "label": "macOS",
-      "version": "0.3.1",
+      "version": "0.5.0",
       "available": true,
-      "upToDateWithLatest": false,
-      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-macOS.dmg",
-      "fileName": "LimitRSS-0.3.1-macOS.dmg",
-      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
+      "upToDateWithLatest": true,
+      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Releases/releases/download/v0.5.0/LimitRSS-0.5.0-macOS-arm64.dmg",
+      "fileName": "LimitRSS-0.5.0-macOS-arm64.dmg",
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Releases/releases/tag/v0.5.0",
       "stableJson": "https://www.demisse.cn/limitrss/api/download/mac.json"
     },
     "windows": {
       "label": "Windows",
-      "version": null,
-      "available": false,
-      "upToDateWithLatest": false,
-      "downloadUrl": null,
-      "fileName": null,
-      "releasePage": null,
+      "version": "0.5.0",
+      "available": true,
+      "upToDateWithLatest": true,
+      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Releases/releases/download/v0.5.0/LimitRSS-0.5.0-Windows-x64.exe",
+      "fileName": "LimitRSS-0.5.0-Windows-x64.exe",
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Releases/releases/tag/v0.5.0",
       "stableJson": "https://www.demisse.cn/limitrss/api/download/windows.json"
     },
     "ios": {
       "label": "iOS",
-      "version": "0.3.1",
+      "version": "0.5.0",
       "available": true,
-      "upToDateWithLatest": false,
-      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-iOS.ipa",
-      "fileName": "LimitRSS-0.3.1-iOS.ipa",
-      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
+      "upToDateWithLatest": true,
+      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Releases/releases/download/v0.5.0/LimitRSS-0.5.0-iOS.ipa",
+      "fileName": "LimitRSS-0.5.0-iOS.ipa",
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Releases/releases/tag/v0.5.0",
       "stableJson": "https://www.demisse.cn/limitrss/api/download/ios.json"
     },
     "android": {
       "label": "Android",
-      "version": "0.3.1",
+      "version": "0.5.0",
       "available": true,
-      "upToDateWithLatest": false,
-      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-Android.apk",
-      "fileName": "LimitRSS-0.3.1-Android.apk",
-      "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
+      "upToDateWithLatest": true,
+      "downloadUrl": "https://github.com/Demisse233/LimitRSS_Releases/releases/download/v0.5.0/LimitRSS-0.5.0-Android.apk",
+      "fileName": "LimitRSS-0.5.0-Android.apk",
+      "releasePage": "https://github.com/Demisse233/LimitRSS_Releases/releases/tag/v0.5.0",
       "stableJson": "https://www.demisse.cn/limitrss/api/download/android.json"
     },
     "harmony": {
@@ -263,9 +263,9 @@ window.LIMITRSS_UPDATE_INFO = {
   "links": {
     "changelog": "https://www.demisse.cn/limitrss/changelog",
     "downloads": "https://www.demisse.cn/limitrss/",
-    "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases",
-    "releasePageForVersion": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
-    "latestReleaseExists": false,
+    "releasePage": "https://github.com/Demisse233/LimitRSS_Releases/releases",
+    "releasePageForVersion": "https://github.com/Demisse233/LimitRSS_Releases/releases/tag/v0.5.0",
+    "latestReleaseExists": true,
     "downloadApi": "https://www.demisse.cn/limitrss/api/download/index.json"
   }
 };

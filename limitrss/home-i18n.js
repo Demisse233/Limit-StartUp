@@ -1,4 +1,5 @@
 const homeTranslations = {
+  "需要重签后安装": "Re-sign before installing",
   "LimitRSS · 用 AI 收敛信息噪音的跨端 RSS 阅读器": "LimitRSS · A cross-platform RSS reader with AI",
   "Intel 芯片": "Intel processor",
   "选择芯片": "Choose processor",

@@ -1,38 +1,38 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-11T12:24:37.759Z",
+  "generatedAt": "2026-10-11T14:59:55.069Z",
   "product": "LimitRSS",
   "latestVersion": "0.5.0",
-  "repo": "Demisse233/LimitRSS_Client",
+  "repo": "Demisse233/LimitRSS_Releases",
   "usage": "GET 本文件取平台清单，再 GET api/download/<platform>.json 取下载地址，然后用返回的 url 请求安装包。请自带 ?t=<时间戳> 绕开缓存。",
   "platforms": {
     "mac": {
       "label": "macOS",
       "available": true,
-      "version": "0.3.1",
+      "version": "0.5.0",
       "file": "https://www.demisse.cn/limitrss/api/download/mac.json",
-      "url": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-macOS.dmg"
+      "url": "https://github.com/Demisse233/LimitRSS_Releases/releases/download/v0.5.0/LimitRSS-0.5.0-macOS-arm64.dmg"
     },
     "windows": {
       "label": "Windows",
-      "available": false,
-      "version": null,
+      "available": true,
+      "version": "0.5.0",
       "file": "https://www.demisse.cn/limitrss/api/download/windows.json",
-      "url": null
+      "url": "https://github.com/Demisse233/LimitRSS_Releases/releases/download/v0.5.0/LimitRSS-0.5.0-Windows-x64.exe"
     },
     "ios": {
       "label": "iOS",
       "available": true,
-      "version": "0.3.1",
+      "version": "0.5.0",
       "file": "https://www.demisse.cn/limitrss/api/download/ios.json",
-      "url": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-iOS.ipa"
+      "url": "https://github.com/Demisse233/LimitRSS_Releases/releases/download/v0.5.0/LimitRSS-0.5.0-iOS.ipa"
     },
     "android": {
       "label": "Android",
       "available": true,
-      "version": "0.3.1",
+      "version": "0.5.0",
       "file": "https://www.demisse.cn/limitrss/api/download/android.json",
-      "url": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-Android.apk"
+      "url": "https://github.com/Demisse233/LimitRSS_Releases/releases/download/v0.5.0/LimitRSS-0.5.0-Android.apk"
     },
     "harmony": {
       "label": "HarmonyOS",

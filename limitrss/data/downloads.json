@@ -1,11 +1,16 @@
 {
-  "repo": "Demisse233/LimitRSS_Client",
-  "generatedAt": "2026-10-05T14:39:26.243Z",
+  "repo": "Demisse233/LimitRSS_Releases",
+  "generatedAt": "2026-10-11T14:59:55.009Z",
   "versions": {
-    "0.3.1": {
-      "android": "LimitRSS-0.3.1-Android.apk",
-      "ios": "LimitRSS-0.3.1-iOS.ipa",
-      "mac": "LimitRSS-0.3.1-macOS.dmg"
+    "0.5.0": {
+      "mac-arm64": "LimitRSS-0.5.0-macOS-arm64.dmg",
+      "mac-x86_64": "LimitRSS-0.5.0-macOS-x86_64.dmg",
+      "windows-x64": "LimitRSS-0.5.0-Windows-x64.exe",
+      "windows-arm64": "LimitRSS-0.5.0-Windows-arm64.exe",
+      "ios": "LimitRSS-0.5.0-iOS.ipa",
+      "android": "LimitRSS-0.5.0-Android.apk",
+      "mac": "LimitRSS-0.5.0-macOS-arm64.dmg",
+      "windows": "LimitRSS-0.5.0-Windows-x64.exe"
     }
   }
 }
