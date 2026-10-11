@@ -123,3 +123,19 @@ test('RSSHub uploads are public and unknown; checks never fetch; legacy results 
   assert.equal((await list('unknown')).total,1);
  } finally {await proxy.dispose();}
 });
+
+test('website icons prefer uploaded icons and publisher favicons without substituting the app logo',async()=>{
+ const {feedIconCandidates,setFeedIcon}=await import('../limitrss/plaza/feed-icon.js');
+ const feed={url:'https://www.ruanyifeng.com/blog/atom.xml#',icon:null};
+ const candidates=feedIconCandidates(feed);
+ assert.equal(candidates[0],'https://www.ruanyifeng.com/apple-touch-icon.png');
+ assert.ok(candidates.includes('https://www.ruanyifeng.com/favicon.ico'));
+ assert.ok(candidates.includes('https://favicon.im/www.ruanyifeng.com?larger=true'));
+ assert.equal(feedIconCandidates({...feed,icon:'https://cdn.example.com/icon.png'})[0],'https://cdn.example.com/icon.png');
+ assert.equal(feedIconCandidates({...feed,icon:'/icon.png'})[0],'https://www.ruanyifeng.com/icon.png');
+ assert.deepEqual(feedIconCandidates({url:'rsshub://sspai/index',icon:null}),[]);
+ assert.ok(!feedIconCandidates({...feed,icon:'javascript:alert(1)'}).some(url=>url.startsWith('javascript:')));
+ const image={};setFeedIcon(image,feed);
+ for(const candidate of candidates){assert.equal(image.src,candidate);image.onerror();}
+ assert.ok(image.src.endsWith('/feed-placeholder.svg'));assert.equal(image.onerror,null);
+});
