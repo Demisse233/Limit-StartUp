@@ -1,12 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-05T15:35:14.169Z",
+  "generatedAt": "2026-10-11T12:24:37.782Z",
   "product": "LimitRSS",
   "versions": {
-    "latest": "0.4.0",
-    "latestReleaseDate": "2026-10-05",
+    "latest": "0.5.0",
+    "latestReleaseDate": "2026-10-11",
     "latestPrerelease": false,
     "changelog": [
+      {
+        "version": "0.5.0",
+        "date": "2026-10-11"
+      },
       {
         "version": "0.4.0",
         "date": "2026-10-05"
@@ -31,145 +35,175 @@
       {
         "platform": "general",
         "kind": "new",
-        "text": "新增应用图标角标展示未读文章数量功能（Windows 平台不支持）"
+        "text": "软件初次使用时新增使用指南"
       },
       {
         "platform": "general",
         "kind": "new",
-        "text": "新增本地诊断中心，可通过设置-关于-诊断中心进入。诊断中心可查看软件运行日志、性能和缓存情况，必要时可导出日志方便开发者排查问题。"
+        "text": "新增软件主题切换以及 APP 图标切换功能，入口：设置 &gt; 外观"
       },
       {
         "platform": "general",
         "kind": "new",
-        "text": "小组件新增刷新按钮反馈"
+        "text": "新增 LimitRSS Plaza。LimitRSS Plaza 是一个由用户共同建设的 RSS 订阅源共享广场。你可以在这里发现感兴趣的内容，按分类浏览、搜索订阅源，并一键导入 LimitRSS 开始阅读；也可以分享自己收藏的优质订阅源，让更多人发现。广场会定期检测订阅源的可用性，帮助你找到持续更新、稳定可用的内容"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增订阅源分享至LimitRSS Plaza 功能"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "网络搜索中新增 LimitRSS Plaza，可一键添加 LimitRSS Plaza 中的订阅源"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增设置-关于页面内检查更新按钮接入官网接口，可直接检查更新，省略跳转浏览器步骤"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增支持开发者功能，赞助者会被添加进感谢名单中。"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增文章列表和订阅源列表长按功能，可长按弹出菜单"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "设置 &gt; 关于页面新增应用反馈、关注作者的跳转链接"
       },
       {
         "platform": "general",
         "kind": "change",
-        "text": "优化小组件的显示逻辑，小组件中文章将显示标题以及正文部分内容"
+        "text": "优化文章页、阅读页、设置页面和诊断中心页面整体流畅度"
       },
       {
         "platform": "general",
         "kind": "change",
-        "text": "优化查看大图中的手势逻辑"
+        "text": "优化文章存储和展示逻辑"
       },
       {
         "platform": "general",
         "kind": "change",
-        "text": "优化查看大图中普通图片和长图的显示逻辑"
+        "text": "优化诊断中心数据存储逻辑"
+      },
+      {
+        "platform": "general",
+        "kind": "change",
+        "text": "优化软件内部分 UI 和图标设计"
+      },
+      {
+        "platform": "windows",
+        "kind": "change",
+        "text": "优化软件整体流畅度"
+      },
+      {
+        "platform": "windows",
+        "kind": "change",
+        "text": "优化软件 logo 显示"
+      },
+      {
+        "platform": "windows",
+        "kind": "change",
+        "text": "优化状态栏显示效果"
+      },
+      {
+        "platform": "windows",
+        "kind": "fix",
+        "text": "修复软件内文字显示异常问题"
       },
       {
         "platform": "mac",
-        "kind": "fix",
-        "text": "修复小组件一直显示“请在应用中设置特别关心”的问题"
-      },
-      {
-        "platform": "mac",
-        "kind": "fix",
-        "text": "修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题"
-      },
-      {
-        "platform": "mac",
-        "kind": "fix",
-        "text": "修复小组件中文章已读但是未从小组件中消失的问题"
-      },
-      {
-        "platform": "mac",
-        "kind": "fix",
-        "text": "小组件点击刷新按钮无反应问题"
+        "kind": "change",
+        "text": "优化应用启动速度"
       },
       {
         "platform": "ios",
         "kind": "fix",
-        "text": "修复小组件一直显示“请在应用中设置特别关心”的问题"
-      },
-      {
-        "platform": "ios",
-        "kind": "fix",
-        "text": "修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题"
-      },
-      {
-        "platform": "ios",
-        "kind": "fix",
-        "text": "修复小组件中文章已读但是未从小组件中消失的问题"
-      },
-      {
-        "platform": "ios",
-        "kind": "fix",
-        "text": "修复深色模式下设置页面状态栏区域背景颜色与下方颜色不统一问题"
-      },
-      {
-        "platform": "ios",
-        "kind": "fix",
-        "text": "小组件点击刷新按钮无反应问题"
+        "text": "修复设置页底部导航栏异常问题"
       },
       {
         "platform": "android",
-        "kind": "fix",
-        "text": "修复小组件一直显示“请在应用中设置特别关心”的问题"
-      },
-      {
-        "platform": "android",
-        "kind": "fix",
-        "text": "修复小组件中订阅源图标可能因为其中某个订阅源刷新失败导致所有订阅源无法显示图标的问题"
-      },
-      {
-        "platform": "android",
-        "kind": "fix",
-        "text": "修复小组件中文章已读但是未从小组件中消失的问题"
-      },
-      {
-        "platform": "android",
-        "kind": "fix",
-        "text": "修复深色模式下设置页面状态栏区域背景颜色与下方颜色不统一问题"
+        "kind": "change",
+        "text": "优化软件 logo 显示"
       },
       {
         "platform": "harmony",
         "kind": "fix",
-        "text": "修复网络添加页面部分控件显示层级异常的问题"
-      },
-      {
-        "platform": "harmony",
-        "kind": "fix",
-        "text": "修复阅读页查看大图时保存图片按钮消失的问题"
-      },
-      {
-        "platform": "harmony",
-        "kind": "fix",
-        "text": "修复深色模式下设置页面状态栏区域背景颜色与下方颜色不统一问题"
+        "text": "修复阅读页视频控件无法全屏问题"
       }
     ],
-    "summary": "新增应用图标角标展示未读文章数量功能（Windows 平台不支持）",
+    "summary": "软件初次使用时新增使用指南",
     "general": [
       {
         "platform": "general",
         "kind": "new",
-        "text": "新增应用图标角标展示未读文章数量功能（Windows 平台不支持）"
+        "text": "软件初次使用时新增使用指南"
       },
       {
         "platform": "general",
         "kind": "new",
-        "text": "新增本地诊断中心，可通过设置-关于-诊断中心进入。诊断中心可查看软件运行日志、性能和缓存情况，必要时可导出日志方便开发者排查问题。"
+        "text": "新增软件主题切换以及 APP 图标切换功能，入口：设置 &gt; 外观"
       },
       {
         "platform": "general",
         "kind": "new",
-        "text": "小组件新增刷新按钮反馈"
+        "text": "新增 LimitRSS Plaza。LimitRSS Plaza 是一个由用户共同建设的 RSS 订阅源共享广场。你可以在这里发现感兴趣的内容，按分类浏览、搜索订阅源，并一键导入 LimitRSS 开始阅读；也可以分享自己收藏的优质订阅源，让更多人发现。广场会定期检测订阅源的可用性，帮助你找到持续更新、稳定可用的内容"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增订阅源分享至LimitRSS Plaza 功能"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "网络搜索中新增 LimitRSS Plaza，可一键添加 LimitRSS Plaza 中的订阅源"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增设置-关于页面内检查更新按钮接入官网接口，可直接检查更新，省略跳转浏览器步骤"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增支持开发者功能，赞助者会被添加进感谢名单中。"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "新增文章列表和订阅源列表长按功能，可长按弹出菜单"
+      },
+      {
+        "platform": "general",
+        "kind": "new",
+        "text": "设置 &gt; 关于页面新增应用反馈、关注作者的跳转链接"
       },
       {
         "platform": "general",
         "kind": "change",
-        "text": "优化小组件的显示逻辑，小组件中文章将显示标题以及正文部分内容"
+        "text": "优化文章页、阅读页、设置页面和诊断中心页面整体流畅度"
       },
       {
         "platform": "general",
         "kind": "change",
-        "text": "优化查看大图中的手势逻辑"
+        "text": "优化文章存储和展示逻辑"
       },
       {
         "platform": "general",
         "kind": "change",
-        "text": "优化查看大图中普通图片和长图的显示逻辑"
+        "text": "优化诊断中心数据存储逻辑"
+      },
+      {
+        "platform": "general",
+        "kind": "change",
+        "text": "优化软件内部分 UI 和图标设计"
       }
     ]
   },

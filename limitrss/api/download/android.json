@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-05T14:39:26.306Z",
+  "generatedAt": "2026-10-11T12:24:37.759Z",
   "product": "LimitRSS",
   "platform": "android",
   "label": "Android",
@@ -9,7 +9,7 @@
   "fileName": "LimitRSS-0.3.1-Android.apk",
   "url": "https://github.com/Demisse233/LimitRSS_Client/releases/download/v0.3.1/LimitRSS-0.3.1-Android.apk",
   "upToDateWithLatest": false,
-  "latestVersion": "0.4.0",
+  "latestVersion": "0.5.0",
   "releasePage": "https://github.com/Demisse233/LimitRSS_Client/releases/tag/v0.3.1",
   "changelog": "https://www.demisse.cn/limitrss/changelog",
   "downloads": "https://www.demisse.cn/limitrss/"

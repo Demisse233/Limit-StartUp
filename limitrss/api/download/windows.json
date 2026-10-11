@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-05T14:39:26.306Z",
+  "generatedAt": "2026-10-11T12:24:37.758Z",
   "product": "LimitRSS",
   "platform": "windows",
   "label": "Windows",
@@ -9,7 +9,7 @@
   "fileName": null,
   "url": null,
   "upToDateWithLatest": false,
-  "latestVersion": "0.4.0",
+  "latestVersion": "0.5.0",
   "releasePage": null,
   "changelog": "https://www.demisse.cn/limitrss/changelog",
   "downloads": "https://www.demisse.cn/limitrss/"

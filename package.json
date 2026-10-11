@@ -1,1 +1,22 @@
-{"private":true,"type":"module","scripts":{"test:plaza":"node --test scripts/test-plaza.mjs"},"dependencies":{"fast-xml-parser":"^5.5.8"},"devDependencies":{"wrangler":"4.147.0"},"overrides":{"sharp":"^0.35.5"}}
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:plaza": "node --test scripts/test-plaza.mjs",
+    "build": "wrangler pages functions build functions --outfile .wrangler/pages-build/worker.js",
+    "sync:limitrss": "node scripts/sync-limitrss.mjs",
+    "test:limitrss-update": "node --test scripts/test-limitrss-update.mjs"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.5.8"
+  },
+  "devDependencies": {
+    "wrangler": "4.147.0"
+  },
+  "overrides": {
+    "sharp": "^0.35.5"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

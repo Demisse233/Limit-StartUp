@@ -84,3 +84,19 @@ flutter build <目标> --dart-define=PLAZA_DIRECTORY_API=https://limitrss-plaza-
 发布前先 `npx wrangler deploy --dry-run --config workers/plaza-api/wrangler.toml` 验证构建；获部署授权后才运行不带 dry-run 的命令，使用实际输出域名构建客户端。该功能未新增数据库迁移；需已有 plaza_feed_stats 表。
 
 Cloudflare 规则不能仅靠客户端代码保证：普通 Bot Fight Mode 不能通过 WAF Skip 规则豁免。不要将该 API 入口置于网站 Bot Fight Mode、Cloudflare Access 或 Managed Challenge 之下；使用独立 workers.dev 域名隔离网站区域规则。使用自定义 API 域名时仍需单独核验其防火墙设置。上线验收必须使用无浏览器 cookie 的 GET 和 POST 验证 JSON、分页及限流，确保无挑战。参考官方文档：https://developers.cloudflare.com/bots/get-started/bot-fight-mode/ 和 https://developers.cloudflare.com/waf/custom-rules/skip/options/ 。
+
+
+## Pages Git 自动部署的依赖安装与构建
+
+Plaza Functions 引用 npm 依赖 fast-xml-parser。纯静态页面的“无构建命令”配置不能继续沿用；打包 Functions 前必须安装依赖。
+
+Cloudflare Pages → limit-startup → Settings → Builds & deployments：
+
+- Root directory：仓库根目录（留空）。
+- Build command：npm ci（现有已提交代码即可使用；提交新增 build 脚本后可改为 npm ci && npm run build）
+- Build output directory：.
+- NODE_VERSION：22（本地 Wrangler 4 需要 Node 22 或以上）。
+
+package.json 与 package-lock.json 必须随代码提交。npm run build 会把 Functions 编译到 .wrangler/pages-build/worker.js 以验证依赖，.assetsignore 已排除该目录；Pages 仍负责正式 Functions 打包和上传。
+
+不要把 fast-xml-parser 标为 external：Cloudflare 运行时不会自动提供这个 npm 包。更改构建设置后重新触发失败的部署；只有线上部署成功才表示服务已更新。

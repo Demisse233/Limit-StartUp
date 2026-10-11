@@ -6,6 +6,9 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+# 先生成并校验客户端更新接口，避免只部署新日志、继续提供旧版本。
+npm run sync:limitrss
+
 # 尝试从 ~/.zshrc 读 token (子 shell 不会自动继承 export)
 if [[ -z "${CLOUDFLARE_API_TOKEN:-}" ]] && [[ -f ~/.zshrc ]]; then
   set +u
