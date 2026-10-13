@@ -1,5 +1,4 @@
 const homeTranslations = {
-  "需要重签后安装": "Re-sign before installing",
   "LimitRSS · 用 AI 收敛信息噪音的跨端 RSS 阅读器": "LimitRSS · A cross-platform RSS reader with AI",
   "Intel 芯片": "Intel processor",
   "选择芯片": "Choose processor",
@@ -36,7 +35,7 @@ const homeTranslations = {
   "下载 →": "Download →",
   "敬请期待": "Coming soon",
   "获取自签包 →": "Get IPA to sign →",
-  "申请内测": "Join the beta",
+  "申请内测 →": "Join the beta →",
   "邀请码": "Invitation code",
   "把你的信息流重新拿回来": "Take back your reading",
   "订阅、阅读、用 AI 收敛噪音。本地优先，跨端一致。": "Follow, read and cut through the noise with AI. Local first, across your devices.",

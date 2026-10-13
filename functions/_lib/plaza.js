@@ -1,5 +1,31 @@
 import {XMLParser, XMLValidator} from 'fast-xml-parser';
+import {classifyEvidence, classificationVersion} from './plaza-classification.js';
+export {classify} from './plaza-classification.js';
 export const schema = `
+CREATE TABLE IF NOT EXISTS plaza_feed_controls (
+ feed_id TEXT PRIMARY KEY,
+ hidden INTEGER NOT NULL DEFAULT 0 CHECK(hidden IN (0,1)),
+ deleted_at INTEGER,
+ language_locked INTEGER NOT NULL DEFAULT 0 CHECK(language_locked IN (0,1)),
+ revision INTEGER NOT NULL DEFAULT 0,
+ last_operation TEXT,
+ updated_at INTEGER
+);
+CREATE TABLE IF NOT EXISTS plaza_admin_audit (
+ id TEXT PRIMARY KEY, feed_id TEXT NOT NULL, actor_id TEXT NOT NULL,
+ action TEXT NOT NULL, before_json TEXT NOT NULL, after_json TEXT NOT NULL,
+ created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS plaza_audit_time ON plaza_admin_audit(created_at);
+
+CREATE TABLE IF NOT EXISTS plaza_classification (
+ feed_id TEXT PRIMARY KEY,
+ override_category TEXT CHECK(override_category IN ('technology','development','news','gaming','culture','life','other')),
+ version INTEGER NOT NULL DEFAULT 0,
+ source TEXT,
+ updated_at INTEGER
+);
+
 CREATE TABLE IF NOT EXISTS plaza_feed_stats (
  feed_id TEXT PRIMARY KEY,
  language TEXT,
@@ -20,11 +46,6 @@ CREATE INDEX IF NOT EXISTS plaza_public ON plaza_feeds(published,category,status
 CREATE TABLE IF NOT EXISTS plaza_limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL, expires INTEGER NOT NULL);
 `;
 export const categories = ['technology','development','news','gaming','culture','life','other'];
-export function classify(title, description = '') {
- const text = `${title} ${description}`.toLowerCase();
- const rules = [ ['gaming',/游戏|原神|崩坏|明日方舟|game|gaming|steam/], ['development',/开发|编程|程序|github|javascript|python|coding|developer|programming/], ['technology',/科技|数码|人工智能|apple|tech|android|macrumors|\bai\b/], ['news',/新闻|时事|日报|news|bbc|reuters/], ['culture',/文化|电影|音乐|艺术|书评|movie|music|culture/], ['life',/生活|旅行|美食|摄影|travel|food|life/]];
- return rules.find(([,pattern])=>pattern.test(text))?.[0] ?? 'other';
-}
 export function publicUrl(raw) {
  if (typeof raw !== 'string' || raw.length > 2048) throw new Error('invalid_url');
  const url = new URL(raw.trim());
@@ -75,7 +96,7 @@ async function safeFetch(raw, transport=fetch) {
  }
  throw new Error('redirect_limit');
 }
-export function parseFeed(xml) {
+export function parseFeed(xml, url = '') {
  if (/<!DOCTYPE|<!ENTITY/i.test(xml) || XMLValidator.validate(xml)!==true) throw new Error('invalid_feed');
  const value=new XMLParser({ignoreAttributes:false,processEntities:false}).parse(xml);
  const feed=value.rss?.channel ?? value.feed ?? value['rdf:RDF']?.channel;
@@ -86,24 +107,41 @@ export function parseFeed(xml) {
  const declared=text(feed.language) || feed['@_xml:lang'] || value.rss?.['@_xml:lang'];
  const language=typeof declared==='string' && /^[a-z]{2,3}(?:[-_][a-z0-9]{2,8})*$/i.test(declared.trim())
   ? declared.trim().replaceAll('_','-').toLowerCase() : null;
- return {title,language,category:classify(title,text(feed.description ?? feed.subtitle))};
+ const items=feed.item ?? feed.entry ?? value['rdf:RDF']?.item ?? [];
+ const entries=(Array.isArray(items)?items:[items]).slice(0,8).map(item=>[text(item.title),text(item.description ?? item.summary ?? item.content ?? item['content:encoded'])].join(' ').slice(0,4000));
+ const classification=classifyEvidence(title,text(feed.description ?? feed.subtitle),url,entries);
+ return {title,language,category:classification.category,classification};
 }
+// A checker result may only write back to the same address and manager revision.
 export async function checkFeed(row, env, transport=fetch) {
- if(isRssHubFeed(row.url)) {
-  await env.DB.prepare("UPDATE plaza_feeds SET status='unknown',reason=NULL,failures=0,published=1,checked_at=NULL,next_check=0,latency=NULL WHERE id=?").bind(row.id).run();
-  console.log(JSON.stringify({module:'plaza',event:'feed_check_skipped',id:row.id,sourceType:'rsshub'}));
-  return;
+ const initial=await env.DB.prepare('SELECT f.*,COALESCE(c.revision,0) AS revision FROM plaza_feeds f LEFT JOIN plaza_feed_controls c ON c.feed_id=f.id WHERE f.id=? AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls x WHERE x.feed_id=f.id AND (x.hidden=1 OR x.deleted_at IS NOT NULL))').bind(row.id).first();
+ if(!initial || initial.url!==row.url)return;
+ row=initial;
+ const start=Date.now(),rsshub=isRssHubFeed(row.url);
+ let status=rsshub?'unknown':'healthy',reason=null,failures=0,published=1,language=null;
+ let evidence=classifyEvidence(row.title,'',row.url);
+ if(!rsshub) {
+  try {const parsed=parseFeed(await safeFetch(row.url,transport),row.url);evidence=parsed.classification;language=parsed.language;}
+  catch(error) {failures=row.failures+1;status=failures>=3?'failed':'degraded';reason=/^(http_\d{3}|[a-z_]+)$/.test(error.message)?error.message:'network_error';published=row.published;}
+  const previous=await env.DB.prepare('SELECT version FROM plaza_classification WHERE feed_id=?').bind(row.id).first();
+  if(status!=='healthy' && previous?.version===classificationVersion && evidence.source==='uncertain')evidence={category:row.category,source:'retained_after_failure'};
  }
- const start=Date.now();let status='healthy',reason=null,failures=0,published=1,category=row.category;let language=null;
- try {const parsed=parseFeed(await safeFetch(row.url,transport));category=parsed.category;language=parsed.language;}
- catch(error) {failures=row.failures+1;status=failures>=3?'failed':'degraded';reason=/^(http_\d{3}|[a-z_]+)$/.test(error.message)?error.message:'network_error';published=row.published;}
- if(status==='healthy')await env.DB.prepare('INSERT INTO plaza_feed_stats (feed_id,language) VALUES (?,?) ON CONFLICT(feed_id) DO UPDATE SET language=excluded.language').bind(row.id,language).run();
  const now=Date.now();
- await env.DB.prepare('UPDATE plaza_feeds SET status=?,reason=?,failures=?,published=?,category=?,checked_at=?,next_check=?,latency=? WHERE id=?').bind(status,reason,failures,published,category,now,now+(status==='healthy'?12*3600000:Math.min(12,failures)*3600000),now-start,row.id).run();
- console.log(JSON.stringify({module:'plaza',event:'feed_checked',id:row.id,status,reason,durationMs:now-start}));
+ const guard='id=? AND url=? AND COALESCE((SELECT revision FROM plaza_feed_controls WHERE feed_id=plaza_feeds.id),0)=? AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls WHERE feed_id=plaza_feeds.id AND (hidden=1 OR deleted_at IS NOT NULL))';
+ const args=[row.id,row.url,row.revision];
+ const writes=[
+  env.DB.prepare(`INSERT INTO plaza_classification (feed_id,version,source,updated_at) SELECT id,?,?,? FROM plaza_feeds WHERE ${guard} ON CONFLICT(feed_id) DO UPDATE SET version=excluded.version,source=excluded.source,updated_at=excluded.updated_at`).bind(classificationVersion,evidence.source,now,...args),
+  env.DB.prepare(`UPDATE plaza_feeds SET category=COALESCE((SELECT override_category FROM plaza_classification WHERE feed_id=?),?),status=?,reason=?,failures=?,published=?,checked_at=?,next_check=?,latency=? WHERE ${guard}`).bind(row.id,evidence.category,status,reason,failures,published,rsshub?null:now,rsshub?0:now+(status==='healthy'?12*3600000:Math.min(12,failures)*3600000),rsshub?null:now-start,...args),
+ ];
+ if(!rsshub && status==='healthy')writes.push(env.DB.prepare(`INSERT INTO plaza_feed_stats (feed_id,language) SELECT id,? FROM plaza_feeds WHERE ${guard} AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls WHERE feed_id=plaza_feeds.id AND language_locked=1) ON CONFLICT(feed_id) DO UPDATE SET language=excluded.language`).bind(language,...args));
+ const results=await env.DB.batch(writes);
+ if(!results[1].meta.changes){console.log(JSON.stringify({module:'plaza',event:'feed_check_discarded',id:row.id,durationMs:now-start}));return;}
+ const actual=await env.DB.prepare('SELECT f.category,c.override_category FROM plaza_feeds f JOIN plaza_classification c ON c.feed_id=f.id WHERE f.id=?').bind(row.id).first();
+ console.log(JSON.stringify({module:'plaza',event:'feed_classified',id:row.id,category:actual.category,source:actual.override_category?'manual':evidence.source,version:classificationVersion}));
+ console.log(JSON.stringify({module:'plaza',event:rsshub?'feed_check_skipped':'feed_checked',id:row.id,status,reason,durationMs:now-start}));
 }
 export function respond(data,status=200) {
- return Response.json(data,{status,headers:{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Cache-Control':status===200?'public, max-age=60':'no-store'}});
+ return Response.json(data,{status,headers:{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Cache-Control':'no-store'}});
 }
 export function publicFeed(row) {
  const rsshub=isRssHubFeed(row.url);

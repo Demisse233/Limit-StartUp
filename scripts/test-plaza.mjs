@@ -139,3 +139,61 @@ test('website icons prefer uploaded icons and publisher favicons without substit
  for(const candidate of candidates){assert.equal(image.src,candidate);image.onerror();}
  assert.ok(image.src.endsWith('/feed-placeholder.svg'));assert.equal(image.onerror,null);
 });
+
+
+test('publisher identity, route rules, word boundaries, ambiguity and bounded article evidence',()=>{
+ for(const [title,url,category] of [
+ ['新闻','https://www.ithome.com/rss/','technology'],
+ ['爱范儿','https://www.ifanr.com/feed','technology'],
+ ['虎嗅','https://rss.huxiu.com/','technology'],
+ ['异次元软件世界','https://www.iplaysoft.com/feed','technology'],
+ ['绝区零 官网','https://news-api.amarea.cn/news/feed/zzz.web_cn','gaming'],
+ ['Blog','rsshub://github/trending','development'],
+ ['少数派','rsshub://sspai/index','technology'],
+ ['Fake IT之家','https://ithome.com.attacker.example/rss','other'],
+ ])assert.equal(classify(title,'',url),category);
+ assert.equal(classify('Lifecycle digest'),'other');
+ assert.equal(classify('Software development and gaming'),'other');
+ assert.equal(classify('Personal blog','','',['Steam game review']),'other');
+ assert.equal(classify('Personal blog','','',['Python coding','Programming guide','Developer tutorial','My cat']),'development');
+ const xml='<rss><channel><title>Blog</title>'+['编程教程','Python coding','程序员开发'].map(title=>`<item><title>${title}</title></item>`).join('')+'</channel></rss>';
+ assert.equal(parseFeed(xml).category,'development');
+});
+
+test('manual corrections survive checks and failed checks retain established content classification',async()=>{
+ const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
+ try {
+  const DB=proxy.env.DB,env={DB};for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const id='f'.repeat(32);
+  await DB.prepare('INSERT INTO plaza_feeds (id,url,title,created_at) VALUES (?,?,?,?)').bind(id,'https://example.com/rss','Personal blog',0).run();
+  const transport=async url=>url.includes('dns-query')?Response.json({Answer:[{type:1,data:'1.1.1.1'}]}):new Response('<rss><channel><title>Blog</title><description>Programming tutorials</description></channel></rss>');
+  let row=await DB.prepare('SELECT * FROM plaza_feeds').first();await checkFeed(row,env,transport);
+  row=await DB.prepare('SELECT * FROM plaza_feeds').first();assert.equal(row.category,'development');
+  await checkFeed(row,env,async()=>{throw Error('network_error')});
+  assert.equal((await DB.prepare('SELECT * FROM plaza_feeds').first()).category,'development');
+  await DB.prepare("UPDATE plaza_classification SET override_category='culture'").run();
+  row=await DB.prepare('SELECT * FROM plaza_feeds').first();await checkFeed(row,env,transport);
+  assert.equal((await DB.prepare('SELECT * FROM plaza_feeds').first()).category,'culture');
+ }finally{await proxy.dispose();}
+});
+
+test('historical RSSHub categories migrate in bounded batches without health fetches',async()=>{
+ const {default:checker}=await import('../workers/plaza-checker/index.js');
+ const {execFileSync}=await import('node:child_process');
+ const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
+ try {
+  const DB=proxy.env.DB,env={DB};for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const id=n=>n.toString(16).padStart(32,'0');
+  for(let n=1;n<=7;n++)await DB.prepare('INSERT INTO plaza_feeds (id,url,title,category,created_at) VALUES (?,?,?,?,?)').bind(id(n),`rsshub://github/trending/${n}`,'Custom name','life',0).run();
+  const sql=execFileSync(process.execPath,['scripts/plaza-category-override.mjs',id(1),'culture'],{encoding:'utf8'});
+  for(const statement of sql.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const tick=async()=>{let pending;await checker.scheduled(null,env,{waitUntil:p=>pending=p});await pending;};
+  await tick();assert.equal((await DB.prepare('SELECT COUNT(*) AS n FROM plaza_classification WHERE version=2').first()).n,5);
+  await tick();assert.equal((await DB.prepare('SELECT COUNT(*) AS n FROM plaza_classification WHERE version=2').first()).n,7);
+  assert.equal((await DB.prepare('SELECT category FROM plaza_feeds WHERE id=?').bind(id(1)).first()).category,'culture');
+  assert.equal((await DB.prepare("SELECT COUNT(*) AS n FROM plaza_feeds WHERE category='development'").first()).n,6);
+  const reset=execFileSync(process.execPath,['scripts/plaza-category-override.mjs',id(1),'auto'],{encoding:'utf8'});
+  for(const statement of reset.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  await tick();assert.equal((await DB.prepare('SELECT category FROM plaza_feeds WHERE id=?').bind(id(1)).first()).category,'development');
+ }finally{await proxy.dispose();}
+});

@@ -2,7 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:plaza": "node --test scripts/test-plaza.mjs",
+    "test:plaza": "node --test scripts/test-plaza.mjs scripts/test-plaza-manager.mjs",
     "build": "wrangler pages functions build functions --outfile .wrangler/pages-build/worker.js",
     "sync:limitrss": "node scripts/sync-limitrss.mjs",
     "test:limitrss-update": "node --test scripts/test-limitrss-update.mjs"

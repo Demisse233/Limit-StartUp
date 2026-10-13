@@ -7,7 +7,7 @@ export async function onRequestPost({request,params,env}) {
   if(!['copy','import'].includes(input?.action))return respond({error:'invalid_action'},400);
   if(!await quota(request,env,'interaction',60,500))return respond({error:'rate_limited'},429);
   const column=input.action==='copy'?'copy_count':'import_count';
-  const result=await env.DB.prepare(`INSERT INTO plaza_feed_stats (feed_id,${column}) SELECT id,1 FROM plaza_feeds WHERE id=? AND published=1 ON CONFLICT(feed_id) DO UPDATE SET ${column}=${column}+1 RETURNING copy_count,import_count`).bind(params.id).first();
+  const result=await env.DB.prepare(`INSERT INTO plaza_feed_stats (feed_id,${column}) SELECT id,1 FROM plaza_feeds WHERE id=? AND published=1 AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls c WHERE c.feed_id=plaza_feeds.id AND (c.hidden=1 OR c.deleted_at IS NOT NULL)) ON CONFLICT(feed_id) DO UPDATE SET ${column}=${column}+1 RETURNING copy_count,import_count`).bind(params.id).first();
   if(!result)return respond({error:'not_found'},404);
   console.log(JSON.stringify({module:'plaza',event:'interaction',id:params.id,action:input.action}));
   const response=respond({copyCount:result.copy_count,importCount:result.import_count,popularity:result.copy_count+result.import_count});
