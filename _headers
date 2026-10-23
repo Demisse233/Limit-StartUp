@@ -44,3 +44,13 @@
 
 /limitrss/script.js
   Cache-Control: public, max-age=0, must-revalidate
+
+# Keep manager markup and scripts in sync after UI updates.
+/limitrss/plaza-manager/*
+  Cache-Control: no-store
+
+/limitrss/plaza/feed-languages.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/limitrss/plaza/plaza.js
+  Cache-Control: public, max-age=0, must-revalidate

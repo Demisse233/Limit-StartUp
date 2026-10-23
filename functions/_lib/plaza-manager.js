@@ -1,5 +1,5 @@
 import {getAuthUser} from './db.js';
-import {categories,feedUrl,publicUrl,readSmallJson} from './plaza.js';
+import {categories,feedUrl,publicUrl,readSmallJson,checkFeed,isRssHubFeed} from './plaza.js';
 import {categoryValue,languageValue} from './plaza-metadata.js';
 
 const ownerEmail='eric_demisse@163.com';
@@ -85,4 +85,22 @@ export function mutateManaged(context){return managerRequest(context,async({requ
  if(!results[1].meta.changes)throw new ManagerError('conflict',409);
  console.log(JSON.stringify({module:'plaza_manager',event:'feed_changed',id:row.id,actorId:user.id,action:input.action,revision:next.revision}));
  return managerJson({ok:true,revision:next.revision});
+});}
+
+export function recheckManaged(context,transport=fetch){return managerRequest(context,async({request,env,params,user})=>{
+ const started=Date.now();
+ if(!/^[a-f0-9]{32}$/.test(params.id))throw new ManagerError('not_found',404);
+ const input=await readSmallJson(request);
+ if(!input || !Number.isSafeInteger(input.revision) || input.revision<0)throw new ManagerError('invalid_input');
+ const row=await env.DB.prepare(`SELECT ${fields} ${source} WHERE f.id=?`).bind(params.id).first();
+ if(!row)throw new ManagerError('not_found',404);
+ if(row.deleted_at)throw new ManagerError('deleted',409);
+ if(row.revision!==input.revision)throw new ManagerError('conflict',409);
+ if(isRssHubFeed(row.url))throw new ManagerError('unsupported_feed');
+ console.log(JSON.stringify({module:'plaza_manager',event:'manual_check_started',id:row.id,actorId:user.id}));
+ if(!await checkFeed(row,env,transport,{allowHidden:true}))throw new ManagerError('conflict',409);
+ const result=await env.DB.prepare(`SELECT ${fields} ${source} WHERE f.id=?`).bind(row.id).first();
+ if(result.revision!==row.revision || result.deleted_at)throw new ManagerError('conflict',409);
+ console.log(JSON.stringify({module:'plaza_manager',event:'manual_check_completed',id:row.id,actorId:user.id,status:result.status,reason:result.reason,durationMs:Date.now()-started}));
+ return managerJson({ok:true,status:result.status,reason:result.reason});
 });}

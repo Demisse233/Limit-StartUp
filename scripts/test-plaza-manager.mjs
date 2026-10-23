@@ -4,7 +4,7 @@ import {getPlatformProxy} from 'wrangler';
 import {schema,checkFeed} from '../functions/_lib/plaza.js';
 import {SCHEMA_SQL} from '../functions/_lib/db.js';
 import {signJwt} from '../functions/_lib/crypto.js';
-import {listManaged,listAudit,mutateManaged} from '../functions/_lib/plaza-manager.js';
+import {listManaged,listAudit,mutateManaged,recheckManaged} from '../functions/_lib/plaza-manager.js';
 import {onRequestPost as upload} from '../functions/api/limitrss/plaza/index.js';
 import {onRequestGet as list} from '../functions/api/limitrss/plaza/index.js';
 import {onRequestGet as detail} from '../functions/api/limitrss/plaza/[id].js';
@@ -38,10 +38,10 @@ test('manager requires a live authorized account; submitted email cannot grant p
 }));
 
 test('confirmed upload metadata is validated, survives checks and is never overwritten by duplicates',()=>fixture(async({DB,env,post})=>{
- let result=await post([{url:'https://example.com/rss',title:'Shared',category:'culture',language:'zh_CN'},{url:'https://example.com/bad',title:'Bad',category:'invalid',language:'en'},{url:'https://example.com/other',title:'Bad language',category:'news',language:'anything<script>'}]);
+ let result=await post([{url:'https://example.com/rss',title:'Shared',category:'culture',language:'zh-hans'},{url:'https://example.com/bad',title:'Bad',category:'invalid',language:'en'},{url:'https://example.com/other',title:'Bad language',category:'news',language:'anything<script>'}]);
  assert.deepEqual(result.results.map(x=>x.status),['created','rejected','rejected']);
  let row=await DB.prepare('SELECT * FROM plaza_feeds').first();await checkFeed(row,env,transport);
- const saved=await DB.prepare('SELECT f.category,s.language FROM plaza_feeds f JOIN plaza_feed_stats s ON s.feed_id=f.id').first();assert.deepEqual(saved,{category:'culture',language:'zh-cn'});
+ const saved=await DB.prepare('SELECT f.category,s.language FROM plaza_feeds f JOIN plaza_feed_stats s ON s.feed_id=f.id').first();assert.deepEqual(saved,{category:'culture',language:'zh-hans'});
  result=await post([{url:'https://EXAMPLE.com/rss#anchor',title:'Overwrite',category:'gaming',language:'en'}]);assert.equal(result.results[0].status,'duplicate');
  assert.equal((await DB.prepare('SELECT title FROM plaza_feeds').first()).title,'Shared');
  assert.deepEqual(await DB.prepare('SELECT f.category,s.language FROM plaza_feeds f JOIN plaza_feed_stats s ON s.feed_id=f.id').first(),saved);
@@ -91,14 +91,51 @@ test('an in-flight checker cannot republish deleted feeds or overwrite a newly e
  await post([{url:'https://example.com/rss',title:'Before'}]);let row=await DB.prepare('SELECT * FROM plaza_feeds').first();
  let edited=false;
  await checkFeed(row,env,async url=>{
-  if(!url.includes('dns-query')&&!edited){edited=true;assert.equal((await mutate(row.id,{action:'edit',revision:0,title:'Edited',url:'https://example.com/new',icon:'',category:'news',language:'zh'})).status,200);}
+  if(!url.includes('dns-query')&&!edited){edited=true;assert.equal((await mutate(row.id,{action:'edit',revision:0,title:'Edited',url:'https://example.com/new',icon:'',category:'news',language:'zh-hans'})).status,200);}
   return transport(url);
  });
  row=await DB.prepare('SELECT * FROM plaza_feeds').first();assert.equal(row.url,'https://example.com/new');assert.equal(row.status,'pending');assert.equal(row.category,'news');
- assert.equal((await DB.prepare('SELECT language FROM plaza_feed_stats WHERE feed_id=?').bind(row.id).first()).language,'zh');
+ assert.equal((await DB.prepare('SELECT language FROM plaza_feed_stats WHERE feed_id=?').bind(row.id).first()).language,'zh-hans');
  await checkFeed(row,env,async url=>{
   if(!url.includes('dns-query'))assert.equal((await mutate(row.id,{action:'delete',revision:1})).status,200);
   return transport(url);
  });assert.equal((await publicList()).total,0);
  assert.equal((await DB.prepare('SELECT published FROM plaza_feeds WHERE id=?').bind(row.id).first()).published,0);
+}));
+
+test('language dropdown codes are the only accepted metadata values, without legacy aliases',async()=>{
+ const {languageValue}=await import('../functions/_lib/plaza-metadata.js');
+ const {feedLanguages,feedLanguageName}=await import('../limitrss/plaza/feed-languages.js');
+ assert.equal(languageValue(null),null);assert.equal(languageValue(''),null);
+ for(const [code,zh,en]of feedLanguages){assert.equal(languageValue(code),code);assert.equal(feedLanguageName(code,'zh'),zh);assert.equal(feedLanguageName(code,'en'),en);}
+ for(const code of ['zh','zh-cn','zh-tw','zh_CN','en-US','other','invalid',123])assert.throws(()=>languageValue(code),/invalid_language/);
+});
+
+
+test('manual rechecks require admin access, return real health results and preserve hidden/manual metadata',()=>fixture(async({DB,env,req,post,mutate,publicList})=>{
+ await post([{url:'https://example.com/manual',title:'Manual',category:'culture',language:'ja'}]);
+ const row=await DB.prepare('SELECT * FROM plaza_feeds').first();
+ let requests=0;const healthy=async(...args)=>{requests++;return transport(...args);};
+ const retry=(revision=0,identity='admin',transportFn=healthy)=>recheckManaged({env,params:{id:row.id},request:req('POST',{revision},identity)},transportFn);
+ assert.equal((await retry(0,null)).status,401);assert.equal((await retry(0,'reader')).status,403);assert.equal(requests,0);
+ const success=await retry();assert.equal(success.status,200);assert.equal(success.headers.get('Cache-Control'),'no-store');assert.equal((await success.json()).status,'healthy');assert.equal(requests,2);
+ let saved=await DB.prepare('SELECT * FROM plaza_feeds').first();assert.equal(saved.category,'culture');assert.ok(saved.checked_at);assert.equal((await DB.prepare('SELECT language FROM plaza_feed_stats').first()).language,'ja');
+ const failing=async url=>url.includes('dns-query')?transport(url):new Response('',{status:503});
+ const failed=await retry(0,'admin',failing);assert.equal(failed.status,200);assert.deepEqual(await failed.json(),{ok:true,status:'degraded',reason:'http_503'});
+ assert.equal((await retry()).status,200);assert.equal((await DB.prepare('SELECT failures FROM plaza_feeds').first()).failures,0);
+ await mutate(row.id,{action:'hide',revision:0});assert.equal((await retry()).status,409);
+ assert.equal((await retry(1)).status,200);assert.equal((await publicList()).total,0);assert.equal((await DB.prepare('SELECT hidden FROM plaza_feed_controls').first()).hidden,1);
+ const unsafe=await retry(1,'admin',async()=>Response.json({Answer:[{type:1,data:'127.0.0.1'}]}));assert.equal((await unsafe.json()).reason,'unsafe_origin');
+ await mutate(row.id,{action:'delete',revision:1});const before=requests;assert.equal((await retry(2)).status,409);assert.equal(requests,before);
+ await post([{url:'rsshub://github/trending',title:'Route'}]);const route=await DB.prepare("SELECT * FROM plaza_feeds WHERE url LIKE 'rsshub:%'").first();
+ const skipped=await recheckManaged({env,params:{id:route.id},request:req('POST',{revision:0})},healthy);assert.equal(skipped.status,400);assert.equal((await skipped.json()).error,'unsupported_feed');assert.equal(requests,before);
+}));
+
+test('manual recheck discards results after an intervening manager edit',()=>fixture(async({DB,env,req,post,mutate})=>{
+ await post([{url:'https://example.com/race',title:'Before'}]);const row=await DB.prepare('SELECT * FROM plaza_feeds').first();
+ const response=await recheckManaged({env,params:{id:row.id},request:req('POST',{revision:0})},async url=>{
+  if(!url.includes('dns-query'))await mutate(row.id,{action:'edit',revision:0,title:'Changed',url:'https://example.com/new',icon:'',category:'life',language:'en'});
+  return transport(url);
+ });
+ assert.equal(response.status,409);const saved=await DB.prepare('SELECT * FROM plaza_feeds').first();assert.equal(saved.title,'Changed');assert.equal(saved.status,'pending');assert.equal(saved.checked_at,null);
 }));

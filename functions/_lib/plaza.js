@@ -113,9 +113,9 @@ export function parseFeed(xml, url = '') {
  return {title,language,category:classification.category,classification};
 }
 // A checker result may only write back to the same address and manager revision.
-export async function checkFeed(row, env, transport=fetch) {
- const initial=await env.DB.prepare('SELECT f.*,COALESCE(c.revision,0) AS revision FROM plaza_feeds f LEFT JOIN plaza_feed_controls c ON c.feed_id=f.id WHERE f.id=? AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls x WHERE x.feed_id=f.id AND (x.hidden=1 OR x.deleted_at IS NOT NULL))').bind(row.id).first();
- if(!initial || initial.url!==row.url)return;
+export async function checkFeed(row, env, transport=fetch, {allowHidden=false}={}) {
+ const initial=await env.DB.prepare(`SELECT f.*,COALESCE(c.revision,0) AS revision FROM plaza_feeds f LEFT JOIN plaza_feed_controls c ON c.feed_id=f.id WHERE f.id=? AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls x WHERE x.feed_id=f.id AND (${allowHidden?'0':'x.hidden=1'} OR x.deleted_at IS NOT NULL))`).bind(row.id).first();
+ if(!initial || initial.url!==row.url || (row.revision!==undefined && initial.revision!==row.revision))return false;
  row=initial;
  const start=Date.now(),rsshub=isRssHubFeed(row.url);
  let status=rsshub?'unknown':'healthy',reason=null,failures=0,published=1,language=null;
@@ -127,7 +127,7 @@ export async function checkFeed(row, env, transport=fetch) {
   if(status!=='healthy' && previous?.version===classificationVersion && evidence.source==='uncertain')evidence={category:row.category,source:'retained_after_failure'};
  }
  const now=Date.now();
- const guard='id=? AND url=? AND COALESCE((SELECT revision FROM plaza_feed_controls WHERE feed_id=plaza_feeds.id),0)=? AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls WHERE feed_id=plaza_feeds.id AND (hidden=1 OR deleted_at IS NOT NULL))';
+ const guard=`id=? AND url=? AND COALESCE((SELECT revision FROM plaza_feed_controls WHERE feed_id=plaza_feeds.id),0)=? AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls WHERE feed_id=plaza_feeds.id AND (${allowHidden?'0':'hidden=1'} OR deleted_at IS NOT NULL))`;
  const args=[row.id,row.url,row.revision];
  const writes=[
   env.DB.prepare(`INSERT INTO plaza_classification (feed_id,version,source,updated_at) SELECT id,?,?,? FROM plaza_feeds WHERE ${guard} ON CONFLICT(feed_id) DO UPDATE SET version=excluded.version,source=excluded.source,updated_at=excluded.updated_at`).bind(classificationVersion,evidence.source,now,...args),
@@ -135,10 +135,11 @@ export async function checkFeed(row, env, transport=fetch) {
  ];
  if(!rsshub && status==='healthy')writes.push(env.DB.prepare(`INSERT INTO plaza_feed_stats (feed_id,language) SELECT id,? FROM plaza_feeds WHERE ${guard} AND NOT EXISTS (SELECT 1 FROM plaza_feed_controls WHERE feed_id=plaza_feeds.id AND language_locked=1) ON CONFLICT(feed_id) DO UPDATE SET language=excluded.language`).bind(language,...args));
  const results=await env.DB.batch(writes);
- if(!results[1].meta.changes){console.log(JSON.stringify({module:'plaza',event:'feed_check_discarded',id:row.id,durationMs:now-start}));return;}
+ if(!results[1].meta.changes){console.log(JSON.stringify({module:'plaza',event:'feed_check_discarded',id:row.id,durationMs:now-start}));return false;}
  const actual=await env.DB.prepare('SELECT f.category,c.override_category FROM plaza_feeds f JOIN plaza_classification c ON c.feed_id=f.id WHERE f.id=?').bind(row.id).first();
  console.log(JSON.stringify({module:'plaza',event:'feed_classified',id:row.id,category:actual.category,source:actual.override_category?'manual':evidence.source,version:classificationVersion}));
  console.log(JSON.stringify({module:'plaza',event:rsshub?'feed_check_skipped':'feed_checked',id:row.id,status,reason,durationMs:now-start}));
+ return true;
 }
 export function respond(data,status=200) {
  return Response.json(data,{status,headers:{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Cache-Control':'no-store'}});
