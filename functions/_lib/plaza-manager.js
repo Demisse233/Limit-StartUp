@@ -2,15 +2,14 @@ import {getAuthUser} from './db.js';
 import {categories,feedUrl,publicUrl,readSmallJson,checkFeed,isRssHubFeed} from './plaza.js';
 import {categoryValue,languageValue} from './plaza-metadata.js';
 
-const ownerEmail='eric_demisse@163.com';
+import {isPlazaAdmin} from './plaza-access.js';
 export const managerJson=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store','Vary':'Authorization'}});
 class ManagerError extends Error {constructor(code,status=400){super(code);this.status=status;}}
 async function admin(request,env) {
  const user=await getAuthUser(request,env);
  if(!user)throw new ManagerError('unauthorized',401);
  const account=await env.DB.prepare('SELECT email FROM users WHERE id=?').bind(user.id).first();
- const allowed=String(env.PLAZA_ADMIN_EMAILS ?? ownerEmail).split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
- if(!account || !allowed.includes(account.email.toLowerCase()))throw new ManagerError('forbidden',403);
+ if(!account || !isPlazaAdmin(account.email,env))throw new ManagerError('forbidden',403);
  return user;
 }
 export async function managerRequest(context,handler) {

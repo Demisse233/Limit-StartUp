@@ -97,3 +97,8 @@ body { background: var(--bg); color: var(--text); }
 .status-help svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 .status-tooltip { display: none; position: fixed; z-index: 20; width: min(300px, calc(100vw - 36px)); padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: 9px; background: var(--bg-elev); color: var(--text-2); box-shadow: 0 5px 20px #0002; font-size: 12px; line-height: 1.6; font-weight: 400; text-align: left; pointer-events: none; }
 .status-help:hover .status-tooltip, .status-help:focus-visible .status-tooltip, .status-help.is-open .status-tooltip { display: block; }
+
+[hidden]{display:none!important}
+.plaza-nav .account-link{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 13px;border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:13px;white-space:nowrap;text-decoration:none}
+.plaza-nav .account-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+@media(max-width:640px){.plaza-nav .nav-inner{flex-wrap:wrap}.plaza-nav .nav-tools{gap:6px;flex-wrap:wrap;justify-content:flex-end}.plaza-nav .account-link{padding:7px 9px}}

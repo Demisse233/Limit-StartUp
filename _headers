@@ -54,3 +54,15 @@
 
 /limitrss/plaza/plaza.js
   Cache-Control: public, max-age=0, must-revalidate
+
+/limitrss/login/*
+  Cache-Control: no-store
+
+/limitrss/plaza/session.js
+  Cache-Control: no-store
+
+/limitrss/plaza/account-nav.js
+  Cache-Control: no-store
+
+/limitrss/plaza/session-runtime.js
+  Cache-Control: no-store

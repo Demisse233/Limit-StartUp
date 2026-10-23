@@ -3,7 +3,7 @@ import { verifyPassword, normalizeEmail, isValidEmail, signJwt } from '../../_li
 import { readJson, json, err } from '../../_lib/db.js';
 import { verifyTurnstile, rateLimit, getClientIp } from '../../_lib/turnstile.js';
 
-export async function onRequestPost(context) {
+async function login(context) {
   const { request, env } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(env) });
   const ip = getClientIp(request);
@@ -54,4 +54,10 @@ function corsHeaders(env) {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization'
   };
+}
+
+export async function onRequestPost(context){
+ const started=Date.now();
+ try{const response=await login(context);response.headers.set('Cache-Control','no-store');const result=await response.clone().json();console.log(JSON.stringify({module:'auth',event:'login_result',status:response.status,code:result.error||'ok',durationMs:Date.now()-started}));return response;}
+ catch{console.log(JSON.stringify({module:'auth',event:'login_failed',code:'unavailable',durationMs:Date.now()-started}));return err('unavailable','Service unavailable',503,context.env);}
 }

@@ -42,3 +42,13 @@ The additive schemas precede the three runtime deployments. No existing feeds ar
 `npm run test:plaza` 使用真实本地 SQLite/D1，覆盖认证及权限、分类语言保留、重复上传、编辑审计、并发冲突、所有公开接口的下架删除、恢复和旧检测结果丢弃。`npm run build` 编译 Pages Functions；两个 Worker 用 dry-run 验证。管理 UI 使用本地合成账号与数据验证，不读取或修改生产订阅源。
 
 Manual rechecks run immediately and update health without publishing hidden feeds. Deleted feeds cannot be checked. RSSHub routes require the configured client instance; their recheck button is disabled. Structured logs record start, result, failure reason and duration.
+
+## Plaza 登录 / Plaza sign-in
+
+广场顶栏的登录入口前往 `/limitrss/login/`，页面采用左右分栏，窄屏保留登录表单。复用 `/api/auth/login`、`/api/auth/me`、`/api/auth/logout` 及现有 StartUp D1 `users` 数据，无需迁移数据库；同源沿用 `ls_auth_token` 与 `ls_auth_user`。仅在用户勾选后本地记住邮箱，不保存密码。人机验证提示位于组件下方。登录后默认返回广场，`next` 仅允许广场和管理后台两个本地路径。登录状态由服务端校验，管理链接根据服务端当前账号权限显示，所有管理接口继续独立验证权限。
+
+The Plaza header links to a standalone split-layout sign-in page. Authentication reuses the existing StartUp endpoints, database and same-origin session. Remember email is opt-in; passwords are never stored. Return URLs are restricted to Plaza and its manager. The server determines management access; hiding or showing the navigation does not grant permissions. Structured login logs contain status, error code and duration without credentials.
+
+登录页采用单 Logo 与语言切换、注册入口；`/limitrss/login/?mode=register` 复用 `/api/auth/register` 创建同一 StartUp 数据库账号，含昵称、密码规则、确认密码与人机验证。注册成功后保存共享会话并返回广场，普通注册用户不获得管理权限。
+
+登录页背景按用户要求使用 Cloudflare Connect 原始地球纹理和独立绘制逻辑，来源记录在 `login/assets/SOURCES.md`。仅本地加载动画资源，调整为蓝白线条并从页面底部裁切；地图嵌入以兼容直接打开 HTML，减少动态效果时使用原静态纹理。

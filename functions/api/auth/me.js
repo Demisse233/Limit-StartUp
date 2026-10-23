@@ -1,3 +1,4 @@
+import {isPlazaAdmin} from '../../_lib/plaza-access.js';
 // GET /api/auth/me
 import { getAuthUser, json, err } from '../../_lib/db.js';
 
@@ -13,17 +14,20 @@ export async function onRequestGet(context) {
   let prefs = {};
   try { prefs = JSON.parse(row.prefs_json); } catch (e) {}
 
-  return json({
+  const response=json({
     user: {
       id: row.id,
       email: row.email,
       nickname: row.nickname,
+      plazaAdmin: isPlazaAdmin(row.email,env),
       avatarUrl: row.avatar_b64 ? '/api/avatar' : null,
       prefs,
       createdAt: row.created_at,
       lastLoginAt: row.last_login_at
     }
   }, 200, env);
+  response.headers.set('Cache-Control','no-store');
+  return response;
 }
 
 function corsHeaders(env) {

@@ -139,3 +139,47 @@ test('manual recheck discards results after an intervening manager edit',()=>fix
  });
  assert.equal(response.status,409);const saved=await DB.prepare('SELECT * FROM plaza_feeds').first();assert.equal(saved.title,'Changed');assert.equal(saved.status,'pending');assert.equal(saved.checked_at,null);
 }));
+
+
+test('Plaza sign-in reuses StartUp passwords, session and server-side manager access',t=>fixture(async({DB,env,req})=>{
+ const {hashPassword}=await import('../functions/_lib/crypto.js');
+ const {onRequestPost:login}=await import('../functions/api/auth/login.js');
+ const {onRequestGet:me}=await import('../functions/api/auth/me.js');
+ const {onRequestPost:logout}=await import('../functions/api/auth/logout.js');
+ const salt='11'.repeat(16),password='local-test-password';
+ await DB.prepare('UPDATE users SET password_salt=?,password_hash=?').bind(salt,await hashPassword(password,salt)).run();
+ t.mock.method(globalThis,'fetch',async url=>{assert.equal(url,'https://challenges.cloudflare.com/turnstile/v0/siteverify');return Response.json({success:true});});
+ const attempt=(email,secret=password,captcha='local-test-captcha')=>login({env,request:new Request('https://site/api/auth/login',{method:'POST',body:JSON.stringify({email,password:secret,turnstileToken:captcha})})});
+ assert.equal((await attempt('reader@example.com',password,'')).status,403);
+ assert.equal((await attempt('reader@example.com','incorrect')).status,401);
+ const reader=await (await attempt('reader@example.com')).json();assert.ok(reader.token);assert.equal(reader.user.id,'reader');
+ const authenticated=()=>new Request('https://site/api/auth/me',{headers:{Authorization:'Bearer '+reader.token}});
+ let response=await me({env,request:authenticated()});assert.equal((await response.json()).user.plazaAdmin,false);
+ const adminResult=await me({env,request:req()});assert.equal((await adminResult.json()).user.plazaAdmin,true);
+ const changed=await me({env:{...env,PLAZA_ADMIN_EMAILS:'reader@example.com'},request:authenticated()});assert.equal((await changed.json()).user.plazaAdmin,true);
+ assert.equal((await logout({env,request:authenticated()})).status,200);
+ assert.equal((await me({env,request:authenticated()})).status,401);
+}));
+
+test('Plaza login return paths reject external URLs and unexpected local destinations',async()=>{
+ const {returnPath}=await import('../limitrss/plaza/session.js');
+ for(const url of ['https://evil.example','//evil.example','javascript:alert(1)','/api/auth/logout','/limitrss/plaza/?next=https://evil.example',null])assert.equal(returnPath(url),'/limitrss/plaza/');
+ assert.equal(returnPath('/limitrss/plaza-manager/'),'/limitrss/plaza-manager/');
+});
+
+
+test('Plaza registration creates a StartUp account and enforces existing registration rules',t=>fixture(async({DB,env})=>{
+ const {onRequestPost:register}=await import('../functions/api/auth/register.js');
+ const {onRequestPost:login}=await import('../functions/api/auth/login.js');
+ const {onRequestGet:me}=await import('../functions/api/auth/me.js');
+ t.mock.method(globalThis,'fetch',async()=>Response.json({success:true}));
+ const submit=(handler,body)=>handler({env,request:new Request('https://site/api/auth/register',{method:'POST',body:JSON.stringify(body)})});
+ const body={email:'new-reader@example.com',nickname:'New reader',password:'local-password-123',turnstileToken:'test'};
+ assert.equal((await submit(register,{...body,turnstileToken:''})).status,403);
+ assert.equal((await submit(register,{...body,password:'short'})).status,400);
+ const response=await submit(register,body);assert.equal(response.status,200);assert.equal(response.headers.get('Cache-Control'),'no-store');const result=await response.json();assert.ok(result.token);
+ const account=await DB.prepare('SELECT nickname,password_hash FROM users WHERE email=?').bind(body.email).first();assert.equal(account.nickname,body.nickname);assert.notEqual(account.password_hash,body.password);
+ assert.equal((await submit(register,body)).status,400);
+ const signedIn=await submit(login,body);assert.equal(signedIn.status,200);
+ const profile=await me({env,request:new Request('https://site/api/auth/me',{headers:{Authorization:'Bearer '+result.token}})});assert.equal((await profile.json()).user.plazaAdmin,false);
+}));
