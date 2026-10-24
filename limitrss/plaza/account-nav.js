@@ -1,3 +1,4 @@
+import {openAccountDialog} from './account-dialogs.js';
 import {readToken,clearSession,authRequest} from './session.js';
 const $=id=>document.getElementById(id);
 const link=$('account-login'),profile=$('account-profile'),toggle=$('account-toggle'),menu=$('account-menu'),logout=$('account-logout'),manager=$('account-manager');
@@ -9,6 +10,10 @@ function translate(){link.textContent=t('login');for(const [id,key] of [['accoun
 function close(focus=false){menu.hidden=true;toggle.setAttribute('aria-expanded','false');if(focus)toggle.focus();}
 function items(){return [...menu.querySelectorAll('[role=menuitem]')].filter(n=>!n.hidden&&!n.disabled);}
 function open(focus=false){menu.hidden=false;toggle.setAttribute('aria-expanded','true');const languageButton=$('language');const languageMenu=$('language-menu');if(languageMenu)languageMenu.hidden=true;languageButton?.setAttribute('aria-expanded','false');if(focus)items()[0]?.focus();}
+$('account-settings').addEventListener('click',()=>{close();if(user)openAccountDialog('profile',user);});
+$('account-password').addEventListener('click',()=>{close();if(user)openAccountDialog('password',user);});
+document.addEventListener('plaza-account-updated',()=>load());
+document.addEventListener('plaza-account-session-ended',()=>{generation++;signedOut();});
 toggle.addEventListener('click',()=>menu.hidden?open():close());
 toggle.addEventListener('keydown',event=>{if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();open(true);if(event.key==='ArrowUp')items().at(-1)?.focus();}});
 menu.addEventListener('keydown',event=>{const list=items(),index=list.indexOf(document.activeElement);if(event.key==='Escape'){event.preventDefault();close(true);}else if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)){event.preventDefault();list[event.key==='Home'?0:event.key==='End'?list.length-1:(index+(event.key==='ArrowDown'?1:-1)+list.length)%list.length]?.focus();}else if(event.key==='Tab')close();});

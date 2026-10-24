@@ -183,3 +183,42 @@ test('Plaza registration creates a StartUp account and enforces existing registr
  const signedIn=await submit(login,body);assert.equal(signedIn.status,200);
  const profile=await me({env,request:new Request('https://site/api/auth/me',{headers:{Authorization:'Bearer '+result.token}})});assert.equal((await profile.json()).user.plazaAdmin,false);
 }));
+
+test('Plaza account dialogs reuse nickname/avatar/password APIs and revoke sessions only after a successful password change',t=>fixture(async({DB,env,req})=>{
+ const {onRequestPut:nickname}=await import('../functions/api/auth/nickname.js');
+ const {onRequestPost:avatar,onRequestDelete:removeAvatar,onRequestGet:getAvatar}=await import('../functions/api/avatar/index.js');
+ const {onRequestPost:reset}=await import('../functions/api/auth/reset.js');
+ const {onRequestGet:me}=await import('../functions/api/auth/me.js');
+ const {hashPassword}=await import('../functions/_lib/crypto.js');
+ const logs=[];t.mock.method(console,'log',value=>logs.push(value));
+ t.mock.method(globalThis,'fetch',async()=>Response.json({success:true}));
+ assert.equal((await nickname({env,request:req('PUT',{nickname:'New reader'},null)})).status,401);
+ assert.equal((await nickname({env,request:req('PUT',{nickname:'  '})})).status,400);
+ const saved=await nickname({env,request:req('PUT',{nickname:'New reader'})});assert.equal(saved.status,200);assert.equal(saved.headers.get('Cache-Control'),'no-store');
+ assert.equal((await DB.prepare("SELECT nickname FROM users WHERE id='admin'").first()).nickname,'New reader');
+ const image='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aWQAAAABJRU5ErkJggg==';
+ assert.equal((await avatar({env,request:req('POST',{dataUrl:'data:text/plain;base64,aGk='})})).status,415);
+ assert.equal((await avatar({env,request:req('POST',{dataUrl:image})})).status,200);
+ const fetched=await getAvatar({env,request:req()});assert.equal(fetched.status,200);assert.equal(fetched.headers.get('Content-Type'),'image/png');assert.ok((await fetched.arrayBuffer()).byteLength>0);
+ assert.equal((await removeAvatar({env,request:req('DELETE')})).status,200);assert.equal((await getAvatar({env,request:req()})).status,404);
+ const oldPassword='local-old-password-123',newPassword='local-new-password-456',salt='12'.repeat(16);
+ await DB.prepare("UPDATE users SET password_salt=?,password_hash=? WHERE id='admin'").bind(salt,await hashPassword(oldPassword,salt)).run();
+ const attempt=body=>reset({env,request:req('POST',body)});
+ assert.equal((await attempt({oldPassword:'incorrect',newPassword,turnstileToken:'test'})).status,401);
+ assert.equal((await me({env,request:req()})).status,200);
+ assert.equal((await attempt({oldPassword,newPassword,turnstileToken:''})).status,403);
+ const changed=await attempt({oldPassword,newPassword,turnstileToken:'test'});assert.equal(changed.status,200);assert.equal(changed.headers.get('Cache-Control'),'no-store');
+ assert.equal((await me({env,request:req()})).status,401);
+ const accountLogs=logs.map(value=>JSON.parse(value)).filter(value=>value.module==='account');assert.ok(accountLogs.some(value=>value.event==='password_changed'&&value.status===200));assert.ok(accountLogs.some(value=>value.event==='password_changed'&&value.code==='invalid_old_password'));assert.ok(accountLogs.every(value=>typeof value.durationMs==='number'));
+ assert.ok(!JSON.stringify(accountLogs).includes(oldPassword));assert.ok(!JSON.stringify(accountLogs).includes(newPassword));assert.ok(!JSON.stringify(accountLogs).includes('Bearer'));
+}));
+
+test('a wrong current password does not discard the client session, while an expired session does',async t=>{
+ const original=Object.getOwnPropertyDescriptor(globalThis,'localStorage');const values=new Map([['ls_auth_token','test-session'],['ls_auth_user','{}']]);
+ Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:key=>values.get(key)||null,removeItem:key=>values.delete(key)}});
+ t.after(()=>{if(original)Object.defineProperty(globalThis,'localStorage',original);else delete globalThis.localStorage;});
+ let error='invalid_old_password';t.mock.method(globalThis,'fetch',async()=>Response.json({error},{status:401}));
+ const {authRequest}=await import('../limitrss/plaza/session.js');
+ await assert.rejects(authRequest('/api/auth/reset',{method:'POST'}),/invalid_old_password/);assert.equal(values.get('ls_auth_token'),'test-session');
+ error='unauthorized';await assert.rejects(authRequest('/api/auth/reset',{method:'POST'}),/unauthorized/);assert.equal(values.has('ls_auth_token'),false);assert.equal(values.has('ls_auth_user'),false);
+});

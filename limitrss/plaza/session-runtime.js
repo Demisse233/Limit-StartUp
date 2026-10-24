@@ -5,7 +5,7 @@ function saveSession(result){try{localStorage.setItem('ls_auth_token',result.tok
 async function authRequest(path,options={}){
  let response;try{const token=readToken();response=await fetch(path,{...options,cache:'no-store',headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})}});}catch{throw Error('network');}
  let result;try{result=await response.json();}catch{throw Error('unavailable');}
- if(!response.ok){if(response.status===401 && path!=='/api/auth/login')clearSession();throw Error(result.error||'unavailable');}
+ if(!response.ok){if(response.status===401 && result.error==='unauthorized')clearSession();throw Error(result.error||'unavailable');}
  return result;
 }
 function returnPath(value){return ['/limitrss/plaza/','/limitrss/plaza-manager/'].includes(value)?value:'/limitrss/plaza/';}

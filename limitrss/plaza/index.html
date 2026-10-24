@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap" rel="stylesheet">
   <link rel="icon" href="../assets/favicon.png">
   <link rel="stylesheet" href="../styles.css?v=20261008-language">
-  <link rel="stylesheet" href="style.css?v=20261024-profile-menu">
+  <link rel="stylesheet" href="style.css?v=20261024-account-dialogs">
 </head>
 <body>
   <header class="nav glass plaza-nav">
@@ -33,8 +33,8 @@
        <button id="account-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="account-menu"><span class="profile-avatar" aria-hidden="true"><img class="profile-avatar-image" alt="" hidden><span class="profile-avatar-fallback">L</span></span><span id="account-nickname"></span><svg class="profile-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
        <div id="account-menu" role="menu" aria-labelledby="account-toggle" hidden>
         <div class="profile-summary" role="presentation"><span class="profile-avatar profile-avatar-large" aria-hidden="true"><img class="profile-avatar-image" alt="" hidden><span class="profile-avatar-fallback">L</span></span><div class="profile-summary-text"><strong id="account-menu-name"></strong><span id="account-menu-email"></span><span id="account-signed-in">已登录</span></div></div>
-        <a id="account-settings" role="menuitem" href="/?account=settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m9 3-1 3-3 1-2 3 2 2-1 3 2 3 3-1 3 2 3-2 3 1 2-3-1-3 2-2-2-3-3-1-1-3z"/></svg><span>账号设置</span></a>
-        <a id="account-password" role="menuitem" href="/?account=password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>修改密码</span></a>
+        <button id="account-settings" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>账号设置</span></button>
+        <button id="account-password" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>修改密码</span></button>
         <a id="account-manager" role="menuitem" href="../plaza-manager/" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>管理后台</span></a>
         <button id="account-logout" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M9 12h12m-5-5 5 5-5 5"/></svg><span>退出登录</span></button>
         <p id="account-menu-message" role="status" aria-live="polite"></p>
@@ -68,8 +68,32 @@
     <section class="contribute"><div><h2 data-t="contributeTitle">一起丰富 Plaza</h2><p data-t="contribute">在 LimitRSS 的订阅源菜单中选择“分享至 LimitRSS Plaza”。上传的订阅源通过检测后将公开展示。</p></div><a href="../#download" class="download-link" data-t="download">下载 LimitRSS</a></section>
   </main>
   <footer class="plaza-footer"><span data-t="footer">请仅分享适合公开访问的订阅源。</span></footer>
+
+<dialog id="profile-dialog" class="plaza-account-dialog" aria-labelledby="profile-dialog-title">
+ <div class="account-dialog-heading"><h2 id="profile-dialog-title" data-account-t="settings">账号设置</h2><button type="button" data-account-close="profile-dialog" data-account-label="close">×</button></div>
+ <form id="profile-form">
+  <div class="account-avatar-editor"><span class="account-avatar-preview"><img id="profile-preview-image" alt="" hidden><span id="profile-preview-fallback" aria-hidden="true">L</span></span><div><label for="profile-avatar-file" class="account-file-button" data-account-t="chooseAvatar">选择头像</label><input id="profile-avatar-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><button id="profile-delete-avatar" class="account-text-button" type="button" data-account-t="deleteAvatar">删除头像</button></div></div>
+  <p class="account-dialog-hint" data-account-t="avatarHint">支持 PNG、JPEG、WebP，将居中裁切为圆形头像。</p>
+  <label for="profile-email" data-account-t="email">邮箱</label><input id="profile-email" type="email" readonly>
+  <label for="profile-nickname" data-account-t="nickname">昵称</label><input id="profile-nickname" maxlength="24" required autocomplete="nickname">
+  <p id="profile-message" class="account-dialog-message" role="status" aria-live="polite"></p>
+  <div class="account-dialog-actions"><button type="button" data-account-close="profile-dialog" data-account-t="cancel">取消</button><button id="profile-save" type="submit" class="account-primary-button" data-account-t="save">保存</button></div>
+ </form>
+</dialog>
+<dialog id="password-dialog" class="plaza-account-dialog" aria-labelledby="password-dialog-title">
+ <div class="account-dialog-heading"><h2 id="password-dialog-title" data-account-t="password">修改密码</h2><button type="button" data-account-close="password-dialog" data-account-label="close">×</button></div>
+ <form id="password-form">
+  <label for="profile-old-password" data-account-t="oldPassword">旧密码</label><input id="profile-old-password" type="password" autocomplete="current-password" required maxlength="128">
+  <label for="profile-new-password" data-account-t="newPassword">新密码</label><input id="profile-new-password" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+  <p class="account-dialog-hint" data-account-t="passwordHint">密码需 8–128 位，包含字母和数字。</p>
+  <label for="profile-confirm-password" data-account-t="confirmPassword">确认新密码</label><input id="profile-confirm-password" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+  <div id="account-captcha" data-sitekey="0x4AAAAAADnCSF3mvj9vqAEf"></div>
+  <p id="password-message" class="account-dialog-message" role="status" aria-live="polite"></p>
+  <div class="account-dialog-actions"><button type="button" data-account-close="password-dialog" data-account-t="cancel">取消</button><button id="password-save" type="submit" class="account-primary-button" data-account-t="savePassword">修改密码</button><a id="password-login" href="../login/" class="account-primary-button" data-account-t="signInAgain" hidden>重新登录</a></div>
+ </form>
+</dialog>
   <script src="../nav-controls.js?v=20261008-language" defer></script>
-  <script src="account-nav.js?v=20261024-profile-menu" type="module"></script>
+  <script src="account-nav.js?v=20261024-account-dialogs" type="module"></script>
   <script src="plaza.js?v=20261013-language-fix" type="module"></script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+import {accountOperation} from '../../_lib/account-operation.js';
 // PUT /api/auth/nickname
 // 已登录用户修改昵称 (1-24 位, 自动 trim)
 import { getAuthUser, readJson, json, err, corsHeaders } from '../../_lib/db.js';
@@ -8,7 +9,7 @@ function isValidNickname(n) {
   return t.length >= 1 && t.length <= 24;
 }
 
-export async function onRequestPut(context) {
+async function onRequestPutImpl(context) {
   const { request, env } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(env) });
 
@@ -23,3 +24,5 @@ export async function onRequestPut(context) {
   await env.DB.prepare('UPDATE users SET nickname = ?, updated_at = ? WHERE id = ?').bind(nickname, Date.now(), user.id).run();
   return json({ ok: true, nickname }, 200, env);
 }
+
+export const onRequestPut=accountOperation('nickname_changed',onRequestPutImpl);

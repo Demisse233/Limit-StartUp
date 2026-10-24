@@ -1,3 +1,4 @@
+import {accountOperation} from '../../_lib/account-operation.js';
 // POST /api/auth/reset
 // 已登录用户改密: 需要旧密码 + 新密码
 // 改完前端会清除 localStorage token, 强制用新密码重新登录
@@ -5,7 +6,7 @@ import { hashPassword, verifyPassword } from '../../_lib/crypto.js';
 import { getAuthUser, readJson, json, err } from '../../_lib/db.js';
 import { verifyTurnstile, rateLimit, getClientIp } from '../../_lib/turnstile.js';
 
-export async function onRequestPost(context) {
+async function onRequestPostImpl(context) {
   const { request, env } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(env) });
   const user = await getAuthUser(request, env);
@@ -52,3 +53,5 @@ function corsHeaders(env) {
     'Access-Control-Allow-Headers': 'Content-Type, Authorization'
   };
 }
+
+export const onRequestPost=accountOperation('password_changed',onRequestPostImpl);

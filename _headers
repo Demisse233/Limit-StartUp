@@ -69,3 +69,6 @@
 
 /scripts/account-entry.js
   Cache-Control: public, max-age=0, must-revalidate
+
+/limitrss/plaza/account-dialogs.js
+  Cache-Control: no-store

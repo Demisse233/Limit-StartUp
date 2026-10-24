@@ -55,6 +55,8 @@ The Plaza header links to a standalone split-layout sign-in page. Authentication
 
 ## 广场账号菜单 / Plaza account menu
 
-已登录用户在顶栏显示头像与昵称（未设置昵称时显示邮箱）；头像使用 Authorization 请求 `/api/avatar` 并以临时 Blob URL 展示，不在 URL 中暴露 Token。无头像或读取失败时使用默认头像。菜单支持鼠标、键盘方向键及 Escape，包含账号设置、修改密码、退出登录，以及按服务端权限显示的管理后台入口。账号设置和改密链接使用 StartUp 原有页面及账号逻辑，不创建另一套账号资料。
+已登录用户在顶栏显示头像与昵称（未设置昵称时显示邮箱）；头像使用 Authorization 请求 `/api/avatar` 并以临时 Blob URL 展示，不在 URL 中暴露 Token。无头像或读取失败时使用默认头像。菜单支持鼠标、键盘方向键及 Escape，包含账号设置、修改密码、退出登录，以及按服务端权限显示的管理后台入口。账号设置和改密均在广场内弹窗完成，直接调用共享账号接口，不跳转 StartUp 页面。
 
-Authenticated users see their avatar and nickname, with email as the fallback name. The menu reuses StartUp account settings and password controls, supports keyboard navigation, and shows management access only when authorized by the server. Avatar failures retain a default avatar; logout failures remain actionable in the menu.
+Authenticated users see their avatar and nickname, with email as the fallback name. The menu opens local dialogs backed by the shared account APIs, supports keyboard navigation, and shows management access only when authorized by the server. Avatar failures retain a default avatar; logout failures remain actionable in the menu.
+
+账号设置弹窗支持昵称、头像居中裁切至 256×256、上传与删除；修改密码需要旧密码、新密码确认及 Turnstile。改密成功清除本地会话并提示重新登录，旧密码错误不会错误地清除当前会话。API 结构化日志仅记录操作、状态、错误码和耗时，不包含密码、头像或 Token。

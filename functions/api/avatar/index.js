@@ -1,3 +1,4 @@
+import {accountOperation} from '../../_lib/account-operation.js';
 // GET  /api/avatar       - 取当前用户头像 (需登录)
 // POST /api/avatar       - 上传头像 (需登录) - 前端必须先压缩到 256x256 base64
 // DELETE /api/avatar     - 删头像 (需登录)
@@ -40,7 +41,7 @@ export async function onRequestGet(context) {
   });
 }
 
-export async function onRequestPost(context) {
+async function onRequestPostImpl(context) {
   const { request, env } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(env) });
   const user = await getAuthUser(request, env);
@@ -63,7 +64,7 @@ export async function onRequestPost(context) {
   return json({ ok: true, avatarUrl: '/api/avatar', size: Math.floor(b64.length * 3 / 4) }, 200, env);
 }
 
-export async function onRequestDelete(context) {
+async function onRequestDeleteImpl(context) {
   const { request, env } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(env) });
   const user = await getAuthUser(request, env);
@@ -88,3 +89,7 @@ function corsHeaders(env) {
     'Access-Control-Allow-Headers': 'Content-Type, Authorization'
   };
 }
+
+export const onRequestPost=accountOperation('avatar_saved',onRequestPostImpl);
+
+export const onRequestDelete=accountOperation('avatar_deleted',onRequestDeleteImpl);
