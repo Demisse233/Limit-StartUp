@@ -52,3 +52,9 @@ The Plaza header links to a standalone split-layout sign-in page. Authentication
 登录页采用单 Logo 与语言切换、注册入口；`/limitrss/login/?mode=register` 复用 `/api/auth/register` 创建同一 StartUp 数据库账号，含昵称、密码规则、确认密码与人机验证。注册成功后保存共享会话并返回广场，普通注册用户不获得管理权限。
 
 登录页背景按用户要求使用 Cloudflare Connect 原始地球纹理和独立绘制逻辑，来源记录在 `login/assets/SOURCES.md`。仅本地加载动画资源，调整为蓝白线条并从页面底部裁切；地图嵌入以兼容直接打开 HTML，减少动态效果时使用原静态纹理。
+
+## 广场账号菜单 / Plaza account menu
+
+已登录用户在顶栏显示头像与昵称（未设置昵称时显示邮箱）；头像使用 Authorization 请求 `/api/avatar` 并以临时 Blob URL 展示，不在 URL 中暴露 Token。无头像或读取失败时使用默认头像。菜单支持鼠标、键盘方向键及 Escape，包含账号设置、修改密码、退出登录，以及按服务端权限显示的管理后台入口。账号设置和改密链接使用 StartUp 原有页面及账号逻辑，不创建另一套账号资料。
+
+Authenticated users see their avatar and nickname, with email as the fallback name. The menu reuses StartUp account settings and password controls, supports keyboard navigation, and shows management access only when authorized by the server. Avatar failures retain a default avatar; logout failures remain actionable in the menu.

@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap" rel="stylesheet">
   <link rel="icon" href="../assets/favicon.png">
   <link rel="stylesheet" href="../styles.css?v=20261008-language">
-  <link rel="stylesheet" href="style.css?v=20261023-account">
+  <link rel="stylesheet" href="style.css?v=20261024-profile-menu">
 </head>
 <body>
   <header class="nav glass plaza-nav">
@@ -28,7 +28,18 @@
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
       </button>
-      <a id="account-manager" class="account-link" href="../plaza-manager/" hidden>管理后台</a><a id="account-login" class="account-link account-primary" href="../login/">登录</a><button id="account-logout" class="account-link" type="button" hidden>退出登录</button>
+      <a id="account-login" class="account-link account-primary" href="../login/">登录</a>
+      <div id="account-profile" class="account-profile" hidden>
+       <button id="account-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="account-menu"><span class="profile-avatar" aria-hidden="true"><img class="profile-avatar-image" alt="" hidden><span class="profile-avatar-fallback">L</span></span><span id="account-nickname"></span><svg class="profile-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
+       <div id="account-menu" role="menu" aria-labelledby="account-toggle" hidden>
+        <div class="profile-summary" role="presentation"><span class="profile-avatar profile-avatar-large" aria-hidden="true"><img class="profile-avatar-image" alt="" hidden><span class="profile-avatar-fallback">L</span></span><div class="profile-summary-text"><strong id="account-menu-name"></strong><span id="account-menu-email"></span><span id="account-signed-in">已登录</span></div></div>
+        <a id="account-settings" role="menuitem" href="/?account=settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m9 3-1 3-3 1-2 3 2 2-1 3 2 3 3-1 3 2 3-2 3 1 2-3-1-3 2-2-2-3-3-1-1-3z"/></svg><span>账号设置</span></a>
+        <a id="account-password" role="menuitem" href="/?account=password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>修改密码</span></a>
+        <a id="account-manager" role="menuitem" href="../plaza-manager/" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>管理后台</span></a>
+        <button id="account-logout" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M9 12h12m-5-5 5 5-5 5"/></svg><span>退出登录</span></button>
+        <p id="account-menu-message" role="status" aria-live="polite"></p>
+       </div>
+      </div>
       </div>
     </div>
   </header>
@@ -58,7 +69,7 @@
   </main>
   <footer class="plaza-footer"><span data-t="footer">请仅分享适合公开访问的订阅源。</span></footer>
   <script src="../nav-controls.js?v=20261008-language" defer></script>
-  <script src="account-nav.js?v=20261023-account" type="module"></script>
+  <script src="account-nav.js?v=20261024-profile-menu" type="module"></script>
   <script src="plaza.js?v=20261013-language-fix" type="module"></script>
 </body>
 </html>
