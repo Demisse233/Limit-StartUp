@@ -2,6 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test:auth-email": "node --test scripts/test-auth-email.mjs",
     "test:plaza": "node --test scripts/test-plaza.mjs scripts/test-plaza-manager.mjs scripts/test-plaza-community.mjs",
     "build": "wrangler pages functions build functions --outfile .wrangler/pages-build/worker.js",
     "sync:limitrss": "node scripts/sync-limitrss.mjs",

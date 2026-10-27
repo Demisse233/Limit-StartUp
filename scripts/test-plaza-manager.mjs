@@ -172,7 +172,7 @@ test('Plaza registration creates a StartUp account and enforces existing registr
  const {onRequestPost:register}=await import('../functions/api/auth/register.js');
  const {onRequestPost:login}=await import('../functions/api/auth/login.js');
  const {onRequestGet:me}=await import('../functions/api/auth/me.js');
- t.mock.method(globalThis,'fetch',async()=>Response.json({success:true}));
+ t.mock.method(globalThis,'fetch',async url=>String(url).includes('dns-query')?Response.json({Status:0,Answer:[{type:15,data:'10 mx.example.com.'}]}):Response.json({success:true}));
  const submit=(handler,body)=>handler({env,request:new Request('https://site/api/auth/register',{method:'POST',body:JSON.stringify(body)})});
  const body={email:'new-reader@example.com',nickname:'New reader',password:'local-password-123',turnstileToken:'test'};
  assert.equal((await submit(register,{...body,turnstileToken:''})).status,403);

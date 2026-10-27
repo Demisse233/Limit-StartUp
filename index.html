@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Limit Startup</title>
+    <script src="limitrss/auth-diagnostics.js?v=20261027-email-check" defer></script>
     <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -89,6 +90,7 @@
         </div>
       </div>
       <div class="auth_error" id="auth_register_error" hidden></div>
+      <button type="button" class="auth_link" id="auth_register_diagnostics" hidden onclick="LimitRSSAuthDiagnostics.exportDiagnostics()">导出诊断记录</button>
       <div class="auth_turnstile">
         <div id="cf-turnstile-register" class="cf-turnstile" data-sitekey="0x4AAAAAADnCSF3mvj9vqAEf" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError"></div>
       </div>
@@ -429,7 +431,7 @@
                         <img src="/src/logo.png" alt="Limit Startup" class="about_hero_logo_img" loading="lazy">
                     </div>
                     <div class="about_hero_version">
-                        <span class="about_version_badge glass-strong">Version 4.16.0</span>
+                        <span class="about_version_badge glass-strong">Version 4.17.0</span>
                     </div>
                     <div class="about_hero_meta">
                         <p class="about_credits">Developed by Eric Demisse.</p>
@@ -456,10 +458,17 @@
                     <div class="changelog">
 <article class="changelog_version">
                             <header class="changelog_version_head">
-                                <span class="changelog_version_tag">V4.16.0</span>
+                                <span class="changelog_version_tag">V4.17.0</span>
                                 <span class="changelog_version_date">2026.10.27</span>
                             </header>
                             <ul class="changelog_items"></ul>
+                        </article>
+<article class="changelog_version">
+                            <header class="changelog_version_head">
+                                <span class="changelog_version_tag">V4.16.0</span>
+                                <span class="changelog_version_date">2026.10.27</span>
+                            </header>
+                            <ul class="changelog_items"><li class="changelog_item changelog_item--new"><span class="changelog_tag changelog_tag--new">新增</span><span class="changelog_msg">注册时检查邮箱格式、邮件域名与临时邮箱，并提供明确的失败提示</span></li><li class="changelog_item changelog_item--fix"><span class="changelog_tag changelog_tag--fix">修复</span><span class="changelog_msg">修复 LimitRSS Plaza 升级后订阅源目录与共建统计无法加载的问题</span></li></ul>
                         </article>
 <article class="changelog_version">
                             <header class="changelog_version_head">
@@ -3301,9 +3310,13 @@ async function apiFetch(path, opts) {
   if (opts.body && typeof opts.body !== 'string' && !(opts.body instanceof FormData)) {
     opts.body = JSON.stringify(opts.body);
   }
-  var r = await fetch(API_BASE + path, Object.assign({}, opts, { headers: headers }));
+  var started = Date.now();
+  var r;
+  try { r = await fetch(API_BASE + path, Object.assign({}, opts, { headers: headers })); }
+  catch (error) { if (path === '/api/auth/register') window.LimitRSSAuthDiagnostics?.record('network', 0, Date.now() - started); throw error; }
   var ct = r.headers.get('content-type') || '';
   var data = ct.indexOf('application/json') >= 0 ? await r.json() : await r.text();
+  if (path === '/api/auth/register') window.LimitRSSAuthDiagnostics?.record(r.ok ? 'ok' : (data && data.error) || 'unavailable', r.status, Date.now() - started);
   if (!r.ok) {
     var msg = (data && data.message) ? data.message : (typeof data === 'string' ? data : ('HTTP ' + r.status));
     var err = new Error(msg);
@@ -3600,6 +3613,7 @@ async function doRegister() {
     setSubmitLoading(btn, false);
     resetTurnstileWidget('auth_register_box');
     showAuthError('auth_register_box', e.message || '注册失败');
+    document.getElementById('auth_register_diagnostics').hidden = false;
   }
 }
 

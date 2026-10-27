@@ -1,5 +1,7 @@
 
 .login-page .plaza-nav{border-bottom:1px solid var(--border)}
+#auth-diagnostics{border:0;background:transparent;color:var(--accent);font:inherit;font-size:13px;cursor:pointer;padding:4px 0;margin:8px auto 16px}
+#auth-diagnostics:not([hidden]){display:block}
 .auth-layout{display:grid;grid-template-columns:1fr 1fr;min-height:100dvh}
 .auth-form-side{display:flex;align-items:center;justify-content:center;padding:130px 48px 60px}
 .auth-form-wrap{width:100%;max-width:400px}.auth-eyebrow{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.14em;margin:0 0 16px}

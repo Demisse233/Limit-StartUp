@@ -1,5 +1,6 @@
 // POST /api/auth/register
-import { hashPassword, genSalt, normalizeEmail, isValidEmail, isValidPassword, genUuid, signJwt } from '../../_lib/crypto.js';
+import { hashPassword, genSalt, normalizeEmail, isValidPassword, genUuid, signJwt } from '../../_lib/crypto.js';
+import { screenEmailFormat, checkEmailDomain, emailCheckMessage } from '../../_lib/email-validation.js';
 
 function isValidNickname(n) {
   if (typeof n !== 'string') return false;
@@ -21,11 +22,15 @@ async function register(context) {
 
   const body = await readJson(request);
   if (!body) return err('invalid_body', '请求体必须是 JSON', 400, env);
-  const email = normalizeEmail(body.email);
+  const email = typeof body.email === 'string' ? normalizeEmail(body.email) : '';
   const password = body.password;
   const nickname = String(body.nickname || '').trim();
   const turnstileToken = body.turnstileToken || '';
-  if (!isValidEmail(email)) return err('invalid_email', '邮箱格式不正确', 400, env);
+  const screening = screenEmailFormat(email);
+  if (!screening.ok) {
+    console.log(JSON.stringify({module:'auth',event:'register_email_check',code:screening.code,reason:screening.reason,durationMs:0}));
+    return err(screening.code, emailCheckMessage(screening.code, request), 400, env);
+  }
   if (!isValidPassword(password)) return err('weak_password', '密码需 8-128 位, 含字母和数字', 400, env);
   if (!isValidNickname(nickname)) return err('invalid_nickname', '昵称需 1-24 位, 不能全空白', 400, env);
 
@@ -37,6 +42,11 @@ async function register(context) {
   // 检查邮箱是否已注册
   const exists = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
   if (exists) return err('email_already_used', '该邮箱已注册', 400, env);
+
+  // DNS checks run only after Turnstile, before hashing or creating an account.
+  const domainCheck = await checkEmailDomain(screening.domain);
+  console.log(JSON.stringify({module:'auth',event:'register_email_check',code:domainCheck.code||'ok',reason:domainCheck.reason,cache:domainCheck.cache,durationMs:domainCheck.durationMs}));
+  if (!domainCheck.ok) return err(domainCheck.code, emailCheckMessage(domainCheck.code, request), domainCheck.code === 'email_check_unavailable' ? 503 : 400, env);
 
   const id = genUuid();
   const salt = genSalt();
