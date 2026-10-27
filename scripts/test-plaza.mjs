@@ -1,3 +1,4 @@
+import {SCHEMA_SQL} from '../functions/_lib/db.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {getPlatformProxy} from 'wrangler';
@@ -21,7 +22,7 @@ test('validates RSS/Atom, rejects HTML/malformed XML/entities, classifies feed d
 test('anonymous upload, deduplication, pending visibility, checks and recovery using actual D1',async()=>{
  const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
  try{
-  const DB=proxy.env.DB;for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();const env={DB};
+  const DB=proxy.env.DB;for(const statement of (SCHEMA_SQL+schema).replace(/--[^\n]*/g,'').split(';').filter(x=>x.trim()))await DB.prepare(statement).run();const env={DB};
   const post=feeds=>onRequestPost({env,request:new Request('https://site/api/limitrss/plaza',{method:'POST',headers:{'CF-Connecting-IP':'1.2.3.4'},body:JSON.stringify({feeds})})});
   const limitedRequest=new Request('https://site',{headers:{'CF-Connecting-IP':'123.1.2.3'}});
   assert.equal(await quota(limitedRequest,env,'test',1,10),true);assert.equal(await quota(limitedRequest,env,'test',1,10),false);
@@ -51,7 +52,7 @@ test('interaction counters are atomic, public-only and sort before pagination wi
  const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
  try {
   const DB=proxy.env.DB,env={DB};
-  for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  for(const statement of (SCHEMA_SQL+schema).replace(/--[^\n]*/g,'').split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
   const id=n=>n.toString(16).padStart(32,'0');
   for(let n=1;n<=32;n++)await DB.prepare('INSERT INTO plaza_feeds (id,url,title,created_at,published) VALUES (?,?,?,?,?)').bind(id(n),`https://example.com/${n}`,'Feed '+n,n,n===32?0:1).run();
   const hit=(n,action)=>interaction({env,params:{id:id(n)},request:new Request('https://site',{method:'POST',body:JSON.stringify({action})})});
@@ -78,7 +79,7 @@ test('versioned app API exposes public metadata, filters, sort and direct D1 int
  assert.equal(typeof versionedDetail,'function');assert.equal(typeof versionedHit,'function');
  const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
  try {
-  const DB=proxy.env.DB,env={DB};for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const DB=proxy.env.DB,env={DB};for(const statement of (SCHEMA_SQL+schema).replace(/--[^\n]*/g,'').split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
   const id=n=>n.toString(16).padStart(32,'0');
   for(let n=1;n<=4;n++) {
    await DB.prepare('INSERT INTO plaza_feeds (id,url,title,category,status,created_at,published) VALUES (?,?,?,?,?,?,?)').bind(id(n),`https://example.com/${n}`,['Zebra','Alpha','Beta','Hidden'][n-1],n===1?'gaming':'development','healthy',n,n===4?0:1).run();
@@ -105,7 +106,7 @@ test('RSSHub uploads are public and unknown; checks never fetch; legacy results 
  const {publicFeed}=await import('../functions/_lib/plaza.js');
  const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
  try {
-  const DB=proxy.env.DB,env={DB};for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const DB=proxy.env.DB,env={DB};for(const statement of (SCHEMA_SQL+schema).replace(/--[^\n]*/g,'').split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
   const post=await onRequestPost({env,request:new Request('https://site/api/limitrss/plaza',{method:'POST',body:JSON.stringify({feeds:[{title:'RSSHub route',url:'rsshub://github/trending'}]})})});
   assert.equal(post.status,201);
   let row=await DB.prepare('SELECT * FROM plaza_feeds').first();
@@ -163,7 +164,7 @@ test('publisher identity, route rules, word boundaries, ambiguity and bounded ar
 test('manual corrections survive checks and failed checks retain established content classification',async()=>{
  const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
  try {
-  const DB=proxy.env.DB,env={DB};for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const DB=proxy.env.DB,env={DB};for(const statement of (SCHEMA_SQL+schema).replace(/--[^\n]*/g,'').split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
   const id='f'.repeat(32);
   await DB.prepare('INSERT INTO plaza_feeds (id,url,title,created_at) VALUES (?,?,?,?)').bind(id,'https://example.com/rss','Personal blog',0).run();
   const transport=async url=>url.includes('dns-query')?Response.json({Answer:[{type:1,data:'1.1.1.1'}]}):new Response('<rss><channel><title>Blog</title><description>Programming tutorials</description></channel></rss>');
@@ -182,7 +183,7 @@ test('historical RSSHub categories migrate in bounded batches without health fet
  const {execFileSync}=await import('node:child_process');
  const proxy=await getPlatformProxy({configPath:'wrangler.toml',persist:false});
  try {
-  const DB=proxy.env.DB,env={DB};for(const statement of schema.split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
+  const DB=proxy.env.DB,env={DB};for(const statement of (SCHEMA_SQL+schema).replace(/--[^\n]*/g,'').split(';').filter(x=>x.trim()))await DB.prepare(statement).run();
   const id=n=>n.toString(16).padStart(32,'0');
   for(let n=1;n<=7;n++)await DB.prepare('INSERT INTO plaza_feeds (id,url,title,category,created_at) VALUES (?,?,?,?,?)').bind(id(n),`rsshub://github/trending/${n}`,'Custom name','life',0).run();
   const sql=execFileSync(process.execPath,['scripts/plaza-category-override.mjs',id(1),'culture'],{encoding:'utf8'});

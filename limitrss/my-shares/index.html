@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="auto"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LimitRSS Plaza · 管理分享</title><link rel="icon" href="../assets/favicon.png"><link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../plaza/style.css?v=20261026-my-shares"><link rel="stylesheet" href="shares.css?v=20261026-my-shares"></head><body>
+  <header class="nav glass plaza-nav">
+    <div class="nav-inner">
+      <a class="brand" href="../"><img src="../assets/icon.png" alt="" width="28" height="28"><span class="brand-name">LimitRSS<span class="plaza-wordmark">Plaza</span></span></a>
+      <nav class="nav-links" aria-label="LimitRSS">
+        <a href="../" data-t="home">官网首页</a>
+        <a href="../#download" data-t="downloadNav">下载</a>
+      </nav>
+      <div class="nav-tools"><button id="language" class="language-toggle" type="button" aria-label="切换语言" title="切换语言"><svg width="20" height="20" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path transform="translate(61.44 61.44) scale(.88)" fill="currentColor" d="M938.666667 981.333333 c-17.066667 0 -29.866667 -8.533333 -38.4 -25.6 l-59.733334 -119.466666 l-277.333333 0 l-59.733333 119.466666 c-8.533334 21.333333 -34.133334 29.866667 -55.466667 17.066667 c-25.6 -8.533334 -34.133334 -34.133334 -21.333333 -51.2 l72.533333 -140.8 l145.066667 -290.133333 c12.8 -21.333333 34.133333 -38.4 59.733333 -38.4 c25.6 0 46.933333 12.8 59.733333 38.4 l145.066667 290.133333 l72.533333 140.8 c8.533333 21.333333 0 46.933333 -17.066666 55.466667 c-12.8 4.266666 -17.066667 4.266666 -25.6 4.266666 Z m-332.8 -226.133333 l192 0 l-98.133333 -192 l-93.866667 192 Z M85.333333 844.8 c-17.066666 0 -29.866666 -8.533333 -38.4 -25.6 c-8.533333 -21.333333 0 -46.933333 21.333334 -55.466667 c93.866667 -46.933333 179.2 -110.933333 247.466666 -187.733333 c-46.933333 -64 -85.333333 -128 -110.933333 -192 c-8.533333 -21.333333 4.266667 -46.933333 25.6 -55.466667 c21.333333 -8.533333 46.933333 4.266667 55.466667 25.6 c21.333333 51.2 46.933333 102.4 81.066666 149.333334 c59.733334 -85.333334 102.4 -179.2 128 -281.6 L85.333333 221.866667 c-25.6 0 -42.666666 -17.066667 -42.666666 -42.666667 c0 -25.6 17.066666 -42.666666 42.666666 -42.666666 l243.2 0 L328.533333 85.333333 c0 -25.6 17.066667 -42.666666 42.666667 -42.666666 c25.6 0 42.666667 17.066666 42.666667 42.666666 l0 51.2 l238.933333 0 c25.6 0 42.666667 17.066667 42.666667 42.666667 c0 25.6 -17.066667 42.666667 -42.666667 42.666667 l-68.266667 0 c-25.6 128 -85.333333 247.466667 -162.133333 349.866666 l25.6 25.6 c17.066667 17.066667 17.066667 42.666667 0 59.733334 c-17.066667 17.066667 -42.666667 17.066667 -59.733333 0 l-17.066667 -17.066667 c-72.533333 81.066667 -162.133333 149.333333 -264.533333 200.533333 c-8.533333 0 -17.066667 4.266667 -21.333334 4.266667 Z"/></svg></button>
+      <button class="theme-toggle" aria-label="切换主题" type="button">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a id="account-login" class="account-link account-primary" href="../login/">登录</a>
+      <div id="account-profile" class="account-profile" hidden>
+       <button id="account-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="account-menu"><span class="profile-avatar" aria-hidden="true"><img class="profile-avatar-image" alt="" hidden><span class="profile-avatar-fallback">L</span></span><span id="account-nickname"></span><svg class="profile-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
+       <div id="account-menu" role="menu" aria-labelledby="account-toggle" hidden>
+        <div class="profile-summary" role="presentation"><span class="profile-avatar profile-avatar-large" aria-hidden="true"><img class="profile-avatar-image" alt="" hidden><span class="profile-avatar-fallback">L</span></span><div class="profile-summary-text"><strong id="account-menu-name"></strong><span id="account-menu-email"></span><span id="account-signed-in">已登录</span></div></div>
+        <button id="account-settings" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>账号设置</span></button>
+        <button id="account-password" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>修改密码</span></button>
+        <a id="account-shares" role="menuitem" href="../my-shares/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h11M4 9h11M4 14h7M4 19h7M18 13v8m-3-3 3 3 3-3"/></svg><span>管理分享</span></a>
+        <a id="account-manager" role="menuitem" href="../plaza-manager/" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>管理后台</span></a>
+        <button id="account-logout" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M9 12h12m-5-5 5 5-5 5"/></svg><span>退出登录</span></button>
+        <p id="account-menu-message" role="status" aria-live="polite"></p>
+       </div>
+      </div>
+      </div>
+    </div>
+  </header>
+<main class="plaza-main my-shares-main">
+ <div class="shares-heading"><div><h1 data-t="heading">管理分享</h1><p data-t="intro">查看并管理你分享的订阅源。</p></div><a href="../plaza/" class="back-link" data-t="plaza">返回广场</a></div>
+ <section id="shares-sign-in" class="shares-sign-in"><h2 data-t="loginTitle">登录后管理分享</h2><p data-t="loginHint">请使用分享订阅源时的账号登录。</p><a class="action" href="../login/?next=%2Flimitrss%2Fmy-shares%2F" data-t="login">登录</a></section>
+ <section id="shares-workspace" hidden>
+  <form id="shares-search" class="shares-controls"><label><span data-t="search">搜索分享</span><input id="share-query" type="search" maxlength="100" data-placeholder="searchHint" placeholder="订阅源名称或地址"></label><label><span data-t="state">展示状态</span><span class="select-field"><select id="share-state"><option value="" data-t="all">全部</option></select></span></label><button id="shares-refresh" type="submit" data-t="refresh">刷新</button></form>
+  <p id="shares-message" class="shares-message" role="status" aria-live="polite"></p>
+  <div class="list-heading"><p id="shares-summary" role="status" aria-live="polite"></p><button id="shares-diagnostics" type="button" data-t="exportDiagnostics" hidden>导出诊断</button></div>
+  <p class="table-hint" data-t="scrollHint">左右滑动查看完整表格</p>
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="shares-caption"><table class="feed-table shares-table"><caption id="shares-caption" data-t="heading">管理分享</caption><colgroup><col class="own-source-col"><col class="own-url-col"><col class="own-status-col"><col class="own-date-col"><col class="own-action-col"></colgroup><thead><tr><th data-t="source">订阅源</th><th data-t="address">订阅地址</th><th data-t="status">状态</th><th data-t="sharedAt">分享时间</th><th data-t="actions">操作</th></tr></thead><tbody id="shares-list"></tbody></table></div>
+  <nav class="pagination" data-label="paginationLabel" aria-label="我的分享分页"><span id="shares-range"></span><div class="pagination-controls"><button id="shares-previous" type="button" data-t="previous">上一页</button><span id="shares-pages" class="page-numbers"></span><button id="shares-next" type="button" data-t="next">下一页</button></div></nav>
+ </section>
+ <dialog id="share-delete-dialog" class="plaza-account-dialog" aria-labelledby="share-delete-title"><div class="account-dialog-heading"><h2 id="share-delete-title" data-t="confirmTitle">删除这条分享？</h2><button id="share-delete-close" type="button" data-label="close" aria-label="关闭">×</button></div><p id="share-delete-feed" class="delete-feed-name"></p><p class="account-dialog-hint" data-t="confirmHint">删除后，订阅源数据将永久移除，无法恢复。历史使用次数会保留。</p><p id="share-delete-error" class="account-dialog-message" role="status" aria-live="polite"></p><div class="account-dialog-actions"><button id="share-delete-cancel" type="button" data-t="cancel">取消</button><button id="share-delete-confirm" type="button" class="delete-confirm" data-t="confirmDelete">确认删除</button></div></dialog>
+</main>
+<dialog id="profile-dialog" class="plaza-account-dialog" aria-labelledby="profile-dialog-title">
+ <div class="account-dialog-heading"><h2 id="profile-dialog-title" data-account-t="settings">账号设置</h2><button type="button" data-account-close="profile-dialog" data-account-label="close">×</button></div>
+ <form id="profile-form">
+  <div class="account-avatar-editor"><span class="account-avatar-preview"><img id="profile-preview-image" alt="" hidden><span id="profile-preview-fallback" aria-hidden="true">L</span></span><div><label for="profile-avatar-file" class="account-file-button" data-account-t="chooseAvatar">选择头像</label><input id="profile-avatar-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><button id="profile-delete-avatar" class="account-text-button" type="button" data-account-t="deleteAvatar">删除头像</button></div></div>
+  <p class="account-dialog-hint" data-account-t="avatarHint">支持 PNG、JPEG、WebP，将居中裁切为圆形头像。</p>
+  <label for="profile-email" data-account-t="email">邮箱</label><input id="profile-email" type="email" readonly>
+  <label for="profile-nickname" data-account-t="nickname">昵称</label><input id="profile-nickname" maxlength="24" required autocomplete="nickname">
+  <p id="profile-message" class="account-dialog-message" role="status" aria-live="polite"></p>
+  <div class="account-dialog-actions"><button type="button" data-account-close="profile-dialog" data-account-t="cancel">取消</button><button id="profile-save" type="submit" class="account-primary-button" data-account-t="save">保存</button></div>
+ </form>
+</dialog>
+<dialog id="password-dialog" class="plaza-account-dialog" aria-labelledby="password-dialog-title">
+ <div class="account-dialog-heading"><h2 id="password-dialog-title" data-account-t="password">修改密码</h2><button type="button" data-account-close="password-dialog" data-account-label="close">×</button></div>
+ <form id="password-form">
+  <label for="profile-old-password" data-account-t="oldPassword">旧密码</label><input id="profile-old-password" type="password" autocomplete="current-password" required maxlength="128">
+  <label for="profile-new-password" data-account-t="newPassword">新密码</label><input id="profile-new-password" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+  <p class="account-dialog-hint" data-account-t="passwordHint">密码需 8–128 位，包含字母和数字。</p>
+  <label for="profile-confirm-password" data-account-t="confirmPassword">确认新密码</label><input id="profile-confirm-password" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+  <div id="account-captcha" data-sitekey="0x4AAAAAADnCSF3mvj9vqAEf"></div>
+  <p id="password-message" class="account-dialog-message" role="status" aria-live="polite"></p>
+  <div class="account-dialog-actions"><button type="button" data-account-close="password-dialog" data-account-t="cancel">取消</button><button id="password-save" type="submit" class="account-primary-button" data-account-t="savePassword">修改密码</button><a id="password-login" href="../login/" class="account-primary-button" data-account-t="signInAgain" hidden>重新登录</a></div>
+ </form>
+</dialog>
+<script src="../nav-controls.js" defer></script><script src="../plaza/localization.js?v=20261026-my-shares" defer></script><script src="../plaza/account-nav.js?v=20261026-my-shares" type="module"></script><script src="shares.js?v=20261026-my-shares" type="module"></script></body></html>

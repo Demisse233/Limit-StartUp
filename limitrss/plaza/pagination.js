@@ -1,0 +1,1 @@
+export function pageNumbers(page,pages){const set=new Set([1,pages,page-1,page,page+1]);if(page<4){set.add(2);set.add(3);}if(page>pages-3){set.add(pages-1);set.add(pages-2);}const result=[];for(const n of [...set].filter(n=>n>=1&&n<=pages).sort((a,b)=>a-b)){if(result.length&&n-result.at(-1)>1)result.push('…');result.push(n);}return result;}

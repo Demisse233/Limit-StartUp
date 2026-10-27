@@ -26,6 +26,23 @@ CREATE TABLE IF NOT EXISTS plaza_classification (
  updated_at INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS plaza_usage_archive (
+ feed_id TEXT PRIMARY KEY, user_id TEXT NOT NULL,
+ copy_count INTEGER NOT NULL DEFAULT 0 CHECK(copy_count >= 0),
+ import_count INTEGER NOT NULL DEFAULT 0 CHECK(import_count >= 0), deleted_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS plaza_usage_archive_user ON plaza_usage_archive(user_id);
+
+CREATE TABLE IF NOT EXISTS plaza_share_audit (
+ id TEXT PRIMARY KEY, feed_id TEXT NOT NULL, actor_id TEXT NOT NULL, created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS plaza_share_audit_time ON plaza_share_audit(created_at);
+
+CREATE TABLE IF NOT EXISTS plaza_contributions (
+ feed_id TEXT PRIMARY KEY, user_id TEXT NOT NULL, created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS plaza_contributor ON plaza_contributions(user_id);
+
 CREATE TABLE IF NOT EXISTS plaza_feed_stats (
  feed_id TEXT PRIMARY KEY,
  language TEXT,
@@ -77,7 +94,7 @@ async function bounded(response, limit) {
  finally { await reader.cancel().catch(()=>{}); }
  const all=new Uint8Array(size);let offset=0;for(const chunk of chunks){all.set(chunk,offset);offset+=chunk.length;}return new TextDecoder().decode(all);
 }
-async function safeFetch(raw, transport=fetch) {
+export async function safeFetch(raw, transport=fetch) {
  const canonical=feedUrl(raw);
  let address=canonical.startsWith('rsshub://')?publicUrl(canonical.replace('rsshub://','https://rsshub.rssforever.com/')):canonical;const signal=AbortSignal.timeout(12000);
  for(let hop=0;hop<4;hop++) {
@@ -146,7 +163,7 @@ export function respond(data,status=200) {
 }
 export function publicFeed(row) {
  const rsshub=isRssHubFeed(row.url);
- return {sourceType:rsshub?'rsshub':'rss',id:row.id,title:row.title,url:row.url,icon:row.icon,category:row.category,status:rsshub?'unknown':row.status,checkedAt:rsshub?null:row.checked_at,latencyMs:rsshub?null:row.latency,language:row.language??null,copyCount:row.copy_count??0,importCount:row.import_count??0,popularity:(row.copy_count??0)+(row.import_count??0),createdAt:row.created_at};
+ return {sharer:row.sharer_id?{nickname:row.sharer_nickname?.trim()||'LimitRSS',avatarUrl:row.sharer_avatar?`/api/limitrss/plaza/${row.id}/avatar`:null}:null,sourceType:rsshub?'rsshub':'rss',id:row.id,title:row.title,url:row.url,icon:row.icon,category:row.category,status:rsshub?'unknown':row.status,checkedAt:rsshub?null:row.checked_at,latencyMs:rsshub?null:row.latency,language:row.language??null,copyCount:row.copy_count??0,importCount:row.import_count??0,popularity:(row.copy_count??0)+(row.import_count??0),createdAt:row.created_at};
 }
 export async function quota(request,env,kind,maxMinute,maxDay) {
  const ip=request.headers.get('CF-Connecting-IP') || 'local';

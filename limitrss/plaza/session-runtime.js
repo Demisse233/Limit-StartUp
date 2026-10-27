@@ -8,7 +8,7 @@ async function authRequest(path,options={}){
  if(!response.ok){if(response.status===401 && result.error==='unauthorized')clearSession();throw Error(result.error||'unavailable');}
  return result;
 }
-function returnPath(value){return ['/limitrss/plaza/','/limitrss/plaza-manager/'].includes(value)?value:'/limitrss/plaza/';}
+function returnPath(value){return ['/limitrss/plaza/','/limitrss/plaza-manager/','/limitrss/my-shares/'].includes(value)?value:'/limitrss/plaza/';}
 
 globalThis.LimitRSSSession={readToken,clearSession,saveSession,authRequest,returnPath};
 })();
